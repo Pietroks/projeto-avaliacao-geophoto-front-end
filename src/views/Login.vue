@@ -1,0 +1,182 @@
+<template>
+  <div class="backgroundImg">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="containerCadastro">
+            <h1>Faça o seu login</h1>
+            <form @submit.prevent="login" class="containerForm">
+              <div class="input-group">
+                <EnvelopeIcon class="icon" />
+                <input v-model="email" type="email" placeholder="Email" required />
+              </div>
+              <div class="input-group">
+                <LockClosedIcon class="icon" />
+                <input v-model="password" type="password" placeholder="Senha" required />
+              </div>
+              <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem uma conta? <router-link to="/cadastro" class="link">Cadastre-se</router-link></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
+
+export default {
+  name: 'LoginPage',
+  components: {
+    EnvelopeIcon,
+    LockClosedIcon,
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+    };
+  },
+  methods: {
+    async login() {
+      // Aqui você faria a requisição para o backend para verificar as credenciais
+      const formData = new FormData();
+      formData.append('email', this.email);
+      formData.append('password', this.password);
+
+      try {
+        const response = await fetch('https://servidor.com.br/api/login', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            // Redirecionar para a página principal após login bem-sucedido
+            this.$router.push('/dashboard');
+          } else {
+            alert('Credenciais inválidas!');
+          }
+        } else {
+          console.log('Erro na requisição', response.statusText);
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+  .input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+  .input-group i {
+    color: #888;
+    margin-right: 0.5rem;
+  }
+
+  .input-group input {
+    border: none;
+    outline: none;
+    flex: 1;
+  }
+
+  /* Restante dos estilos */
+  .backgroundImg {
+    background-image: url('../assets/thumb-1920-526183.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -11.4rem;
+  }
+
+  .containerCadastro {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 8rem;
+  }
+
+  .containerForm {
+    display: flex;
+    gap: 1.5rem;
+    flex-direction: column;
+    margin-top: 2rem;
+    width: 75%;
+  }
+
+  h1 {
+    color: brown;
+    font-weight: 100;
+  }
+
+  .input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.5rem;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    color: #333;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+
+  button {
+    background-color: brown;
+    color: whitesmoke;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }
+
+  button:hover {
+    background-color: darkred;
+  }
+
+  p {
+    font-weight: 500;
+  }
+
+  .link {
+    color: brown;
+    font-weight: 700;
+  }
+</style>
