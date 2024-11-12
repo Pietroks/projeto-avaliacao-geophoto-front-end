@@ -12,9 +12,12 @@
               </div>
               <div class="input-group">
                 <LockClosedIcon class="icon" />
-                <input v-model="password" type="password" placeholder="Senha" required />
+                <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Senha" />
+                <button type="button" @click="togglePasswordVisibility" :class="{'active': showPassword}" class="show-password-btn">
+                  <EyeIcon class="eye-icon" />
+                </button>
               </div>
-              <button type="submit">Entrar</button>
+              <button type="submit" class="buttonCadastro">Entrar</button>
             </form>
             <p>Não tem uma conta? <router-link to="/cadastro" class="link">Cadastre-se</router-link></p>
           </div>
@@ -26,22 +29,24 @@
 
 <script>
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
+import { EyeIcon } from '@heroicons/vue/24/outline'; 
 
 export default {
   name: 'LoginPage',
   components: {
     EnvelopeIcon,
     LockClosedIcon,
+    EyeIcon,
   },
   data() {
     return {
       email: '',
       password: '',
+      showPassword: false,
     };
   },
   methods: {
     async login() {
-      // Aqui você faria a requisição para o backend para verificar as credenciais
       const formData = new FormData();
       formData.append('email', this.email);
       formData.append('password', this.password);
@@ -55,7 +60,6 @@ export default {
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
-            // Redirecionar para a página principal após login bem-sucedido
             this.$router.push('/dashboard');
           } else {
             alert('Credenciais inválidas!');
@@ -66,6 +70,10 @@ export default {
       } catch (error) {
         console.error('Erro na requisição:', error);
       }
+    },
+
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     },
   },
 };
@@ -94,7 +102,7 @@ export default {
 
   /* Restante dos estilos */
   .backgroundImg {
-    background-image: url('../assets/thumb-1920-526183.jpg');
+    background-image: url('../assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -154,7 +162,7 @@ export default {
     padding: 0.5rem;
   }
 
-  button {
+  .buttonCadastro {
     background-color: brown;
     color: whitesmoke;
     border: none;
@@ -167,7 +175,7 @@ export default {
     margin-bottom: 2rem;
   }
 
-  button:hover {
+  .buttonCadastro:hover {
     background-color: darkred;
   }
 
@@ -179,4 +187,35 @@ export default {
     color: brown;
     font-weight: 700;
   }
+
+  .show-password-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.5em;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Adiciona um estilo diferente quando o botão estiver ativo */
+.show-password-btn.active {
+  color: green; /* Exemplo de mudança de cor */
+  transform: translateY(-50%) scale(1.1); /* Exemplo de aumentar o botão quando ativo */
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Mudar a opacidade no hover */
+.show-password-btn:hover .eye-icon {
+  opacity: 0.5; /* Opacidade no hover */
+}
 </style>
