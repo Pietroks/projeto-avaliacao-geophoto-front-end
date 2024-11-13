@@ -4,9 +4,10 @@
       <div class="col-12 containerHeader">
         <div class="col-md-4 divLogo">
           <router-link to="/" class="Logo">
-            <img :src="logoImage" class="img-fluid imgLogo" alt="">
+            <img :src="logoImage" class="img-fluid imgLogo" alt="Logo">
           </router-link>
         </div>
+        
         <div class="col-md-4 divNav">
           <router-link
             to="/"
@@ -24,16 +25,24 @@
             @click="selectLink('/premiacao')"
           >Premiação</router-link>  
         </div>
+        
+        <!-- Seção de login / foto do usuário -->
         <div class="col-md-4 divLogin">
-          <router-link
-            to="/login"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/login' }]"
-            @click="selectLink('/login')"
-          >Entrar</router-link>
-          <router-link
-            to="/cadastro"
-            class="buttonCadastro"
-          >Cadastre-se</router-link>
+          <template v-if="isLoggedIn">
+            <img :src="user.profilePic" class="profileImage" alt="Profile Picture">
+            <button @click="logout" class="logoutButton">Sair</button>
+          </template>
+          <template v-else>
+            <router-link
+              to="/login"
+              :class="['navLink', { 'navLinkActive': selectedLink === '/login' }]"
+              @click="selectLink('/login')"
+            >Entrar</router-link>
+            <router-link
+              to="/cadastro"
+              class="buttonCadastro"
+            >Cadastre-se</router-link>
+          </template>
         </div>
       </div>
     </div>
@@ -41,6 +50,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
 
 export default {
@@ -48,13 +58,23 @@ export default {
   data() {
     return {
       logoImage: logo,
-      selectedLink: '/'  
+      selectedLink: '/'
     };
   },
-  methods: {
-    selectLink(link) {
-      this.selectedLink = link; 
+  computed: {
+    ...mapState("user", ["user", "token"]),
+    isLoggedIn() {
+      return !!this.token;
     }
+  },
+  methods: {
+    ...mapActions("user", ["logout"]),
+    selectLink(link) {
+      this.selectedLink = link;
+    }
+  },
+  mounted() {
+    this.$store.dispatch("user/checkLoginStatus");
   }
 };
 </script>
@@ -68,7 +88,6 @@ export default {
     background: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border-radius: 30px;
-    border: none;
     position: relative;
   }
 
@@ -93,6 +112,26 @@ export default {
     justify-content: flex-end;
     gap: 2rem;
     align-items: center;
+  }
+
+  .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .logoutButton {
+    background: none;
+    border: none;
+    color: brown;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .logoutButton:hover {
+    color: darkred;
   }
 
   .navLink, .buttonCadastro {

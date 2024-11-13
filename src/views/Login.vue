@@ -29,7 +29,8 @@
 
 <script>
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
-import { EyeIcon } from '@heroicons/vue/24/outline'; 
+import { EyeIcon } from '@heroicons/vue/24/outline';
+import { mapActions } from 'vuex'; // Importando mapActions
 
 export default {
   name: 'LoginPage',
@@ -46,6 +47,9 @@ export default {
     };
   },
   methods: {
+    // Mapeando a action do Vuex
+    ...mapActions("user", ["login"]), 
+    
     async login() {
       const formData = new FormData();
       formData.append('email', this.email);
@@ -59,8 +63,15 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          if (data.success) {
-            this.$router.push('/dashboard');
+          if (data.success && data.token && data.user) {
+            // Chamando a action 'login' do Vuex para armazenar o usuário e token
+            this.login({ user: data.user, token: data.token });
+
+            // Armazenando o token no localStorage para persistência
+            localStorage.setItem("authToken", data.token);
+
+            // Redireciona para a página inicial após o login bem-sucedido
+            this.$router.push('/');
           } else {
             alert('Credenciais inválidas!');
           }
@@ -78,6 +89,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
   .input-group {
@@ -100,7 +112,6 @@ export default {
     flex: 1;
   }
 
-  /* Restante dos estilos */
   .backgroundImg {
     background-image: url('../assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg');
     background-size: cover;
@@ -201,10 +212,9 @@ export default {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Adiciona um estilo diferente quando o botão estiver ativo */
 .show-password-btn.active {
-  color: green; /* Exemplo de mudança de cor */
-  transform: translateY(-50%) scale(1.1); /* Exemplo de aumentar o botão quando ativo */
+  color: green; 
+  transform: translateY(-50%) scale(1.1); 
 }
 
 .eye-icon {
@@ -214,8 +224,7 @@ export default {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Mudar a opacidade no hover */
 .show-password-btn:hover .eye-icon {
-  opacity: 0.5; /* Opacidade no hover */
+  opacity: 0.5; 
 }
 </style>

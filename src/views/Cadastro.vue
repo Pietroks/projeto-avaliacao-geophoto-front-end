@@ -48,7 +48,7 @@
               </div>
               <div class="input-group divComprovante">
                 <label><DocumentIcon class="icon" />Apresente um comprovante da sua formação *</label>
-                <input type="file" @change="onFileChange" accept=".pdf, .jpg, .jpeg, .png" class="inputFile" />
+                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" />
               </div>
               <div class="divButton">
                 <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
@@ -90,6 +90,7 @@ export default {
       passwordStrengthClass: ''
     };
   },
+
   methods: {
     updatePasswordStrength() {
       if (!this.password) {
@@ -97,7 +98,7 @@ export default {
         this.passwordStrengthClass = '';
         return;
       }
-
+      
       const length = this.password.length;
       if (length < 6) {
         this.passwordStrength = 'Fraca';
@@ -142,31 +143,47 @@ export default {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('name', this.name);
-      formData.append('email', this.email);
-      formData.append('password', this.password);
-      formData.append('cpf', this.cpf);
-      formData.append('comprovante', this.comprovante);
+      const convertFileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject('Erro ao converter o arquivo.');
+        });
+      };
 
       try {
+        const comprovanteBase64 = await convertFileToBase64(this.comprovante);
+        const jsonData = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          cpf: this.cpf,
+          comprovante: comprovanteBase64,
+        };
+
         const response = await fetch('https://servidor.com.br/api/cadastro', {
           method: 'POST',
-          body: formData
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
         });
 
         if (response.ok) {
           console.log('Usuário cadastrado com sucesso');
           alert('Usuário cadastrado com sucesso');
-          this.$route.push('/');
+          this.$router.push('/login');
         } else {
-          console.log('Erro na requisição', response.statusText);
-          alert('Erro na requisição', response.statusText);
+          console.error('Erro na requisição:', response.statusText);
+          alert('Erro na requisição: ' + response.statusText);
         }
       } catch (error) {
-        console.error('Erro na requisição:', error);
+        console.error('Erro no cadastro:', error);
+        alert(`Erro: ${error}`);
       }
     },
+
 
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
