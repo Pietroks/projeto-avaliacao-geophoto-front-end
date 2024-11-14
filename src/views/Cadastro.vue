@@ -25,7 +25,7 @@
                 <button
                   type="button"
                   @click="togglePasswordVisibility"
-                  :class="{'active': showPassword}"
+                  :class="{ 'active': showPassword }"
                   class="show-password-btn"
                 >
                   <EyeIcon class="eye-icon" />
@@ -51,7 +51,7 @@
               </div>
               <div class="divButton">
                 <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
-                <button type="submit" class="buttonCadastro">Cadastrar</button>
+                <button type="submit" :disabled="!isFormValid" class="buttonCadastro">Cadastrar</button>
               </div>
             </form>
           </div>
@@ -82,7 +82,7 @@ export default {
     LockClosedIcon,
     IdentificationIcon,
     DocumentIcon,
-    EyeIcon,    
+    EyeIcon,
   },
   data() {
     return {
@@ -96,8 +96,22 @@ export default {
       passwordError: false,
       passwordStrength: '',
       passwordStrengthClass: '',
-      showSuccessModal: false
+      showSuccessModal: false,
     };
+  },
+
+  computed: {
+    isFormValid() {
+      return (
+        this.name &&
+        this.email &&
+        this.password &&
+        this.confirmPassword &&
+        this.password === this.confirmPassword &&
+        this.cpf &&
+        this.comprovante !== null
+      );
+    },
   },
 
   methods: {
@@ -217,6 +231,7 @@ export default {
   },
 };
 </script>
+
 
 
 <style scoped>
@@ -389,6 +404,7 @@ h1 {
 
 .inputFile {
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .error-message {
@@ -429,6 +445,11 @@ h1 {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.buttonCadastro:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
 
