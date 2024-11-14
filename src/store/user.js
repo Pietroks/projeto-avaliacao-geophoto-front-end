@@ -1,55 +1,38 @@
-export const state = () => ({
+export default {
+  namespaced: true,
+  state: {
     user: null,
-    token: null,
-  });
-  
-  export const mutations = {
-    setUser(state, user) {
+    isAuthenticated: false,
+  },
+  mutations: {
+    login(state, user) {
       state.user = user;
+      state.isAuthenticated = true;
     },
-    setToken(state, token) {
-      state.token = token;
-    },
-    clearUser(state) {
+    logout(state) {
       state.user = null;
-      state.token = null;
+      state.isAuthenticated = false;
     },
-  };
-  
-  export const actions = {
-    login({ commit }, { user, token }) {
-      commit("setUser", user);
-      commit("setToken", token);
-      localStorage.setItem("authToken", token);
+  },
+  actions: {
+    login({ commit }, user) {
+      commit('login', user);
     },
     logout({ commit }) {
-      commit("clearUser");
-      localStorage.removeItem("authToken");
+      commit('logout');
     },
     checkLoginStatus({ commit }) {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        // Aqui você faria uma requisição para obter os dados do usuário com o token
-        return fetch("/api/user-info", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.user) {
-              commit("setUser", data.user);
-              commit("setToken", token);
-            } else {
-              commit("clearUser");
-            }
-          })
-          .catch(() => {
-            commit("clearUser");
-          });
+      // Lógica para checar o status do login, como acessar o localStorage ou fazer um fetch no servidor
+      const isLoggedIn = false; // Coloque sua lógica aqui
+      if (isLoggedIn) {
+        commit('login', { /* dados do usuário */ });
       } else {
-        commit("clearUser");
+        commit('logout');
       }
     },
-  };
-  
+  },
+  getters: {
+    isAuthenticated: (state) => state.isAuthenticated,
+    user: (state) => state.user,
+  },
+};

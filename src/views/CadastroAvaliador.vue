@@ -56,6 +56,7 @@
 <script>
   import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
   import { EyeIcon } from '@heroicons/vue/24/outline';
+  import { API_URL } from '@/config/config';
   
   export default {
     name: 'CadastroPage',
@@ -118,7 +119,7 @@
         };
   
         try {
-          const response = await fetch('https://servidor.com.br/api/cadastro', {
+          const response = await fetch(`${API_URL}/cadastro`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

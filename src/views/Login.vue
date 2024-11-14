@@ -31,6 +31,7 @@
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { mapActions } from 'vuex'; // Importando mapActions
+import { API_URL } from '@/config/config';
 
 export default {
   name: 'LoginPage',
@@ -51,14 +52,18 @@ export default {
     ...mapActions("user", ["login"]), 
     
     async login() {
-      const formData = new FormData();
-      formData.append('email', this.email);
-      formData.append('password', this.password);
+      const jsonData = {
+        email: this.email,
+        password: this.password,
+      };
 
       try {
-        const response = await fetch('https://servidor.com.br/api/login', {
+        const response = await fetch(`${API_URL}/login`, {
           method: 'POST',
-          body: formData,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
         });
 
         if (response.ok) {
@@ -89,6 +94,7 @@ export default {
   },
 };
 </script>
+
 
 
 <style scoped>

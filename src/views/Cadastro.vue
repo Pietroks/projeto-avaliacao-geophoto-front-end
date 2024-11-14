@@ -28,12 +28,11 @@
                   :class="{'active': showPassword}"
                   class="show-password-btn"
                 >
+                  <EyeIcon class="eye-icon" />
+                </button>
                 <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">
                   {{ passwordStrength }}
                 </div>
-                  <EyeIcon class="eye-icon" />
-                </button>
-                
               </div>
               <div class="input-group">
                 <LockClosedIcon class="icon" />
@@ -59,12 +58,21 @@
         </div>
       </div>
     </div>
+    <div v-if="showSuccessModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Cadastro Realizado com Sucesso!</h2>
+        <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
+        <button @click="goToLogin" class="buttonLoginRedirect">Ir para Login</button>
+        <button @click="closeModal" class="buttonCloseModal">Fechar</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { UserIcon, EnvelopeIcon, LockClosedIcon, IdentificationIcon, DocumentIcon } from '@heroicons/vue/24/solid';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { API_URL } from '@/config/config.js';
 
 export default {
   name: 'CadastroPage',
@@ -87,7 +95,8 @@ export default {
       showPassword: false,
       passwordError: false,
       passwordStrength: '',
-      passwordStrengthClass: ''
+      passwordStrengthClass: '',
+      showSuccessModal: false
     };
   },
 
@@ -162,7 +171,7 @@ export default {
           comprovante: comprovanteBase64,
         };
 
-        const response = await fetch('https://servidor.com.br/api/cadastro', {
+        const response = await fetch(`${API_URL}/cadastro`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -173,7 +182,7 @@ export default {
         if (response.ok) {
           console.log('Usuário cadastrado com sucesso');
           alert('Usuário cadastrado com sucesso');
-          this.$router.push('/login');
+          this.showSuccessModal = true; 
         } else {
           console.error('Erro na requisição:', response.statusText);
           alert('Erro na requisição: ' + response.statusText);
@@ -184,6 +193,10 @@ export default {
       }
     },
 
+    goToLogin() {
+      this.showSuccessModal = false;
+      this.$router.push('/login');
+    },
 
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
@@ -191,13 +204,20 @@ export default {
 
     onFileChange(event) {
       const file = event.target.files[0];
-      if (file) {
+      if (file ) {
         this.comprovante = file;
+      } else {
+        alert('Por favor, envie um arquivo PDF válido.')
       }
+    },
+
+    closeModal() {
+      this.showSuccessModal = false;
     }
   },
 };
 </script>
+
 
 <style scoped>
 /* Estilos gerais */
@@ -384,5 +404,31 @@ h1 {
   gap: 1rem;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+.buttonLoginRedirect {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 </style>
 
