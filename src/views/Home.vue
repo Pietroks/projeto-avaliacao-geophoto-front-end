@@ -70,6 +70,26 @@
       </div>
     </div>
   </section>
+
+  <section class="backgroundImg2">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="divInscrevase">
+              <h2 class="subtitulo2 subtitulo2Color">For the things you love...</h2>
+              <div class="divInscrevaseP">
+                <p class="paragrafo2">Se inscreva no nosso concurso e mostre todo seu talento como Geofotografo.</p>
+                <p class="paragrafo2">Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros como você para determinar o melhor.</p>
+              </div>
+              <router-link to="/cadastro" class="saibaMaisButton buttonInscrevase">
+                Inscreva-se
+                <font-awesome-icon icon="arrow-right" class="arrow-icon" />
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
 </template>
   
   <script>
@@ -262,6 +282,48 @@ p {
   transition: opacity 0.5s ease-in-out;
   border-radius: 20px;
   border: 2px solid;
+}
+
+/* section inscrevase */
+.backgroundImg2 {
+  background: linear-gradient(to bottom, #00214B, #023564, #003B6D, #3A749A);
+  margin-top: 0rem;
+}
+
+.divInscrevase {
+  margin: 2rem 0;
+}
+
+.subtitulo2Color {
+  color: whitesmoke;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.divInscrevaseP p {
+  text-align: right;
+  font-size: 1.4rem;
+  color: rgb(187, 183, 183);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+  margin-top: 1.5rem;
+}
+
+.buttonInscrevase {
+  color: aquamarine;
+  font-size: 2rem;
+  background: #00214B;
+  padding: 0.5rem;
+  border-radius: 15px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  transition: 0.3s ease-in-out;
+}
+
+.buttonInscrevase:hover {
+  background: silver;
+  color: #212121;
+  transform: scale(1.02);
+  border-radius: 20;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  opacity: 1;
 }
 </style>
   

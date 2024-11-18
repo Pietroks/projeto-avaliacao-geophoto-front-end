@@ -44,6 +44,17 @@
               <div class="input-group">
                 <IdentificationIcon class="icon" />
                 <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" />
+                <div v-if="cpfError" class="error-message">
+                  CPF inválido. Verifique e tente novamente.
+                </div>
+              </div>
+              <div class="input-group">
+                <select v-model="nivelFormacao" required>
+                  <option value="" disabled selected>Selecione seu nível de formação</option>
+                  <option value="graduado">Graduado</option>
+                  <option value="posGraduado">Pós-graduado</option>
+                  <option value="outro">Outro</option>
+                </select>
               </div>
               <div class="input-group divComprovante">
                 <label><DocumentIcon class="icon" />Apresente um comprovante da sua formação *</label>
@@ -91,6 +102,8 @@ export default {
       password: '',
       confirmPassword: '',
       cpf: '',
+      cpfError: false,
+      nivelFormacao: '',
       comprovante: null,
       showPassword: false,
       passwordError: false,
@@ -109,7 +122,9 @@ export default {
         this.confirmPassword &&
         this.password === this.confirmPassword &&
         this.cpf &&
-        this.comprovante !== null
+        !this.cpfError &&
+        this.comprovante !== null && 
+        this.nivelFormacao
       );
     },
   },
@@ -135,6 +150,40 @@ export default {
       }
     },
 
+    validateCpf() {
+      const cpf = this.cpf.replace(/\D/g, '');
+      if (cpf.length !== 11 || /^(\d)\1*$/.test(cpf)) {
+        this.cpfError = true;
+        return false;
+      }
+
+      let sum = 0, remainder;
+
+      for (let i = 1; i <= 9; i++) {
+        sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if (remainder === 10 || remainder === 11) remainder = 0;
+      if (remainder !== parseInt(cpf.substring(9, 10))) {
+        this.cpfError = true;
+        return false;
+      }
+
+      sum = 0;
+      for (let i = 1; i <= 10; i++) {
+        sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if (remainder === 10 || remainder === 11) remainder = 0;
+      if (remainder !== parseInt(cpf.substring(10, 11))) {
+        this.cpfError = true;
+        return false;
+      }
+
+      this.cpfError = false;
+      return true;
+    },
+
     applyCpfMask() {
       this.cpf = this.cpf.replace(/\D/g, '') 
         .replace(/(\d{3})(\d)/, '$1.$2')     
@@ -152,6 +201,8 @@ export default {
       this.passwordStrength = '';
       this.passwordStrengthClass = '';
       this.passwordError = false;
+      this.nivelFormacao = '';
+      this.cpfError = false;
     },
 
     async register() {
@@ -160,6 +211,11 @@ export default {
         return;
       }
       this.passwordError = false;
+
+      if (!this.validateCpf()) {
+        alert('Por favor, insira um CPF válido.');
+        return;
+      }
 
       if (!this.comprovante) {
         alert('Por favor, envie um comprovante da sua formação.');
@@ -183,6 +239,7 @@ export default {
           password: this.password,
           cpf: this.cpf,
           comprovante: comprovanteBase64,
+          nivelFormacao: this.nivelFormacao, 
         };
 
         const response = await fetch(`${API_URL}/cadastro`, {
@@ -218,10 +275,11 @@ export default {
 
     onFileChange(event) {
       const file = event.target.files[0];
-      if (file ) {
+      if (file && file.type === 'application/pdf') {
         this.comprovante = file;
       } else {
-        alert('Por favor, envie um arquivo PDF válido.')
+        alert('Por favor, envie um arquivo PDF válido.');
+        this.comprovante = null;
       }
     },
 
@@ -264,7 +322,7 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 50%;
-  margin: 8rem auto 0;
+  margin: 10rem auto 0;
 }
 
 h1 {
@@ -286,7 +344,7 @@ h1 {
   align-items: center;
   position: relative;
   border: 1px solid #ccc;
-  padding: 0.5rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 5px;
   background-color: #fff;
 }
@@ -450,6 +508,10 @@ h1 {
 .buttonCadastro:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+select {
+  border: none;
 }
 </style>
 

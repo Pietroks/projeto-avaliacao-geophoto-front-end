@@ -92,8 +92,16 @@ export default {
       this.showPassword = !this.showPassword;
     },
   },
+
+  mounted() {
+    // Se o usuário já estiver logado, redireciona para a página inicial
+    if (this.$store.getters['user/isAuthenticated']) {
+      this.$router.push('/');
+    }
+  }
 };
 </script>
+
 
 
 

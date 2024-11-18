@@ -3,36 +3,42 @@ export default {
   state: {
     user: null,
     isAuthenticated: false,
+    token: localStorage.getItem("auth_token") || null,  // Recuperando o token do localStorage
   },
   mutations: {
     login(state, user) {
       state.user = user;
       state.isAuthenticated = true;
+      state.token = user.token;  // Armazenando o token no estado
+      localStorage.setItem("auth_token", user.token);  // Persistindo no localStorage
     },
     logout(state) {
       state.user = null;
       state.isAuthenticated = false;
+      state.token = null;
+      localStorage.removeItem("auth_token");  // Removendo o token do localStorage
     },
   },
   actions: {
     login({ commit }, user) {
-      commit('login', user);
+      commit("login", user);
     },
     logout({ commit }) {
-      commit('logout');
+      commit("logout");
     },
     checkLoginStatus({ commit }) {
-      // Lógica para checar o status do login, como acessar o localStorage ou fazer um fetch no servidor
-      const isLoggedIn = false; // Coloque sua lógica aqui
-      if (isLoggedIn) {
-        commit('login', { /* dados do usuário */ });
+      const token = localStorage.getItem("auth_token");
+      if (token) {
+        // Aqui você pode fazer uma verificação adicional se o token for válido (como um fetch de uma API para validar o token)
+        commit("login", { token });  // Recuperando o usuário e o token
       } else {
-        commit('logout');
+        commit("logout");
       }
     },
   },
   getters: {
     isAuthenticated: (state) => state.isAuthenticated,
     user: (state) => state.user,
+    token: (state) => state.token,
   },
 };
