@@ -20,6 +20,10 @@
             @click="selectLink('/sobre')"
           >Sobre</router-link>
           <router-link
+              to="/concurso"
+              class="buttonCadastro"
+            >Acesse o Concurso</router-link>
+          <router-link
             to="/premiacao"
             :class="['navLink', { 'navLinkActive': selectedLink === '/premiacao' }]"
             @click="selectLink('/premiacao')"
@@ -105,6 +109,7 @@ export default {
   .divNav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   .divLogin {

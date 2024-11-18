@@ -308,7 +308,7 @@ p {
 }
 
 .buttonInscrevase {
-  color: aquamarine;
+  color: snow;
   font-size: 2rem;
   background: #00214B;
   padding: 0.5rem;
@@ -320,9 +320,9 @@ p {
 .buttonInscrevase:hover {
   background: silver;
   color: #212121;
-  transform: scale(1.02);
+  transform: rotate3d(1, 1, 0, 360deg) scale(1.02);
   border-radius: 20;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  box-shadow: 12px 22px 4px rgba(0, 0, 0, 1.5);
   opacity: 1;
 }
 </style>
