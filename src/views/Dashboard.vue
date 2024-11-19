@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard">
-      <h1>Bem-vindo, {{ user?.nome || 'Usuário' }}</h1>
+      <h1>Bem-vindo, {{ user?.name || 'Usuário' }}</h1>
       <p>Email: {{ user?.email || 'Não informado' }}</p>
   
       <div class="upload-section">

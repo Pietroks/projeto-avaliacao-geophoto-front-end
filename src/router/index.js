@@ -10,7 +10,7 @@ import CadastroAvaliador from '@/views/CadastroAvaliador.vue';
 import Concurso from '@/views/Concurso.vue';
 import Dashboard from '@/views/Dashboard.vue'; // Importando o Dashboard do Usuário
 import store from '../store'; // Certifique-se de que o caminho está correto
-
+import VotacaoPage from '@/views/votacao.vue'
 const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login },
@@ -34,6 +34,11 @@ const routes = [
     component: Dashboard,
     meta: { requiresAuth: true }, // Requer autenticação
   },
+  {
+    path: "/votacao/:id",
+    name: "votacao",
+    component: VotacaoPage,
+  }
 ];
 
 const router = createRouter({

@@ -1,43 +1,55 @@
 <template>
   <div class="backgroundImg">
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="containerCadastro">
-            <h1>Faça o seu login</h1>
-            <form @submit.prevent="login" class="containerForm">
-              <div class="input-group">
-                <EnvelopeIcon class="icon" />
-                <input v-model="email" type="email" placeholder="Email" required />
-              </div>
-              <div class="input-group">
-                <LockClosedIcon class="icon" />
-                <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Senha" required />
-                <button type="button" @click="togglePasswordVisibility" :class="{'active': showPassword}" class="show-password-btn">
-                  <EyeIcon class="eye-icon" />
-                </button>
-              </div>
-              <button :disabled="isLoading" type="submit" class="buttonCadastro">
-                {{ isLoading ? 'Entrando...' : 'Entrar' }}
-              </button>
-            </form>
-            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-            <p>Não tem uma conta? <router-link to="/cadastro" class="link">Cadastre-se</router-link></p>
+      <div class="containerCadastro">
+        <h1>Faça o seu login</h1>
+        <form @submit.prevent="handleLogin" class="containerForm">
+          <div class="input-group">
+            <EnvelopeIcon class="icon" />
+            <input
+              v-model="email"
+              type="email"
+              placeholder="Email"
+              required
+            />
           </div>
-        </div>
+          <div class="input-group">
+            <LockClosedIcon class="icon" />
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Senha"
+              required
+            />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="show-password-btn"
+            >
+              <EyeIcon class="eye-icon" />
+            </button>
+          </div>
+          <button :disabled="isLoading" type="submit" class="buttonCadastro">
+            {{ isLoading ? "Entrando..." : "Entrar" }}
+          </button>
+        </form>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <p>
+          Não tem uma conta?
+          <router-link to="/cadastro" class="link">Cadastre-se</router-link>
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
-import { EyeIcon } from '@heroicons/vue/24/outline';
-import { mapActions } from 'vuex'; // Importando mapActions
-import { API_URL } from '@/config/config';
+import { EnvelopeIcon, LockClosedIcon } from "@heroicons/vue/24/solid";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: 'LoginPage',
+  name: "LoginPage",
   components: {
     EnvelopeIcon,
     LockClosedIcon,
@@ -45,64 +57,30 @@ export default {
   },
   data() {
     return {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       showPassword: false,
-      isLoading: false, // Estado de carregamento
-      errorMessage: '', // Mensagem de erro
+      isLoading: false,
+      errorMessage: "",
     };
   },
+  computed: {
+    ...mapGetters("user", ["isAuthenticated"]),
+  },
   methods: {
-    // Mapeando a action do Vuex
-    ...mapActions("user", ["login"]), 
+    ...mapActions("user", ["login"]),
 
-    async login() {
-      // Validando campos de entrada
-      if (!this.email || !this.password) {
-        this.errorMessage = 'Por favor, preencha todos os campos.';
-        return;
-      }
-
-      this.errorMessage = ''; // Resetando a mensagem de erro
-      this.isLoading = true; // Ativando o estado de carregamento
-
-      const jsonData = {
-        email: this.email,
-        password: this.password,
-      };
+    async handleLogin() {
+      this.errorMessage = "";
+      this.isLoading = true;
 
       try {
-        const response = await fetch(`${API_URL}/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(jsonData),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.token && data.user) {
-            // Chamando a action 'login' do Vuex para armazenar o usuário e token
-            this.login({ user: data.user, token: data.token });
-
-            // Armazenando o token no localStorage para persistência
-            localStorage.setItem("authToken", data.token);
-
-            // Redireciona para a página inicial após o login bem-sucedido
-            this.$router.push('/');
-          } else {
-            this.errorMessage = 'Credenciais inválidas!';
-          }
-        } else {
-          console.log('Erro na requisição', response.statusText);
-          this.errorMessage = 'Erro na requisição. Tente novamente mais tarde.';
-        }
+        await this.login({ email: this.email, password: this.password });
+        this.$router.push("/dashboard");
       } catch (error) {
-        console.error('Erro na requisição:', error);
-        this.errorMessage = 'Erro na comunicação com o servidor.';
+        this.errorMessage = error.message || "Erro ao realizar login.";
       } finally {
-        this.isLoading = false; // Desativando o estado de carregamento
+        this.isLoading = false;
       }
     },
 
@@ -110,18 +88,13 @@ export default {
       this.showPassword = !this.showPassword;
     },
   },
-
   mounted() {
-    // Se o usuário já estiver logado, redireciona para a página inicial
-    if (this.$store.getters['user/isAuthenticated']) {
-      this.$router.push('/');
+    if (this.isAuthenticated) {
+      this.$router.push("/");
     }
-  }
+  },
 };
 </script>
-
-
-
 
 <style scoped>
   .input-group {
