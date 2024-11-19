@@ -12,13 +12,16 @@
               </div>
               <div class="input-group">
                 <LockClosedIcon class="icon" />
-                <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Senha" />
+                <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Senha" required />
                 <button type="button" @click="togglePasswordVisibility" :class="{'active': showPassword}" class="show-password-btn">
                   <EyeIcon class="eye-icon" />
                 </button>
               </div>
-              <button type="submit" class="buttonCadastro">Entrar</button>
+              <button :disabled="isLoading" type="submit" class="buttonCadastro">
+                {{ isLoading ? 'Entrando...' : 'Entrar' }}
+              </button>
             </form>
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
             <p>Não tem uma conta? <router-link to="/cadastro" class="link">Cadastre-se</router-link></p>
           </div>
         </div>
@@ -45,13 +48,24 @@ export default {
       email: '',
       password: '',
       showPassword: false,
+      isLoading: false, // Estado de carregamento
+      errorMessage: '', // Mensagem de erro
     };
   },
   methods: {
     // Mapeando a action do Vuex
     ...mapActions("user", ["login"]), 
-    
+
     async login() {
+      // Validando campos de entrada
+      if (!this.email || !this.password) {
+        this.errorMessage = 'Por favor, preencha todos os campos.';
+        return;
+      }
+
+      this.errorMessage = ''; // Resetando a mensagem de erro
+      this.isLoading = true; // Ativando o estado de carregamento
+
       const jsonData = {
         email: this.email,
         password: this.password,
@@ -78,13 +92,17 @@ export default {
             // Redireciona para a página inicial após o login bem-sucedido
             this.$router.push('/');
           } else {
-            alert('Credenciais inválidas!');
+            this.errorMessage = 'Credenciais inválidas!';
           }
         } else {
           console.log('Erro na requisição', response.statusText);
+          this.errorMessage = 'Erro na requisição. Tente novamente mais tarde.';
         }
       } catch (error) {
         console.error('Erro na requisição:', error);
+        this.errorMessage = 'Erro na comunicação com o servidor.';
+      } finally {
+        this.isLoading = false; // Desativando o estado de carregamento
       }
     },
 
@@ -240,5 +258,11 @@ export default {
 
 .show-password-btn:hover .eye-icon {
   opacity: 0.5; 
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
 }
 </style>

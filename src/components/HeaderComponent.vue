@@ -33,7 +33,7 @@
         <!-- Seção de login / foto do usuário -->
         <div class="col-md-4 divLogin">
           <template v-if="isLoggedIn">
-            <img :src="user.profilePic" class="profileImage" alt="Profile Picture">
+            <img :src="user.profilePic || defaultProfilePic" class="profileImage" alt="Profile Picture">
             <button @click="logout" class="logoutButton">Sair</button>
           </template>
           <template v-else>
@@ -62,7 +62,8 @@ export default {
   data() {
     return {
       logoImage: logo,
-      selectedLink: '/'
+      selectedLink: '/',
+      defaultProfilePic: '@/assets/default-pfp-18.jpg', // Fallback para imagem de perfil
     };
   },
   computed: {
@@ -79,6 +80,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch("user/checkLoginStatus");
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch("user/checkLoginStatus");
+    next();
   }
 };
 </script>

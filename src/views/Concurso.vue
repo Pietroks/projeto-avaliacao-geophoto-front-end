@@ -17,6 +17,12 @@
                                 <div class="divUsuario mt-2">
                                     <p><strong>Nome: {{ usuario.nome }}</strong></p>
                                     <p>Categoria: {{ usuario.nivelFormacao }}</p>
+                                    <p v-if="isLoggedIn">
+                                        <button @click="votar(usuario.id)" class="btn btn-primary">Votar</button>
+                                    </p>
+                                    <p v-else>
+                                        <strong>Faça login para votar!</strong>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -28,14 +34,21 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { API_URL } from "@/config/config.js";
 
 export default {
     name: "ConcursoPage",
     data() {
         return {
-            usuarios: [], 
+            usuarios: [],
         };
+    },
+    computed: {
+        ...mapState("user", ["token"]),
+        isLoggedIn() {
+            return !!this.token;
+        },
     },
     async created() {
         try {
@@ -57,9 +70,38 @@ export default {
             alert("Erro ao carregar os usuários. Verifique sua conexão.");
         }
     },
+    methods: {
+        async votar(usuarioId) {
+            if (this.isLoggedIn) {
+                try {
+                    const response = await fetch(`${API_URL}/usuarios/${usuarioId}/votar`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.token}`, // Enviar o token no header para autenticação
+                        },
+                        body: JSON.stringify({
+                            voto: 5, // O valor do voto pode ser dinâmico, ajustado conforme necessidade
+                        }),
+                    });
+
+                    if (response.ok) {
+                        alert("Voto registrado com sucesso!");
+                    } else {
+                        console.error("Erro ao registrar voto:", response.statusText);
+                        alert("Erro ao registrar voto. Tente novamente.");
+                    }
+                } catch (error) {
+                    console.error("Erro na requisição:", error);
+                    alert("Erro ao registrar voto. Verifique sua conexão.");
+                }
+            } else {
+                alert("Você precisa estar logado para votar.");
+            }
+        },
+    },
 };
 </script>
-
 
 <style scoped>
     .tituloConcurso {
@@ -68,29 +110,23 @@ export default {
         font-weight: 300;
     }
 
-    .containerGeral {
-        display: grid;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 3rem;
-        flex-wrap: wrap;
-        margin: 3rem 0;
-    }
-
     .fotosImg {
-        width: 450px; 
-        height: 350px; 
-        object-fit: cover; /* Garante que a imagem não distorça */
+        width: 450px;
+        height: 350px;
+        object-fit: cover;
         border-radius: 15px;
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .divParticipante {
+    .divUsuario {
         background-color: #f8f9fa;
         padding: 0.5rem;
         border-radius: 8px;
         text-align: left;
         margin: 2rem 0;
+    }
+
+    .btn {
+        margin-top: 10px;
     }
 </style>
