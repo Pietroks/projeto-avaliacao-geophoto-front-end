@@ -2,12 +2,14 @@
   <section class="container">
     <div class="row">
       <div class="col-12 containerHeader">
+        <!-- Logo -->
         <div class="col-md-4 divLogo">
           <router-link to="/" class="Logo">
             <img :src="logoImage" class="img-fluid imgLogo" alt="Logo">
           </router-link>
         </div>
-        
+
+        <!-- Navegação -->
         <div class="col-md-4 divNav">
           <router-link
             to="/"
@@ -20,16 +22,16 @@
             @click="selectLink('/sobre')"
           >Sobre</router-link>
           <router-link
-              to="/concurso"
-              class="buttonCadastro"
-            >Acesse o Concurso</router-link>
+            to="/concurso"
+            class="buttonCadastro"
+          >Acesse o Concurso</router-link>
           <router-link
             to="/premiacao"
             :class="['navLink', { 'navLinkActive': selectedLink === '/premiacao' }]"
             @click="selectLink('/premiacao')"
-          >Premiação</router-link>  
+          >Premiação</router-link>
         </div>
-        
+
         <!-- Seção de login / foto do usuário -->
         <div class="col-md-4 divLogin">
           <template v-if="isLoggedIn">
@@ -54,38 +56,46 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
+  import { mapGetters, mapActions } from "vuex";
+  import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
 
-export default {
-  name: 'HeaderComponent',
-  data() {
-    return {
-      logoImage: logo,
-      selectedLink: '/',
-      defaultProfilePic: '@/assets/default-pfp-18.jpg', // Fallback para imagem de perfil
-    };
-  },
-  computed: {
-    ...mapState("user", ["user", "token"]),
-    isLoggedIn() {
-      return !!this.token;
-    }
-  },
-  methods: {
-    ...mapActions("user", ["logout"]),
-    selectLink(link) {
-      this.selectedLink = link;
-    }
-  },
-  mounted() {
-    this.$store.dispatch("user/checkLoginStatus");
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch("user/checkLoginStatus");
-    next();
-  }
-};
+  export default {
+    name: "HeaderComponent",
+    data() {
+      return {
+        logoImage: logo,
+        selectedLink: "/",
+        defaultProfilePic: require("@/assets/default-pfp-18.jpg"), // Corrigido o caminho
+      };
+    },
+    computed: {
+      ...mapGetters("user", ["isAuthenticated", "user"]),
+      isLoggedIn() {
+        return this.isAuthenticated; // Usando getter diretamente
+      },
+    },
+    watch: {
+      isLoggedIn(newValue) {
+        console.log("Estado de autenticação mudou:", newValue);
+      },
+    },
+    methods: {
+      ...mapActions("user", ["logout"]),
+      selectLink(link) {
+        this.selectedLink = link;
+      },
+    },
+    mounted() {
+      console.log("Verificando autenticação ao carregar componente...");
+      this.$store.dispatch("user/checkLoginStatus");
+    },
+    beforeRouteUpdate(to, from, next) {
+      console.log("Atualizando estado de login ao mudar de rota...");
+      this.$store.dispatch("user/checkLoginStatus").then(() => {
+        next();
+      });
+    },
+  };
 </script>
 
 <style scoped>

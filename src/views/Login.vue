@@ -8,20 +8,42 @@
             <form @submit.prevent="login" class="containerForm">
               <div class="input-group">
                 <EnvelopeIcon class="icon" />
-                <input v-model="email" type="email" placeholder="Email" required />
+                <input
+                  id="email"
+                  v-model="email"
+                  type="email"
+                  placeholder="Email"
+                  required
+                  pattern="[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+                  class="form-control"
+                />
               </div>
               <div class="input-group">
                 <LockClosedIcon class="icon" />
-                <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Senha" required />
-                <button type="button" @click="togglePasswordVisibility" :class="{'active': showPassword}" class="show-password-btn">
+                <input
+                  id="password"
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  placeholder="Senha"
+                  required
+                  class="form-control"
+                />
+                <button
+                  type="button"
+                  @click="togglePasswordVisibility"
+                  :class="{'active': showPassword}"
+                  class="show-password-btn btn btn-outline-secondary"
+                  aria-label="Mostrar senha"
+                >
                   <EyeIcon class="eye-icon" />
                 </button>
               </div>
-              <button :disabled="isLoading" type="submit" class="buttonCadastro">
+              <button :disabled="isLoading" type="submit" class="btn btn-primary w-100">
+                <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 {{ isLoading ? 'Entrando...' : 'Entrar' }}
               </button>
             </form>
-            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+            <p v-if="errorMessage" class="error-message text-danger mt-3">{{ errorMessage }}</p>
             <p>Não tem uma conta? <router-link to="/cadastro" class="link">Cadastre-se</router-link></p>
           </div>
         </div>
@@ -33,7 +55,7 @@
 <script>
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 import { EyeIcon } from '@heroicons/vue/24/outline';
-import { mapActions } from 'vuex'; // Importando mapActions
+import { mapActions } from 'vuex'; 
 import { API_URL } from '@/config/config';
 
 export default {
@@ -48,77 +70,56 @@ export default {
       email: '',
       password: '',
       showPassword: false,
-      isLoading: false, // Estado de carregamento
-      errorMessage: '', // Mensagem de erro
+      isLoading: false,
+      errorMessage: '',
     };
   },
   methods: {
-    // Mapeando a action do Vuex
     ...mapActions("user", ["login"]), 
-
     async login() {
-      // Validando campos de entrada
       if (!this.email || !this.password) {
         this.errorMessage = 'Por favor, preencha todos os campos.';
         return;
       }
-
-      this.errorMessage = ''; // Resetando a mensagem de erro
-      this.isLoading = true; // Ativando o estado de carregamento
-
-      const jsonData = {
-        email: this.email,
-        password: this.password,
-      };
+      this.errorMessage = '';
+      this.isLoading = true;
 
       try {
         const response = await fetch(`${API_URL}/login`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(jsonData),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.email, password: this.password }),
         });
 
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.token && data.user) {
-            // Chamando a action 'login' do Vuex para armazenar o usuário e token
             this.login({ user: data.user, token: data.token });
-
-            // Armazenando o token no localStorage para persistência
-            localStorage.setItem("authToken", data.token);
-
-            // Redireciona para a página inicial após o login bem-sucedido
             this.$router.push('/');
           } else {
             this.errorMessage = 'Credenciais inválidas!';
           }
         } else {
-          console.log('Erro na requisição', response.statusText);
           this.errorMessage = 'Erro na requisição. Tente novamente mais tarde.';
         }
       } catch (error) {
-        console.error('Erro na requisição:', error);
         this.errorMessage = 'Erro na comunicação com o servidor.';
       } finally {
-        this.isLoading = false; // Desativando o estado de carregamento
+        this.isLoading = false;
       }
     },
-
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
     },
   },
-
   mounted() {
-    // Se o usuário já estiver logado, redireciona para a página inicial
     if (this.$store.getters['user/isAuthenticated']) {
       this.$router.push('/');
     }
-  }
+  },
 };
 </script>
+
 
 
 
@@ -232,16 +233,16 @@ export default {
   }
 
   .show-password-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-size: 1.5em;
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease-in-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.5em;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease-in-out;
 }
 
 .show-password-btn.active {

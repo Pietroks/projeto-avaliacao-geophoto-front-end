@@ -86,6 +86,17 @@
                 <font-awesome-icon icon="arrow-right" class="arrow-icon" />
               </router-link>
             </div>
+            <div class="divInscrevase divInscrevase2">
+              <h2 class="subtitulo2 subtitulo2Color subtitulo22">For the things you love...</h2>
+              <div class="divInscrevaseP divInscrevaseP2">
+                <p class="paragrafo2 paragrafo22">Entre nessa competição em nome da ciência e vá lado a lado pelos seus sonhos.</p>
+                <p class="paragrafo2 paragrafo22">Concorra a premios incriveis que irão ajudar ainda mais na sua jornada como Geofotografo. Com premiação até o 5° colocado na votação que decidirá o grande vencedor.</p>
+              </div>
+              <router-link to="/premiacao" class="saibaMaisButton saibaMaisButton2">
+                Saiba mais
+                <font-awesome-icon icon="arrow-right" class="arrow-icon" />
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -286,8 +297,9 @@ p {
 
 /* section inscrevase */
 .backgroundImg2 {
-  background: linear-gradient(to bottom, #00214B, #023564, #003B6D, #3A749A);
-  margin-top: 0rem;
+  background-image: url('../assets/v2osk-PaNxe-QJwhE-unsplash.jpg');
+  margin: 3rem 0;
+  background-position: center;
 }
 
 .divInscrevase {
@@ -302,8 +314,8 @@ p {
 .divInscrevaseP p {
   text-align: right;
   font-size: 1.4rem;
-  color: rgb(187, 183, 183);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+  color: oldlace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1.3);
   margin-top: 1.5rem;
 }
 
@@ -324,6 +336,22 @@ p {
   border-radius: 20;
   box-shadow: 12px 22px 4px rgba(0, 0, 0, 1.5);
   opacity: 1;
+}
+
+.divInscrevase2 {
+  margin-top: 3rem;
+}
+
+.subtitulo22, .saibaMaisButton2 {
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  color: aliceblue;
+}
+
+.paragrafo22 {
+  text-align: left !important;
+  margin-bottom: 2rem;
 }
 </style>
   
