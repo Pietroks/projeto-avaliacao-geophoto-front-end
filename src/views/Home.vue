@@ -5,7 +5,7 @@
         <div class="col-12">
           <div class="divTitulo">
             <h1><span>Geofotografia:</span></h1>
-            <h2>Capturando a beleza natural da Terra</h2>
+            <a href="#inscrevase" class="linkInscrevase"><h2>Capturando a beleza natural da Terra</h2></a>
           </div>
         </div>
         <div class="col-md-6">
@@ -71,7 +71,7 @@
     </div>
   </section>
 
-  <section class="backgroundImg2">
+  <section class="backgroundImg2" id="inscrevase">
       <div class="container">
         <div class="row">
           <div class="col-12">
@@ -89,10 +89,29 @@
           </div>
         </div>
       </div>
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-12">
+            <div class="divInscrevase">
+              <h2 class="subtitulo2 subtitulo2Color text-end">For the things you love...</h2>
+              <div class="divInscrevaseP">
+                <p class="paragrafo2 text-end">Participe do concurso e concorra a premios até a terceira colocação</p>
+                <p class="paragrafo2 text-end">Se junte nessa batalha contra outros amantes da Geofotografia. Contribua para a divulgação dessa area e ganhe premios e destaque para você nessa área.</p>
+              </div>
+              <div class="text-end">
+                <router-link to="/premiacao" class="saibaMaisButton buttonInscrevase">
+                  Saiba mais
+                  <font-awesome-icon icon="arrow-right" class="arrow-icon" />
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   </section>
 </template>
   
-  <script>
+<script>
   import img1 from '@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg';
   import img2 from '@/assets/pascal-scholl-RFrM7_t2F2E-unsplash.jpg';
   import img3 from '@/assets/thumb-1920-526183.jpg';
@@ -142,7 +161,7 @@
 .backgroundImg {
   background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   background-repeat: no-repeat;
   min-height: 100vh;
   width: auto;
@@ -161,12 +180,22 @@
   margin-top: 12rem;
 }
 
+.linkInscrevase {
+    text-decoration: none;
+    transition: 0.3s ease-in-out; 
+}
+
 h2 {
   font-size: 4rem;
   font-weight: 300;
   color: azure;
   letter-spacing: 10px;
   margin-top: 3rem;
+  transition: 0.3s ease-in-out; 
+}
+
+.linkInscrevase:hover h2 {
+    color: #212121; 
 }
 
 span {
@@ -315,12 +344,13 @@ p {
   border-radius: 15px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
   transition: 0.3s ease-in-out;
+  margin-bottom: 1rem;
 }
 
 .buttonInscrevase:hover {
   background: silver;
   color: #212121;
-  transform: rotate3d(1, 1, 0, 360deg) scale(1.02);
+  transform: scale(1.02);
   border-radius: 20;
   box-shadow: 12px 22px 4px rgba(0, 0, 0, 1.5);
   opacity: 1;
