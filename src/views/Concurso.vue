@@ -16,8 +16,6 @@
                 <img :src="usuario.image" alt="Imagem do usuário" class="img-fluid rounded shadow-lg mb-3">
                 <p><strong>Nome: {{ usuario.name }}</strong></p>
                 <p>Categoria: {{ usuario.category }}</p>
-
-                <!-- Verificação para exibir o botão apenas se o usuário estiver autenticado -->
                 <button 
                   v-if="token" 
                   @click="redirecionarParaVotacao(usuario.id)" 
@@ -25,7 +23,6 @@
                 >
                   Votar
                 </button>
-                <!-- Mensagem caso o usuário não esteja autenticado -->
                 <p v-else>Você precisa estar autenticado para votar.</p>
               </div>
             </div>

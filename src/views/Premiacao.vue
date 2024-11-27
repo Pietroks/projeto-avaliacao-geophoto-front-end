@@ -107,134 +107,149 @@
   </script>
   
   <style scoped>
-  .backgroundColor {
-    color: whitesmoke;
-  }
-  
-  .backgroundColor::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
-    background-size: cover;
-    background-position: top;
-    background-repeat: no-repeat;
-    opacity: 1;
-    z-index: -1;
-  }
-  
-  .divTexto {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
-  }
-  
-  .titulo {
-    font-size: 2.5rem;
-    text-align: center;
-    color: chartreuse;
-    padding: 0.5rem;
-    background: transparent;
-    border-radius: 20px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-  
-  .titulo1 {
-    font-size: 6rem;
-    color: chartreuse;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-  
-  .paragrafo {
-    font-size: 1.4rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-    line-height: 2;
-    padding: 0.3rem;
-    background: transparent;
-    border-radius: 20px;
-  }
-  
-  .background2 {
+.backgroundColor {
+  color: whitesmoke;
+}
+
+.backgroundColor::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  opacity: 1;
+  z-index: -1;
+}
+
+.divTexto {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.titulo {
+  font-size: 2.5rem;
+  text-align: center;
+  color: chartreuse;
+  padding: 0.5rem;
+  background: transparent;
+  border-radius: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.titulo1 {
+  font-size: 6rem;
+  color: chartreuse;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.paragrafo {
+  font-size: 1.4rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+  line-height: 2;
+  padding: 0.3rem;
+  background: transparent;
+  border-radius: 20px;
+}
+
+.background2 {
+  background: #010020;
+}
+
+.titulo2 {
+  font-size: 2rem;
+  color: chartreuse;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.paragrafo2 {
+  color: whitesmoke;
+  font-size: 1rem;
+  line-height: 2;
+  margin-top: auto;
+}
+
+ul li {
+  color: whitesmoke;
+  font-weight: 100;
+}
+
+.divButton {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.buttonInscrevase {
+  color: snow;
+  font-size: 2rem;
+  background: #00214B;
+  padding: 0.5rem;
+  border-radius: 15px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  transition: 0.3s ease-in-out;
+  text-decoration: none;
+}
+
+.buttonInscrevase:hover {
+  background: silver;
+  color: #212121;
+  transform: scale(1.02);
+  border-radius: 20;
+  box-shadow: 12px 22px 4px rgba(0, 0, 0, 1.5);
+  opacity: 1;
+}
+
+.table-custom {
+  border-radius: 10px;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  width: 50%;
+  justify-self: center;
+}
+
+.table-custom th,
+.table-custom td {
+  padding: 15px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.table-custom th {
+  background-color: #444;
+  color: chartreuse;
+}
+
+.table-custom td {
+  background-color: #222;
+  color: whitesmoke;
+  border: 1px solid #444;
+}
+
+.table-custom tr:hover {
+  background-color: #444;
+  transform: scale(1.02);
+  transition: 0.2s;
+}
+
+@media (max-width: 767px) {
+  body {
     background: #010020;
   }
-  
-  .titulo2 {
-    font-size: 2rem;
-    color: chartreuse;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  .titulo1[data-v-218bab85] {
+    font-size: 3rem;
   }
-  
-  .paragrafo2 {
-    color: whitesmoke;
+
+  .paragrafo[data-v-218bab85] {
     font-size: 1rem;
-    line-height: 2;
-    margin-top: auto;
+    padding: 0rem;
   }
-
-  ul li {
-    color: whitesmoke;
-    font-weight: 100;
-  }
-  
-  .divButton {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  .buttonInscrevase {
-    color: snow;
-    font-size: 2rem;
-    background: #00214B;
-    padding: 0.5rem;
-    border-radius: 15px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    transition: 0.3s ease-in-out;
-    text-decoration: none;
-  }
-  
-  .buttonInscrevase:hover {
-    background: silver;
-    color: #212121;
-    transform: scale(1.02);
-    border-radius: 20;
-    box-shadow: 12px 22px 4px rgba(0, 0, 0, 1.5);
-    opacity: 1;
-  }
-  
-  .table-custom {
-    border-radius: 10px;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-    width: 50%;
-    justify-self: center;
-  }
-  
-  .table-custom th,
-  .table-custom td {
-    padding: 15px;
-    text-align: center;
-    font-size: 1.1rem;
-  }
-  
-  .table-custom th {
-    background-color: #444;
-    color: chartreuse;
-  }
-  
-  .table-custom td {
-    background-color: #222;
-    color: whitesmoke;
-    border: 1px solid #444;
-  }
-  
-  .table-custom tr:hover {
-    background-color: #444;
-    transform: scale(1.02);
-    transition: 0.2s;
-  }
-  </style>
+}
+</style>
   

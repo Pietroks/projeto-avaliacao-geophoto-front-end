@@ -209,9 +209,9 @@ span {
 }
 
 p {
-    line-height: 2;
-    font-size: 1rem;
-    color: #F8F8F8;
+  line-height: 2;
+  font-size: 1rem;
+  color: #F8F8F8;
 }
 
 .backgroundBlack {
@@ -350,10 +350,33 @@ p {
 .buttonInscrevase:hover {
   background: silver;
   color: #212121;
-  transform: scale(1.02);
+  transform: scale(1);
   border-radius: 20;
-  box-shadow: 12px 22px 4px rgba(0, 0, 0, 1.5);
+  box-shadow: 12px 22px 4px rgba(0, 0, 0, 0.3);
   opacity: 1;
+}
+
+@media (max-width: 767px) {
+  span[data-v-fae5bece] {
+    letter-spacing: 0px;
+    font-size: 3rem;
+  }
+
+  h2[data-v-fae5bece] {
+    font-size: 2.5rem;
+  }
+
+  .containerConcurso[data-v-fae5bece] {
+    flex-direction: column;
+  }
+
+  .carousel-container[data-v-fae5bece] {
+    margin-left: auto;
+  }
+
+  .carousel[data-v-fae5bece] {
+    justify-content: center;
+  }
 }
 </style>
   

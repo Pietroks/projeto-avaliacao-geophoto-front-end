@@ -75,101 +75,119 @@
   </script>
 
 <style scoped>
-  .backgroundColor {
-    color: whitesmoke;
+.backgroundColor {
+  color: whitesmoke;
+}
+
+.backgroundColor::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  opacity: 1;
+  z-index: -1;
+}
+
+.containerSobre {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  margin-top: 2rem;
+}
+
+.divTexto {
+  display: flex;
+  flex-direction: column;
+  margin: 3rem 0;
+}
+
+.divLogo {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 3rem 0;
+}
+
+.divLogo img {
+  width: 500px;
+  height: 300px;
+  border-radius: 20px;
+}
+
+.titulo {
+  font-size: 2.5rem;
+  text-align: center;
+  color: chartreuse;
+  padding: 0.5rem;
+  background: transparent;
+  border-radius: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.titulo1 {
+  font-size: 6rem;
+  color: chartreuse;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.paragrafo {
+  font-size: 1.4rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+  line-height: 2;
+  padding: 0.3rem;
+  background: transparent;
+  border-radius: 20px;
+}
+
+.background2 {
+  background: #010020;
+}
+
+.titulo2 {
+  font-size: 2rem;
+  color: chartreuse;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.titulo3 {
+  font-size: 0.8rem;
+  color: whitesmoke;
+  font-weight: 200;
+  text-align: center;
+  font-style: italic;
+}
+
+.paragrafo2 {
+  color: whitesmoke;
+  font-size: 1.2rem;
+  line-height: 2;
+  margin-top: 2rem;
+}
+
+@media (max-width: 767px) {
+  .titulo1[data-v-013883ef] {
+    font-size: 3.5rem;
   }
 
-  .backgroundColor::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
-    background-size: cover;
-    background-position: top;
-    background-repeat: no-repeat;
-    opacity: 1;
-    z-index: -1;
+  .paragrafo[data-v-013883ef] {
+    font-size: 1rem;
+    line-height: normal;
+    padding: 0;
   }
 
-  .containerSobre {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    flex-direction: row-reverse;
-    margin-top: 2rem;
-  }
-
-  .divTexto {
-    display: flex;
-    flex-direction: column;
-    margin: 3rem 0;
-  }
-
-  .divLogo {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin: 3rem 0;
-  }
-
-  .divLogo img {
-    width: 500px;
-    height: 300px;
+  .divLogo[data-v-013883ef] {
+    margin: 1rem 0;
+    background: black;
     border-radius: 20px;
   }
-
-  .titulo {
-    font-size: 2.5rem;
-    text-align: center;
-    color: chartreuse;
-    padding: 0.5rem;
-    background: transparent;
-    border-radius: 20px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  .titulo1 {
-    font-size: 6rem;
-    color: chartreuse;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  .paragrafo {
-    font-size: 1.4rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-    line-height: 2;
-    padding: 0.3rem;
-    background: transparent;
-    border-radius: 20px;
-  }
-
-  .background2 {
-    background: #010020;
-  }
-
-  .titulo2 {
-    font-size: 2rem;
-    color: chartreuse;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  .titulo3 {
-    font-size: 0.8rem;
-    color: whitesmoke;
-    font-weight: 200;
-    text-align: center;
-    font-style: italic;
-  }
-
-  .paragrafo2 {
-    color: whitesmoke;
-    font-size: 1.2rem;
-    line-height: 2;
-    margin-top: 2rem;
-  }
+}
 </style>
   
