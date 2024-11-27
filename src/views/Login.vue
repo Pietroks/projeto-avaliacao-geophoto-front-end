@@ -97,114 +97,114 @@ export default {
 </script>
 
 <style scoped>
-  .input-group {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    padding: 0.5rem;
-    border-radius: 5px;
-    background-color: #fff;
-  }
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 5px;
+  background-color: #fff;
+}
 
-  .input-group i {
-    color: #888;
-    margin-right: 0.5rem;
-  }
+.input-group i {
+  color: #888;
+  margin-right: 0.5rem;
+}
 
-  .input-group input {
-    border: none;
-    outline: none;
-    flex: 1;
-  }
+.input-group input {
+  border: none;
+  outline: none;
+  flex: 1;
+}
 
-  .backgroundImg {
-    background-image: url('../assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: -11.4rem;
-  }
+.backgroundImg {
+  background-image: url('../assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -11.4rem;
+}
 
-  .containerCadastro {
-    background: rgba(255, 255, 255, 0.4);
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 50%;
-    margin: 0 auto;
-    margin-top: 8rem;
-  }
+.containerCadastro {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 8rem;
+}
 
-  .containerForm {
-    display: flex;
-    gap: 1.5rem;
-    flex-direction: column;
-    margin-top: 2rem;
-    width: 75%;
-  }
+.containerForm {
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+  margin-top: 2rem;
+  width: 75%;
+}
 
-  h1 {
-    color: brown;
-    font-weight: 100;
-  }
+h1 {
+  color: brown;
+  font-weight: 100;
+}
 
-  .input-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 0.5rem;
-  }
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+}
 
-  .icon {
-    width: 24px;
-    height: 24px;
-    color: #333;
-  }
+.icon {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}
 
-  input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 1rem;
-    padding: 0.5rem;
-  }
+input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
 
-  .buttonCadastro {
-    background-color: brown;
-    color: whitesmoke;
-    border: none;
-    padding: 0.7rem 1.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 50%;
-    margin: 0 auto;
-    margin-bottom: 2rem;
-  }
+.buttonCadastro {
+  background-color: brown;
+  color: whitesmoke;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 50%;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+}
 
-  .buttonCadastro:hover {
-    background-color: darkred;
-  }
+.buttonCadastro:hover {
+  background-color: darkred;
+}
 
-  p {
-    font-weight: 500;
-  }
+p {
+  font-weight: 500;
+}
 
-  .link {
-    color: brown;
-    font-weight: 700;
-  }
+.link {
+  color: brown;
+  font-weight: 700;
+}
 
-  .show-password-btn {
+.show-password-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -237,5 +237,19 @@ export default {
   color: red;
   font-size: 14px;
   margin-top: 10px;
+}
+
+@media (max-width: 767px) {
+  .backgroundImg[data-v-26084dc2] {
+    margin-top: -9.2rem;
+    background-position: inherit;
+    min-height: 110vh;
+  }
+
+  .containerCadastro[data-v-26084dc2] {
+    padding: 0.5rem;
+    width: auto;
+    margin-top: auto;
+  }
 }
 </style>

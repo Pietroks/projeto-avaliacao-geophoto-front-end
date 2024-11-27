@@ -377,6 +377,10 @@ p {
   .carousel[data-v-fae5bece] {
     justify-content: center;
   }
+
+  .carousel-image[data-v-fae5bece] {
+    max-width: 100%;
+  } 
 }
 </style>
   

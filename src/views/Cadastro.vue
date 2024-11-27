@@ -513,5 +513,27 @@ h1 {
 select {
   border: none;
 }
+
+@media (max-width: 767px) {
+  .backgroundImg[data-v-c39bac1a] {
+    background-position: inherit;
+    background-repeat: repeat-y;
+    min-height: 110vh;
+  }
+
+  .containerCadastro[data-v-c39bac1a] {
+    padding: 0.5rem;
+    width: auto;
+    margin-bottom: 2rem;
+  }
+
+  .containerForm[data-v-c39bac1a] {
+    width: 95%;
+  }
+
+  .input-group input[data-v-c39bac1a] {
+    font-size: 0.7rem;
+  }
+}
 </style>
 
