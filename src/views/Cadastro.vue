@@ -51,9 +51,9 @@
               <div class="input-group">
                 <select v-model="nivelFormacao" required>
                   <option value="" disabled selected>Selecione seu nível de formação</option>
+                  <option value="estudanteGraduacao">Estudante de Graduação</option>
+                  <option value="estudantePosGraduacao">Estudante de Pós-Graduação</option>
                   <option value="graduado">Graduado</option>
-                  <option value="posGraduado">Pós-graduado</option>
-                  <option value="outro">Outro</option>
                 </select>
               </div>
               <div class="input-group divComprovante">
@@ -512,6 +512,18 @@ h1 {
 
 select {
   border: none;
+}
+
+@media (max-width: 1366px) {
+  .containerCadastro[data-v-c39bac1a] {
+    width: 65%;
+  }
+}
+
+@media (max-width: 1114px) {
+  .containerCadastro[data-v-c39bac1a] {
+    width: 90%;
+  }
 }
 
 @media (max-width: 767px) {

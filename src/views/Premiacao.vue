@@ -237,6 +237,34 @@ ul li {
   transition: 0.2s;
 }
 
+@media (max-width: 1366px) {
+  .titulo1[data-v-218bab85] {
+    font-size: 3.5rem;
+  }
+
+  .paragrafo[data-v-218bab85] {
+    font-size: 1.2rem;
+  }
+
+  .table-custom[data-v-218bab85] {
+    width: auto;
+  }
+
+  ul li[data-v-218bab85] {
+    font-size: 0.8rem;
+  }
+}
+ 
+@media (max-width: 1114px) {
+  .titulo1[data-v-218bab85] {
+    font-size: 3.5rem;
+  }
+
+  .table-custom[data-v-218bab85] {
+    width: auto;
+  }
+}
+
 @media (max-width: 767px) {
   body {
     background: #010020;
@@ -249,6 +277,12 @@ ul li {
   .paragrafo[data-v-218bab85] {
     font-size: 1rem;
     padding: 0rem;
+  }
+}
+
+@media (max-width: 344px) {
+  .titulo1[data-v-218bab85][data-v-218bab85] {
+    font-size: 2.8rem;
   }
 }
 </style>

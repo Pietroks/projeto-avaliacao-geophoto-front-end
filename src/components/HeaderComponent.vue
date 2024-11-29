@@ -166,6 +166,7 @@ export default {
   flex-direction: row; /* Padrão */
   gap: 1rem;
   transition: all 0.3s ease-in-out;
+  align-items: center;
 }
 
 .login-buttons.d-block {
@@ -277,6 +278,24 @@ cursor: pointer;
 .buttonCadastro:hover {
   background: brown;
   color: whitesmoke;
+}
+
+@media (max-width: 1366px) {
+  .divNav[data-v-5c833af0] {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 1114px) {
+  .divNav[data-v-5c833af0] {
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .buttonCadastro[data-v-5c833af0] {
+    padding: 0.2rem;
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 767px) {

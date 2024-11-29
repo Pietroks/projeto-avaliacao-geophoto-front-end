@@ -239,6 +239,12 @@ p {
   margin-top: 10px;
 }
 
+@media (max-width: 1114px) {
+  .containerCadastro[data-v-26084dc2] {
+    width: 75%;
+  }
+}
+
 @media (max-width: 767px) {
   .backgroundImg[data-v-26084dc2] {
     margin-top: -9.2rem;
