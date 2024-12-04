@@ -118,10 +118,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
-  background-size: cover;
-  background-position: top;
-  background-repeat: no-repeat;
+  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
   opacity: 1;
   z-index: -1;
 }
@@ -160,6 +157,7 @@
 
 .background2 {
   background: #010020;
+  margin-top: 1rem;
 }
 
 .titulo2 {

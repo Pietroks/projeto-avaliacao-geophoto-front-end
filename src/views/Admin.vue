@@ -86,6 +86,7 @@ export default {
   background: #f9f9f9;
   margin-top: 2rem;
 }
+
 input {
   width: 100%;
   padding: 0.8rem;
@@ -93,6 +94,7 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 button {
   padding: 0.8rem 1.5rem;
   background: purple;
@@ -103,17 +105,21 @@ button {
   cursor: pointer;
   transition: background 0.3s ease;
 }
+
 button:disabled {
   background: gray;
   cursor: not-allowed;
 }
+
 button:hover:enabled {
   background: #5a1a87;
 }
+
 .success-message {
   color: green;
   margin-top: 1rem;
 }
+
 .error-message {
   color: red;
   margin-top: 1rem;

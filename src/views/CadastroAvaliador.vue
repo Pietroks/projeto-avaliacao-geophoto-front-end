@@ -48,7 +48,7 @@
               </div>
               <div class="divButton">
                 <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
-                <button type="submit" class="buttonCadastro">Cadastrar</button>
+                <button type="submit" class="buttonCadastro" :disabled="isFormInvalid">Cadastrar</button>
               </div>
             </form>
           </div>
@@ -69,135 +69,155 @@
       EnvelopeIcon,
       LockClosedIcon,
       EyeIcon,
-    },
-    data() {
-      return {
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      verificationCode: '',
+      showPassword: false,
+      passwordError: false,
+      passwordStrength: '',
+      passwordStrengthClass: '',
+      errors: {
         email: '',
+        verificationCode: '',
         password: '',
         confirmPassword: '',
-        verificationCode: '',
-        showPassword: false,
-        passwordError: false,
-        passwordStrength: '',
-        passwordStrengthClass: '',
-        errors: {
-          email: '',
-          verificationCode: '',
-          password: '',
-          confirmPassword: '',
-        },
-      };
-    },
-    methods: {
-      updatePasswordStrength() {
-        if (!this.password) {
-          this.passwordStrength = '';
-          this.passwordStrengthClass = '';
-          return;
-        }
-
-        const length = this.password.length;
-        if (length < 6) {
-          this.passwordStrength = 'Fraca';
-          this.passwordStrengthClass = 'strength-weak';
-        } else if (length >= 6 && length < 10) {
-          this.passwordStrength = 'Média';
-          this.passwordStrengthClass = 'strength-medium';
-        } else {
-          this.passwordStrength = 'Forte';
-          this.passwordStrengthClass = 'strength-strong';
-        }
       },
+    };
+  },
+  
+  computed: {
+    isFormInvalid() {
+      const isEmailEmpty = this.email.trim() === '';
+      const isVerificationCodeEmpty = this.verificationCode.trim() === '';
+      const isPasswordEmpty = this.password.trim() === '';
+      const isConfirmPasswordEmpty = this.confirmPassword.trim() === '';
+      const doPasswordsMatch = this.password === this.confirmPassword;
 
-      cancel() {
-        this.email = '';
-        this.password = '';
-        this.confirmPassword = '';
-        this.verificationCode = '';
+      // Retorna `true` se algum campo estiver inválido
+      return (
+        isEmailEmpty ||
+        isVerificationCodeEmpty ||
+        isPasswordEmpty ||
+        isConfirmPasswordEmpty ||
+        !doPasswordsMatch
+      );
+    },
+  },
+
+  methods: {
+    updatePasswordStrength() {
+      if (!this.password) {
         this.passwordStrength = '';
         this.passwordStrengthClass = '';
-        this.passwordError = false;
-        this.errors = {
-          email: '',
-          verificationCode: '',
-          password: '',
-          confirmPassword: '',
-        };
-      },
+        return;
+      }
 
-      async register() {
-        // Limpar erros
-        this.errors = {
-          email: '',
-          verificationCode: '',
-          password: '',
-          confirmPassword: '',
-        };
-
-        // Verificar campos obrigatórios
-        let hasError = false;
-
-        if (!this.email) {
-          this.errors.email = 'Email é obrigatório.';
-          hasError = true;
-        }
-        if (!this.verificationCode) {
-          this.errors.verificationCode = 'Código de verificação é obrigatório.';
-          hasError = true;
-        }
-        if (!this.password) {
-          this.errors.password = 'Senha é obrigatória.';
-          hasError = true;
-        }
-        if (this.password !== this.confirmPassword) {
-          this.passwordError = true;
-          hasError = true;
-        } else {
-          this.passwordError = false;
-        }
-        if (!this.confirmPassword) {
-          this.errors.confirmPassword = 'Confirme a senha.';
-          hasError = true;
-        }
-
-        if (hasError) {
-          return;
-        }
-
-        const jsonData = {
-          email: this.email,
-          password: this.password,
-          verificationCode: this.verificationCode,
-        };
-
-        try {
-          const response = await fetch(`${API_URL}/cadastro`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsonData),
-          });
-
-          if (response.ok) {
-            console.log('Usuário cadastrado com sucesso');
-            alert('Usuário cadastrado com sucesso');
-            this.$router.push('/');
-          } else {
-            console.error('Erro na requisição:', response.statusText);
-            alert('Erro na requisição: ' + response.statusText);
-          }
-        } catch (error) {
-          console.error('Erro no cadastro:', error);
-          alert(`Erro: ${error}`);
-        }
-      },
-
-      togglePasswordVisibility() {
-        this.showPassword = !this.showPassword;
-      },
+      const length = this.password.length;
+      if (length < 6) {
+        this.passwordStrength = 'Fraca';
+        this.passwordStrengthClass = 'strength-weak';
+      } else if (length >= 6 && length < 10) {
+        this.passwordStrength = 'Média';
+        this.passwordStrengthClass = 'strength-medium';
+      } else {
+        this.passwordStrength = 'Forte';
+        this.passwordStrengthClass = 'strength-strong';
+      }
     },
-  };
+
+    cancel() {
+      this.email = '';
+      this.password = '';
+      this.confirmPassword = '';
+      this.verificationCode = '';
+      this.passwordStrength = '';
+      this.passwordStrengthClass = '';
+      this.passwordError = false;
+      this.errors = {
+        email: '',
+        verificationCode: '',
+        password: '',
+        confirmPassword: '',
+      };
+    },
+
+    async register() {
+      // Limpar erros
+      this.errors = {
+        email: '',
+        verificationCode: '',
+        password: '',
+        confirmPassword: '',
+      };
+
+      // Verificar campos obrigatórios
+      let hasError = false;
+
+      if (!this.email) {
+        this.errors.email = 'Email é obrigatório.';
+        hasError = true;
+      }
+      if (!this.verificationCode) {
+        this.errors.verificationCode = 'Código de verificação é obrigatório.';
+        hasError = true;
+      }
+      if (!this.password) {
+        this.errors.password = 'Senha é obrigatória.';
+        hasError = true;
+      }
+      if (this.password !== this.confirmPassword) {
+        this.passwordError = true;
+        hasError = true;
+      } else {
+        this.passwordError = false;
+      }
+      if (!this.confirmPassword) {
+        this.errors.confirmPassword = 'Confirme a senha.';
+        hasError = true;
+      }
+
+      if (hasError) {
+        return;
+      }
+
+      const jsonData = {
+        email: this.email,
+        password: this.password,
+        verificationCode: this.verificationCode,
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/cadastro`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        });
+
+        if (response.ok) {
+          console.log('Usuário cadastrado com sucesso');
+          alert('Usuário cadastrado com sucesso');
+          this.$router.push('/');
+        } else {
+          console.error('Erro na requisição:', response.statusText);
+          alert('Erro na requisição: ' + response.statusText);
+        }
+      } catch (error) {
+        console.error('Erro no cadastro:', error);
+        alert(`Erro: ${error}`);
+      }
+    },
+
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+  },
+};
 </script>
   
   
@@ -313,6 +333,11 @@ input {
   background-color: darkred;
 }
 
+.buttonCadastro:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .buttonCancelar {
   background-color: gray;
 }
@@ -335,9 +360,10 @@ p {
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: 1.5em;
+  font-size: 0.8em;
+  font-weight: 500;
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   transition: opacity 0.3s ease-in-out;
@@ -345,7 +371,6 @@ p {
 
 .show-password-btn.active {
   color: green; 
-  transform: translateY(-50%) scale(1.1); 
 }
 
 .eye-icon {
@@ -368,6 +393,18 @@ p {
 
 .input-group input:invalid {
   border-color: red;
+}
+
+.strength-weak {
+  color: red;
+}
+
+.strength-medium {
+  color: orange;
+}
+
+.strength-strong {
+  color: green;
 }
 
 @media (max-width: 1114px) {

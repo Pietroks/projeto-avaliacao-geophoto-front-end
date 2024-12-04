@@ -118,10 +118,7 @@ export default {
 }
 
 .backgroundImg {
-  background-image: url('../assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
   min-height: 100vh;
   width: 100vw;
   display: flex;
@@ -131,7 +128,7 @@ export default {
 }
 
 .containerCadastro {
-  background: rgba(255, 255, 255, 0.4);
+  background: radial-gradient(black, transparent);
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -152,7 +149,7 @@ export default {
 }
 
 h1 {
-  color: brown;
+  color: ghostwhite;
   font-weight: 100;
 }
 
@@ -197,6 +194,7 @@ input {
 
 p {
   font-weight: 500;
+  color: gainsboro;
 }
 
 .link {

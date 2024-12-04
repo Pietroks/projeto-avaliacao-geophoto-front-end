@@ -30,13 +30,18 @@
                 >
                   <EyeIcon class="eye-icon" />
                 </button>
+                <!-- Medidor de força de senha -->
                 <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">
                   {{ passwordStrength }}
                 </div>
               </div>
               <div class="input-group">
                 <LockClosedIcon class="icon" />
-                <input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'" placeholder="Confirme a Senha *" />
+                <input
+                  v-model="confirmPassword"
+                  :type="showPassword ? 'text' : 'password'"
+                  placeholder="Confirme a Senha *"
+                />
                 <div v-if="passwordError" class="error-message">
                   As senhas não coincidem.
                 </div>
@@ -131,24 +136,23 @@ export default {
 
   methods: {
     updatePasswordStrength() {
+      console.log("Password input changed:", this.password);
       if (!this.password) {
         this.passwordStrength = '';
         this.passwordStrengthClass = '';
         return;
       }
-      
-      const length = this.password.length;
-      if (length < 6) {
-        this.passwordStrength = 'Fraca';
-        this.passwordStrengthClass = 'strength-weak';
-      } else if (length >= 6 && length < 10) {
-        this.passwordStrength = 'Média';
-        this.passwordStrengthClass = 'strength-medium';
-      } else {
-        this.passwordStrength = 'Forte';
-        this.passwordStrengthClass = 'strength-strong';
-      }
+
+      const strength = this.password.length >= 10 
+        ? 'Forte' 
+        : this.password.length >= 6 
+        ? 'Média' 
+        : 'Fraca';
+
+      this.passwordStrength = strength;
+      this.passwordStrengthClass = `strength-${strength.toLowerCase()}`;
     },
+
 
     validateCpf() {
       const cpf = this.cpf.replace(/\D/g, '');
@@ -301,10 +305,7 @@ export default {
 }
 
 .backgroundImg {
-  background-image: url('../assets/17638-3840x2160-desktop-4k-forest-background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
   min-height: 100vh;
   width: 100vw;
   display: flex;
@@ -314,7 +315,7 @@ export default {
 }
 
 .containerCadastro {
-  background: rgba(255, 255, 255, 0.3);
+  background: radial-gradient(black, transparent);
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -326,7 +327,7 @@ export default {
 }
 
 h1 {
-  color: brown;
+  color: ghostwhite;
   font-weight: 100;
 }
 
@@ -371,6 +372,7 @@ h1 {
   border: none;
   cursor: pointer;
   position: absolute;
+  font-size: 1rem;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
@@ -399,23 +401,28 @@ h1 {
 }
 
 .password-strength-meter {
-  position: absolute;
-  top: 0%;
-  left: -210%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   font-size: 0.8em;
-  font-weight: bold;
-  margin-top: 0.2rem;
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease-in-out;
+  font-weight: 500;
 }
 
-.strength-weak {
+.strength-fraca {
   color: red;
 }
 
-.strength-medium {
+.strength-média {
   color: orange;
 }
 
-.strength-strong {
+.strength-forte {
   color: green;
 }
 

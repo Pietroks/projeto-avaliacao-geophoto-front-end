@@ -10,7 +10,7 @@
         </div>
         <div class="col-md-6">
           <div class="imageBox">
-            <p>Geophotography is the art of capturing images of the Earth’s surface in order to capture its beauty and share it with others.
+            <p class="subTexto">Geophotography is the art of capturing images of the Earth’s surface in order to capture its beauty and share it with others.
               It can range from simple snapshots taken with a smartphone to complex shots taken with expensive equipment by professionals who have spent years mastering their craft.</p>
           </div>
         </div>     
@@ -192,6 +192,7 @@ h2 {
   letter-spacing: 10px;
   margin-top: 3rem;
   transition: 0.3s ease-in-out; 
+  text-shadow: 2px 1px 3px rgba(0, 0, 0, 1);
 }
 
 .linkInscrevase:hover h2 {
@@ -208,10 +209,11 @@ span {
   border-radius: 20px
 }
 
-p {
+.subTexto {
   line-height: 2;
   font-size: 1rem;
   color: #F8F8F8;
+  text-shadow: 2px 1px 3px rgba(0, 0, 0, 1);
 }
 
 .backgroundBlack {
@@ -234,6 +236,7 @@ p {
   font-weight: 100;
   letter-spacing: 0px;
   line-height: 1.5;
+  color: ghostwhite;
 }
 
 /* carrossel */
@@ -315,7 +318,7 @@ p {
 
 /* section inscrevase */
 .backgroundImg2 {
-  background: linear-gradient(to bottom, #00214B, #023564, #003B6D, #3A749A);
+  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
   margin-top: 0rem;
 }
 
