@@ -76,7 +76,7 @@
         <div class="row">
           <div class="col-12">
             <div class="divInscrevase">
-              <h2 class="subtitulo2 subtitulo2Color">For the things you love...</h2>
+              <h2 class="subtitulo2 subtitulo2Color">Pelas coisas que te inspiram...</h2>
               <div class="divInscrevaseP">
                 <p class="paragrafo2">Se inscreva no nosso concurso e mostre todo seu talento como Geofotografo.</p>
                 <p class="paragrafo2">Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros como você para determinar o melhor.</p>
@@ -108,7 +108,48 @@
           </div>
         </div>
       </div>
+
+    <section class="">
+    '<div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="containerSpacial">
+            <div class="divSpacial">
+              <div class="subDiv" data-image="montanhas.jpg">
+                <p>01</p>
+                <h4>Montanhas</h4>
+              </div>
+              <div class="subDiv" data-image="rios.jpg">
+                <p>02</p>
+                <h4>Rios</h4>
+              </div>
+              <div class="subDiv" data-image="florestas.jpg">
+                <p>03</p>
+                <h4>Florestas</h4>
+              </div>
+            </div>
+            <div class="divSpacial">
+              <div class="subDiv" data-image="praias.jpg">
+                <p>04</p>
+                <h4>Praias</h4>
+              </div>
+              <div class="subDiv" data-image="animais.jpg">
+                <p>05</p>
+                <h4>Animais</h4>
+              </div>
+              <div class="subDiv" data-image="desertos.jpg">
+                <p>06</p>
+                <h4>Desertos</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>'
   </section>
+
+  
 </template>
   
 <script>
@@ -171,9 +212,9 @@
   margin-top: -11.4rem;
 }
 
-  .containerHome {
-      margin: 3rem auto;
-  }
+.containerHome {
+  margin: 3rem auto;
+}
 
 .divTitulo {
   margin-bottom: 7rem;
@@ -181,8 +222,8 @@
 }
 
 .linkInscrevase {
-    text-decoration: none;
-    transition: 0.3s ease-in-out; 
+  text-decoration: none;
+  transition: 0.3s ease-in-out; 
 }
 
 h2 {
@@ -196,7 +237,7 @@ h2 {
 }
 
 .linkInscrevase:hover h2 {
-    color: #212121; 
+  color: #212121; 
 }
 
 span {
@@ -357,6 +398,88 @@ span {
   border-radius: 20;
   box-shadow: 12px 22px 4px rgba(0, 0, 0, 0.3);
   opacity: 1;
+}
+
+/* section especial */
+.containerSpacial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.divSpacial {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin: 3rem 0;
+  gap: 1rem;
+}
+
+.subDiv {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  width: 500px;
+  justify-content: flex-start;
+  border-bottom: 2px solid #000;
+  padding-bottom: 10px;
+  margin-bottom: 3rem;
+  position: relative; /* Necessário para o posicionamento do projetor */
+}
+
+.subDiv::after {
+  content: ''; /* Cria um elemento vazio */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; /* Tamanho da "imagem projetada" */
+  height: 200px; /* Tornando a altura igual à largura para deixar a imagem redonda */
+  background: no-repeat center center;
+  background-size: cover; /* Ajusta a imagem para cobrir o espaço */
+  opacity: 0; /* Inicialmente invisível */
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; /* Transições suaves */
+  border-radius: 50%; /* Tornando a imagem redonda */
+  filter: blur(5px); /* Aplica um desfoque para dar o efeito de projeção */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 1); /* Adiciona um sombreamento para o efeito de projetor */
+}
+
+.subDiv:hover::after {
+  opacity: 0.5; /* Torna a imagem visível no hover */
+  transform: translate(-50%, -50%) scale(1.2); /* Dá um efeito de "aumento" na projeção */
+  filter: blur(0px); /* Retira o desfoque no hover */
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8); /* Intensifica o sombreamento no hover */
+}
+
+/* Usamos o atributo 'data-image' para definir diferentes imagens */
+.subDiv[data-image="montanhas.jpg"]::after {
+  background-image: url('../assets/17638-3840x2160-desktop-4k-forest-background.jpg');
+}
+
+.subDiv[data-image="rios.jpg"]::after {
+  background-image: url('../assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg');
+}
+
+.subDiv[data-image="florestas.jpg"]::after {
+  background-image: url('../assets/indy-bruhin-LolOOsux0vk-unsplash.jpg');
+}
+
+.subDiv[data-image="praias.jpg"]::after {
+  background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
+}
+
+.subDiv[data-image="animais.jpg"]::after {
+  background-image: url('../assets/giorgi-iremadze-kKV97pFt0-A-unsplash.jpg');
+}
+
+.subDiv[data-image="desertos.jpg"]::after {
+  background-image: url('../assets/stephan-seeber-ShZCTjauOQk-unsplash.jpg');
+}
+
+.subDiv p, .subDiv h4 {
+  color: ghostwhite;
 }
 
 @media (max-width: 1114px) {
