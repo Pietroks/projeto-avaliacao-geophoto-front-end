@@ -109,44 +109,48 @@
         </div>
       </div>
 
-    <section class="">
-    '<div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="containerSpacial">
-            <div class="divSpacial">
-              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image">
-                <p>01</p>
-                <h4>Montanhas</h4>
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="containerSpacial">
+              <div class="divSpacial">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image">
+                  <p>01</p>
+                  <h4>Montanhas</h4>
+                </div>
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image2">
+                  <p>02</p>
+                  <h4>Rios</h4>
+                </div>
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image3">
+                  <p>03</p>
+                  <h4>Florestas</h4>
+                </div>
               </div>
-              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image2">
-                <p>02</p>
-                <h4>Rios</h4>
-              </div>
-              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image3">
-                <p>03</p>
-                <h4>Florestas</h4>
-              </div>
-            </div>
-            <div class="divSpacial">
-              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image4">
-                <p>04</p>
-                <h4>Praias</h4>
-              </div>
-              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image5">
-                <p>05</p>
-                <h4>Animais</h4>
-              </div>
-              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image6">
-                <p>06</p>
-                <h4>Desertos</h4>
+              <div class="divSpacial">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image4">
+                  <p>04</p>
+                  <h4>Praias</h4>
+                </div>
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image5">
+                  <p>05</p>
+                  <h4>Animais</h4>
+                </div>
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image6">
+                  <p>06</p>
+                  <h4>Desertos</h4>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    </section>'
+    </section>
+  </section>
+
+  <section class="backgroundImg">
+    <img class="imgBackgroundSection" src="../assets/fotos-de-natureza.jpg" alt="" >
   </section>
 
 <Footer />
@@ -515,6 +519,14 @@ span {
 
 .subDiv p, .subDiv h4 {
   color: ghostwhite;
+}
+
+.backgroundImg {
+  height: 100px;  
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: -1;
 }
 
 @media (max-width: 1114px) {
