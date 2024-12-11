@@ -1,108 +1,113 @@
 <template>
-    <section class="backgroundColor">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-12">
-            <div class="divTexto">
-              <h3 class="titulo1">Prêmio Brasileiro de Fotogeografia 2024/2025</h3>
-              <p class="paragrafo">
-                O Prêmio Brasileiro de Fotogeografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da 
-                Universidade de Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens geográficas.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  
-    <section class="background2">
-      <div class="container">
-        <div class="row align-items-start">
-          <div class="col-md-6">
-            <div class="divTexto">
-              <h3 class="titulo2">Categorias</h3>
-              <p class="paragrafo2">
-                O Prêmio Brasileiro de Fotogeografia tem as seguintes categorias:
-              </p>
-              <ul>
-                <li>Categoria 1: Estudantes de Graduação</li>
-                <li>Categoria 2: Estudantes de Pós-Graduação</li>
-                <li>Categoria 3: Profissionais Graduados</li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="divTexto">
-              <h3 class="titulo2">Premiação</h3>
-              <p class="paragrafo2">
-                A premiação inclui:
-              </p>
-              <ul>
-                <li>Medalha LAGIM de Fotogeografia</li>
-                <li>Certificado de Participação</li>
-                <li>Inclusão no e-book para os três primeiros de cada subcategoria</li>
-                <li><strong>1º Lugar:</strong> Câmera instantânea</li>
-                <li><strong>2º Lugar:</strong> Cartão Micro-SD 64GB</li>
-                <li><strong>3º Lugar:</strong> Tripé de 1,45m</li>
-                <li>Certificado de Participação para os classificados até o 10º lugar</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  
-    <section class="container-fluid background2">
-      <h2 class="mt-4 titulo">Cronograma</h2>
-      <div class="row">
+  <section class="backgroundColor">
+    <div class="container">
+      <div class="row align-items-center">
         <div class="col-12">
-          <div class="table-responsive">
-            <table class="table table-bordered table-custom">
-              <thead>
-                <tr>
-                  <th>Etapa</th>
-                  <th>Data</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Abertura e publicação do edital</td>
-                  <td>21/11/2024</td>
-                </tr>
-                <tr>
-                  <td>Período de inscrições</td>
-                  <td>02/12/2024 a 10/02/2025</td>
-                </tr>
-                <tr>
-                  <td>Avaliação</td>
-                  <td>11/02/2025 a 11/03/2025</td>
-                </tr>
-                <tr>
-                  <td>Reunião da comissão</td>
-                  <td>12 e 13/03/2025</td>
-                </tr>
-                <tr>
-                  <td>Divulgação do resultado</td>
-                  <td>14/03/2025</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="divTexto">
+            <h3 class="titulo1">Prêmio Brasileiro de Fotogeografia 2024/2025</h3>
+            <p class="paragrafo">
+              O Prêmio Brasileiro de Fotogeografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da 
+              Universidade de Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens geográficas.
+            </p>
           </div>
-          <div class="text-center divButton">
-                <a href="#" target="_blank" class="buttonInscrevase">
-                Acesse o Edital
-                </a>
-            </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="background2">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-md-6">
+          <div class="divTexto">
+            <h3 class="titulo2">Categorias</h3>
+            <p class="paragrafo2">
+              O Prêmio Brasileiro de Fotogeografia tem as seguintes categorias:
+            </p>
+            <ul>
+              <li>Categoria 1: Estudantes de Graduação</li>
+              <li>Categoria 2: Estudantes de Pós-Graduação</li>
+              <li>Categoria 3: Profissionais Graduados</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="divTexto">
+            <h3 class="titulo2">Premiação</h3>
+            <p class="paragrafo2">
+              A premiação inclui:
+            </p>
+            <ul>
+              <li>Medalha LAGIM de Fotogeografia</li>
+              <li>Certificado de Participação</li>
+              <li>Inclusão no e-book para os três primeiros de cada subcategoria</li>
+              <li><strong>1º Lugar:</strong> Câmera instantânea</li>
+              <li><strong>2º Lugar:</strong> Cartão Micro-SD 64GB</li>
+              <li><strong>3º Lugar:</strong> Tripé de 1,45m</li>
+              <li>Certificado de Participação para os classificados até o 10º lugar</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-fluid background2">
+    <h2 class="mt-4 titulo">Cronograma</h2>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-custom">
+            <thead>
+              <tr>
+                <th>Etapa</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Abertura e publicação do edital</td>
+                <td>21/11/2024</td>
+              </tr>
+              <tr>
+                <td>Período de inscrições</td>
+                <td>02/12/2024 a 10/02/2025</td>
+              </tr>
+              <tr>
+                <td>Avaliação</td>
+                <td>11/02/2025 a 11/03/2025</td>
+              </tr>
+              <tr>
+                <td>Reunião da comissão</td>
+                <td>12 e 13/03/2025</td>
+              </tr>
+              <tr>
+                <td>Divulgação do resultado</td>
+                <td>14/03/2025</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center divButton">
+              <a href="#" target="_blank" class="buttonInscrevase">
+              Acesse o Edital
+              </a>
+          </div>
+      </div>
+    </div>   
+  </section>
+
+<Footer />
+</template>
   
-      
-    </section>
-  </template>
-  
-  <script>
+<script>
+import Footer from '@/components/Footer.vue';
+
     export default {
       name: "PremiacaoPage",
+      components: {
+        Footer
+      }
     };
   </script>
   
@@ -208,7 +213,8 @@ ul li {
   border-collapse: separate;
   border-spacing: 0 10px;
   width: 50%;
-  justify-self: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .table-custom th,

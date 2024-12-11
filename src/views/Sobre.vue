@@ -65,12 +65,19 @@
       </div>
     </div>
   </section>
+
+<Footer />
 </template>
 
   
-  <script>
+<script>
+import Footer from '@/components/Footer.vue';
+
   export default {
     name: 'SobrePage',
+    components: {
+      Footer
+    }
   };
   </script>
 

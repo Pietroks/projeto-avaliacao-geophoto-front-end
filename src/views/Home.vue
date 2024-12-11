@@ -115,29 +115,29 @@
         <div class="col-12">
           <div class="containerSpacial">
             <div class="divSpacial">
-              <div class="subDiv" data-image="montanhas.jpg">
+              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image">
                 <p>01</p>
                 <h4>Montanhas</h4>
               </div>
-              <div class="subDiv" data-image="rios.jpg">
+              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image2">
                 <p>02</p>
                 <h4>Rios</h4>
               </div>
-              <div class="subDiv" data-image="florestas.jpg">
+              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image3">
                 <p>03</p>
                 <h4>Florestas</h4>
               </div>
             </div>
             <div class="divSpacial">
-              <div class="subDiv" data-image="praias.jpg">
+              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image4">
                 <p>04</p>
                 <h4>Praias</h4>
               </div>
-              <div class="subDiv" data-image="animais.jpg">
+              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image5">
                 <p>05</p>
                 <h4>Animais</h4>
               </div>
-              <div class="subDiv" data-image="desertos.jpg">
+              <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image6">
                 <p>06</p>
                 <h4>Desertos</h4>
               </div>
@@ -149,7 +149,7 @@
     </section>'
   </section>
 
-  
+<Footer />
 </template>
   
 <script>
@@ -157,6 +157,7 @@
   import img2 from '@/assets/pascal-scholl-RFrM7_t2F2E-unsplash.jpg';
   import img3 from '@/assets/thumb-1920-526183.jpg';
   import img4 from '@/assets/giorgi-iremadze-kKV97pFt0-A-unsplash.jpg';
+  import Footer from '@/components/Footer.vue';
 
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -167,13 +168,31 @@
   export default {
     name: 'HomePage',
     components: {
-      FontAwesomeIcon
+      FontAwesomeIcon,
+      Footer,
     },
     data() {
       return {
         images: [img1, img2, img3, img4],
         currentIndex: 0,
+        mouseX: 0,
+        mouseY: 0,
+        image: 'montanhas.jpg',
+        image2: 'rios.jpg',
+        image3: 'florestas.jpg',
+        image4: 'praias.jpg',
+        image5: 'animais.jpg',
+        image6: 'desertos.jpg'
       };
+    },
+
+    computed: {
+      subDivStyle() {
+        return {
+          '--mouse-x': `${this.mouseX}`,
+          '--mouse-y': `${this.mouseY}`,
+        }
+      }
     },
     
     mounted() {
@@ -193,6 +212,15 @@
 
       nextImage() {
         this.currentIndex = (this.currentIndex + 1 ) % this.images.length;
+      },
+
+      handleMouseMove(event) {
+        const subDiv = event.currentTarget;
+        const rect = subDiv.getBoundingClientRect();
+        this.mouseX = ((event.clientX - rect.left) / rect.width) * 100 + "%";
+        this.mouseY = ((event.clientY - rect.top) / rect.height) * 100 + "%";
+        subDiv.style.setProperty('--mouse-x', this.mouseX);
+        subDiv.style.setProperty('--mouse-y', this.mouseY);
       },
     },
   }
@@ -425,35 +453,42 @@ span {
   justify-content: flex-start;
   border-bottom: 2px solid #000;
   padding-bottom: 10px;
-  margin-bottom: 3rem;
-  position: relative; /* Necessário para o posicionamento do projetor */
+  margin-bottom: 5rem;
+  color: white;
+  transition: transform 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+
+.subDiv:hover {
+  transform: scale(1.05);
 }
 
 .subDiv::after {
-  content: ''; /* Cria um elemento vazio */
+  content: ''; 
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px; /* Tamanho da "imagem projetada" */
-  height: 200px; /* Tornando a altura igual à largura para deixar a imagem redonda */
+  width: 200px; 
+  height: 200px; 
   background: no-repeat center center;
-  background-size: cover; /* Ajusta a imagem para cobrir o espaço */
-  opacity: 0; /* Inicialmente invisível */
-  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; /* Transições suaves */
-  border-radius: 50%; /* Tornando a imagem redonda */
-  filter: blur(5px); /* Aplica um desfoque para dar o efeito de projeção */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 1); /* Adiciona um sombreamento para o efeito de projetor */
+  background-size: cover; 
+  opacity: 0; 
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; 
+  border-radius: 50%; 
+  filter: blur(5px); 
+  box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+  pointer-events: none;
 }
 
 .subDiv:hover::after {
-  opacity: 0.5; /* Torna a imagem visível no hover */
-  transform: translate(-50%, -50%) scale(1.2); /* Dá um efeito de "aumento" na projeção */
-  filter: blur(0px); /* Retira o desfoque no hover */
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8); /* Intensifica o sombreamento no hover */
+  opacity: 0.5;
+  transform: translate(-50%, -50%) scale(1.2); 
+  filter: blur(0px); 
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8); 
 }
 
-/* Usamos o atributo 'data-image' para definir diferentes imagens */
 .subDiv[data-image="montanhas.jpg"]::after {
   background-image: url('../assets/17638-3840x2160-desktop-4k-forest-background.jpg');
 }
