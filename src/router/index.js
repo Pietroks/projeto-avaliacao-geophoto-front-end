@@ -8,8 +8,8 @@ import Admin from '../views/Admin.vue';
 import Premiacao from '@/views/Premiacao.vue';
 import CadastroAvaliador from '@/views/CadastroAvaliador.vue';
 import Concurso from '@/views/Concurso.vue';
-import Dashboard from '@/views/Dashboard.vue'; // Importando o Dashboard do Usuário
-import store from '../store'; // Certifique-se de que o caminho está correto
+import Dashboard from '@/views/Dashboard.vue'; 
+import store from '../store'; 
 import VotacaoPage from '@/views/votacao.vue'
 const routes = [
   { path: '/', component: Home },
@@ -22,17 +22,17 @@ const routes = [
   {
     path: '/upload',
     component: Upload,
-    meta: { requiresAuth: true }, // Requer autenticação
+    meta: { requiresAuth: true }, 
   },
   {
     path: '/admin',
     component: Admin,
-    meta: { requiresAuth: true }, // Requer autenticação
+    meta: { requiresAuth: true }, 
   },
   {
     path: '/dashboard',
     component: Dashboard,
-    meta: { requiresAuth: true }, // Requer autenticação
+    meta: { requiresAuth: true }, 
   },
   {
     path: "/votacao/:id",
@@ -53,10 +53,9 @@ router.beforeEach(async (to, from, next) => {
 
   // Verifica a necessidade de autenticação
   if (requiresAuth && !isAuthenticated) {
-    // Redireciona para a página de login se não estiver autenticado
     next('/login');
   } else {
-    next(); // Prossegue para a rota desejada
+    next(); 
   }
 });
 

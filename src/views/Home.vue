@@ -5,40 +5,53 @@
         <div class="col-12">
           <div class="divTitulo">
             <h1><span>Geofotografia:</span></h1>
-            <a href="#inscrevase" class="linkInscrevase"><h2>Capturando a beleza natural da Terra</h2></a>
+            <a href="#inscrevase" class="linkInscrevase">
+              <h2>Capturando a beleza natural da Terra</h2>
+            </a>
           </div>
         </div>
         <div class="col-md-6">
           <div class="imageBox">
-            <p class="subTexto">Geophotography is the art of capturing images of the Earth’s surface in order to capture its beauty and share it with others.
-              It can range from simple snapshots taken with a smartphone to complex shots taken with expensive equipment by professionals who have spent years mastering their craft.</p>
+            <p class="subTexto">
+              Geophotography is the art of capturing images of the Earth’s surface in order to capture its beauty and share it with others. It can range from simple snapshots taken with a smartphone to complex shots taken with expensive equipment by professionals who have spent years mastering their craft.
+            </p>
           </div>
-        </div>     
+        </div>
       </div>
     </div>
   </div>
 
-  <section class="backgroundBlack">
+  <section class="backgroundBlack" v-scroll-appear>
     <div class="container">
       <div class="row">
         <div class="col-md-6">
           <div class="div2">
             <h2 class="subtitulo">O que é Geofotografia?</h2>
-            <p class="paragrafo">Geophotography has been around for centuries, but became popularized in recent years thanks to social media platforms like Instagram and Facebook where users have access to millions of other people who appreciate their work.</p>
+            <p class="paragrafo">
+              Geophotography has been around for centuries, but became popularized in recent years thanks to social media platforms like Instagram and Facebook where users have access to millions of other people who appreciate their work.
+            </p>
           </div>
-          <div class="div2">
-            <h2 class="subtitulo">Tecnicas para a Geofotografia</h2>
+          <div class="div2" v-scroll-appear>
+            <h2 class="subtitulo">Técnicas para a Geofotografia</h2>
             <p class="paragrafo">Lighting is the most important aspect of geophotography.</p>
             <p class="paragrafo">If you don’t have good lighting, your photos will be dull and flat.</p>
-            <p class="paragrafo">The best time to shoot is during sunrise or sunset when the sun is low in the sky, which creates long shadows and dramatic lighting effects</p>
+            <p class="paragrafo">
+              The best time to shoot is during sunrise or sunset when the sun is low in the sky, which creates long shadows and dramatic lighting effects.
+            </p>
           </div>
         </div>
         <div class="col-md-6">
           <div class="div2">
             <h2 class="subtitulo">Equipamentos para Geofotografia</h2>
-            <p class="paragrafo">Cameras. The first thing you need for geophotography is a camera, and there are many options to choose from.</p>
-            <p class="paragrafo">A DSLR is the most common choice because it allows you to change lenses and adjust settings on your own.</p>
-            <p class="paragrafo">However, if you’re just starting out with geophotography or don’t want to spend too much money on equipment, then an entry-level point-and-shoot camera may be more suitable for your needs.</p>
+            <p class="paragrafo">
+              Cameras. The first thing you need for geophotography is a camera, and there are many options to choose from.
+            </p>
+            <p class="paragrafo" v-scroll-appear>
+              A DSLR is the most common choice because it allows you to change lenses and adjust settings on your own.
+            </p>
+            <p class="paragrafo">
+              However, if you’re just starting out with geophotography or don’t want to spend too much money on equipment, then an entry-level point-and-shoot camera may be more suitable for your needs.
+            </p>
           </div>
         </div>
       </div>
@@ -51,7 +64,9 @@
         <div class="containerConcurso">
           <div class="col-md-6">
             <h2 class="subtitulo2">Participe do concurso internacional de Geofotografia</h2>
-            <p class="paragrafo2">Our ocean is changing. With 70 percent of the planet covered in water, the seas are important drivers of the global climate. Yet increasing greenhouse gases from human activities are altering the ocean before our eyes. NASA and its partners are on a mission to find out more.</p>
+            <p class="paragrafo2">
+              Our ocean is changing. With 70 percent of the planet covered in water, the seas are important drivers of the global climate. Yet increasing greenhouse gases from human activities are altering the ocean before our eyes. NASA and its partners are on a mission to find out more.
+            </p>
             <div class="divSaibaMais">
               <router-link to="/sobre" class="saibaMaisButton">
                 Saiba mais
@@ -62,7 +77,13 @@
           <div class="col-md-6">
             <div class="carousel-container">
               <div class="carousel">
-                <img v-for="(image, index) in images" :key="index" :src="image" v-show="currentIndex === index" class="carousel-image" />
+                <img
+                  v-for="(image, index) in images"
+                  :key="index"
+                  :src="image"
+                  v-show="currentIndex === index"
+                  class="carousel-image"
+                />
               </div>
             </div>
           </div>
@@ -71,73 +92,80 @@
     </div>
   </section>
 
-  <section class="backgroundImg2" id="inscrevase">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <div class="divInscrevase">
-              <h2 class="subtitulo2 subtitulo2Color">Pelas coisas que te inspiram...</h2>
-              <div class="divInscrevaseP">
-                <p class="paragrafo2">Se inscreva no nosso concurso e mostre todo seu talento como Geofotografo.</p>
-                <p class="paragrafo2">Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros como você para determinar o melhor.</p>
-              </div>
-              <router-link to="/cadastro" class="saibaMaisButton buttonInscrevase">
-                Inscreva-se
+  <section class="backgroundImg2" id="inscrevase" v-scroll-appear>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="divInscrevase">
+            <h2 class="subtitulo2 subtitulo2Color" v-scroll-appear>Pelas coisas que te inspiram...</h2>
+            <div class="divInscrevaseP">
+              <p class="paragrafo2">
+                Se inscreva no nosso concurso e mostre todo seu talento como Geofotógrafo.
+              </p>
+              <p class="paragrafo2" v-scroll-appear>
+                Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros como você para determinar o melhor.
+              </p>
+            </div>
+            <router-link to="/cadastro" class="saibaMaisButton buttonInscrevase">
+              Inscreva-se
+              <font-awesome-icon icon="arrow-right" class="arrow-icon" />
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container" v-scroll-appear>
+      <div class="row align-items-center">
+        <div class="col-12">
+          <div class="divInscrevase text-end" v-scroll-appear>
+            <h2 class="subtitulo2 subtitulo2Color">For the things you love...</h2>
+            <div class="divInscrevaseP">
+              <p class="paragrafo2 text-end">
+                Participe do concurso e concorra a prêmios até a terceira colocação.
+              </p>
+              <p class="paragrafo2 text-end" v-scroll-appear>
+                Se junte nessa batalha contra outros amantes da Geofotografia. Contribua para a divulgação dessa área e ganhe prêmios e destaque para você nessa área.
+              </p>
+            </div>
+            <div class="text-end" v-scroll-appear>
+              <router-link to="/premiacao" class="saibaMaisButton buttonInscrevase">
+                Saiba mais
                 <font-awesome-icon icon="arrow-right" class="arrow-icon" />
               </router-link>
             </div>
           </div>
         </div>
       </div>
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-12">
-            <div class="divInscrevase">
-              <h2 class="subtitulo2 subtitulo2Color text-end">For the things you love...</h2>
-              <div class="divInscrevaseP">
-                <p class="paragrafo2 text-end">Participe do concurso e concorra a premios até a terceira colocação</p>
-                <p class="paragrafo2 text-end">Se junte nessa batalha contra outros amantes da Geofotografia. Contribua para a divulgação dessa area e ganhe premios e destaque para você nessa área.</p>
-              </div>
-              <div class="text-end">
-                <router-link to="/premiacao" class="saibaMaisButton buttonInscrevase">
-                  Saiba mais
-                  <font-awesome-icon icon="arrow-right" class="arrow-icon" />
-                </router-link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    </div>
     <section>
-      <div class="container">
+      <div class="container" v-scroll-appear>
         <div class="row">
           <div class="col-12">
-            <div class="containerSpacial">
+            <div class="containerSpacial" v-scroll-appear>
               <div class="divSpacial">
-                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image" v-scroll-appear>
                   <p>01</p>
                   <h4>Montanhas</h4>
                 </div>
-                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image2">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image2" v-scroll-appear>
                   <p>02</p>
                   <h4>Rios</h4>
                 </div>
-                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image3">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image3" v-scroll-appear>
                   <p>03</p>
                   <h4>Florestas</h4>
                 </div>
               </div>
               <div class="divSpacial">
-                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image4">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image4" v-scroll-appear>
                   <p>04</p>
                   <h4>Praias</h4>
                 </div>
-                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image5">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image5" v-scroll-appear>
                   <p>05</p>
                   <h4>Animais</h4>
                 </div>
-                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image6">
+                <div class="subDiv" :style="subDivStyle" @mousemove="handleMouseMove" :data-image="image6" v-scroll-appear>
                   <p>06</p>
                   <h4>Desertos</h4>
                 </div>
@@ -149,23 +177,24 @@
     </section>
   </section>
 
-  <section class="backgroundImg">
-    <img class="imgBackgroundSection" src="../assets/fotos-de-natureza.jpg" alt="" >
+  <section class="backgroundImg" v-scroll-appear>
+    <img class="imgBackgroundSection" src="../assets/fotos-de-natureza.jpg" alt="" />
   </section>
 
-<Footer />
+  <Footer />
 </template>
+
   
 <script>
-  import img1 from '@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg';
-  import img2 from '@/assets/pascal-scholl-RFrM7_t2F2E-unsplash.jpg';
-  import img3 from '@/assets/thumb-1920-526183.jpg';
-  import img4 from '@/assets/giorgi-iremadze-kKV97pFt0-A-unsplash.jpg';
-  import Footer from '@/components/Footer.vue';
+import img1 from '@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg';
+import img2 from '@/assets/pascal-scholl-RFrM7_t2F2E-unsplash.jpg';
+import img3 from '@/assets/thumb-1920-526183.jpg';
+import img4 from '@/assets/giorgi-iremadze-kKV97pFt0-A-unsplash.jpg';
+import Footer from '@/components/Footer.vue';
 
-  import { library } from '@fortawesome/fontawesome-svg-core';
-  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
   library.add(faArrowRight);
   
@@ -188,6 +217,25 @@
         image5: 'animais.jpg',
         image6: 'desertos.jpg'
       };
+    },
+
+    directives: {
+      scrollAppear: {
+        mounted(el) {
+          const observeOptions = {
+            threshold: 0.1,
+          };
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                el.classList.add('is-visible');
+                observer.unobserve(el);
+              }
+            });
+          }, observeOptions);
+          observer.observe(el);
+        },
+      },
     },
 
     computed: {
@@ -228,9 +276,20 @@
       },
     },
   }
-  </script>
+</script>
   
 <style scoped>
+.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[v-scroll-appear] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
 .backgroundImg {
   background-image: url('../assets/tim-stief-YFFGkE3y4F8-unsplash.jpg');
   background-size: cover;
