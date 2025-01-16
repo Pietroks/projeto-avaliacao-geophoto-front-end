@@ -9,7 +9,7 @@
           </router-link>
         </div>
 
-        <!-- Navegação -->
+        <!-- Menu de navegação -->
         <div class="col-md-4 divNav">
           <router-link
             to="/"
@@ -29,180 +29,315 @@
             to="/premiacao"
             :class="['navLink', { 'navLinkActive': selectedLink === '/premiacao' }]"
             @click="selectLink('/premiacao')"
-          >Premiação</router-link>
+          >Premiação</router-link>  
         </div>
 
-        <!-- Seção de login / foto do usuário -->
+        <!-- Ícone ou botões de login -->
         <div class="col-md-4 divLogin">
-          <template v-if="isLoggedIn">
-            <img :src="user.profilePic || defaultProfilePic" class="profileImage" alt="Profile Picture">
-            <button @click="logout" class="logoutButton">Sair</button>
-          </template>
-          <template v-else>
-            <router-link
-              to="/login"
-              :class="['navLink', { 'navLinkActive': selectedLink === '/login' }]"
-              @click="selectLink('/login')"
-            >Entrar</router-link>
-            <router-link
-              to="/cadastro"
-              class="buttonCadastro"
-            >Cadastre-se</router-link>
-          </template>
+          <!-- Mobile: Ícone para abrir menu -->
+          <div class="d-md-none">
+            <button class="btn btn-icon" @click="toggleMenuLogin">
+              <UserIcon class="heroicon" />
+            </button>
+          </div>
+          <!-- Desktop ou menu aberto no mobile -->
+          <div 
+            :class="{'d-none d-md-flex': !menuLoginAberto, 'd-block': menuLoginAberto}"
+            class="login-buttons"
+          >
+            <template v-if="isLoggedIn">
+              <button 
+                @click="redirectToDashboard" 
+                class="btn btn-outline-primary"
+              >
+                Meu Perfil
+              </button>
+              <button 
+                @click="logout" 
+                class="btn btn-danger ms-2"
+              >
+                Sair
+              </button>
+            </template>
+            <template v-else>
+              <router-link
+                to="/login"
+                :class="['navLink', { 'navLinkActive': selectedLink === '/login' }]"
+                @click="selectLink('/login')"
+              >Entrar</router-link>
+              <router-link
+                to="/cadastro"
+                class="buttonCadastro"
+              >Cadastre-se</router-link>
+            </template>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<script>
-  import { mapGetters, mapActions } from "vuex";
-  import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
 
-  export default {
-    name: "HeaderComponent",
-    data() {
-      return {
-        logoImage: logo,
-        selectedLink: "/",
-        defaultProfilePic: require("@/assets/default-pfp-18.jpg"), // Corrigido o caminho
-      };
+
+<script>
+import { mapState, mapActions } from "vuex";
+import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
+import { UserIcon } from "@heroicons/vue/24/solid";
+
+export default {
+  name: 'HeaderComponent',
+  components: {
+    UserIcon,
+  },  
+  data() {
+    return {
+      logoImage: logo,
+      selectedLink: '/',
+      menuLoginAberto: false,
+    };
+  },
+  computed: {
+    ...mapState("user", ["user", "token"]),
+    isLoggedIn() {
+      return !!this.token; 
+    }
+  },
+  methods: {
+    ...mapActions("user", ["logout"]),
+    selectLink(link) {
+      this.selectedLink = link;
+      this.menuLoginAberto = false;
     },
-    computed: {
-      ...mapGetters("user", ["isAuthenticated", "user"]),
-      isLoggedIn() {
-        return this.isAuthenticated; // Usando getter diretamente
-      },
+    toggleMenuLogin() {
+      this.menuLoginAberto = !this.menuLoginAberto;
     },
-    watch: {
-      isLoggedIn(newValue) {
-        console.log("Estado de autenticação mudou:", newValue);
-      },
-    },
-    methods: {
-      ...mapActions("user", ["logout"]),
-      selectLink(link) {
-        this.selectedLink = link;
-      },
-    },
-    mounted() {
-      console.log("Verificando autenticação ao carregar componente...");
-      this.$store.dispatch("user/checkLoginStatus");
-    },
-    beforeRouteUpdate(to, from, next) {
-      console.log("Atualizando estado de login ao mudar de rota...");
-      this.$store.dispatch("user/checkLoginStatus").then(() => {
-        next();
-      });
-    },
-  };
+    redirectToDashboard() {
+      this.$router.push({ name: "dashboard" });
+    }
+  },
+  mounted() {
+    this.$store.dispatch("user/checkLoginStatus");
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch("user/checkLoginStatus");
+    next();
+  }
+};
 </script>
 
 <style scoped>
-  .containerHeader {
-    display: flex;
-    align-items: center;
-    margin: 3rem auto;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    border-radius: 30px;
-    position: relative;
-  }
+.containerHeader {
+  display: flex;
+  align-items: center;
+  margin: 3rem auto;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 30px;
+  position: relative;
+}
 
-  .divLogo {
-    display: flex;
-    justify-content: flex-start;
-  }
+.divLogo {
+  display: flex;
+  justify-content: flex-start;
+}
 
-  .imgLogo {
-    width: 105px;
-    height: auto;
-    border-radius: 20px;
-  }
+.imgLogo {
+  width: 105px;
+  height: auto;
+  border-radius: 20px;
+}
 
-  .divNav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.divNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .divLogin {
-    display: flex;
-    justify-content: flex-end;
+.divLogin {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  align-items: center;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: row; /* Padrão */
+  gap: 1rem;
+  transition: all 0.3s ease-in-out;
+  align-items: center;
+}
+
+.login-buttons.d-block {
+  flex-direction: column; /* Alinhar em coluna quando o menu estiver aberto */
+  gap: 0.5rem; /* Ajustar espaçamento entre os itens */
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  color: brown;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.d-md-none .btn-icon {
+font-size: 1.5rem;
+background: none;
+border: none;
+cursor: pointer;
+}
+
+.btn-icon {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #212121; /* Cor padrão */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-icon:hover {
+  color: #137ABE; /* Cor de destaque ao passar o mouse */
+  transform: scale(1.1); /* Efeito de zoom leve */
+}
+
+.btn-icon:active {
+  transform: scale(0.95); /* Efeito ao clicar */
+}
+
+.heroicon {
+  width: 24px;
+  height: 24px;
+  color: #212121; /* Cor padrão */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.heroicon:hover {
+  color: #137ABE; /* Cor de destaque ao passar o mouse */
+  transform: scale(1.1);
+}
+
+.heroicon:active {
+  transform: scale(0.95);
+}
+
+
+.navLink, .buttonCadastro {
+  text-decoration: none;
+  color: #212121;
+  font-weight: 700;
+  font-size: 1rem;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.navLinkActive {
+  color: brown;
+  transform: scale(1.1);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: brown;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
+}
+
+.navLink:hover {
+  color: brown;
+  transform: scale(1.1);
+}
+
+.navLink:active {
+  transform: scale(1);
+}
+
+.buttonCadastro {
+  border: 2px solid brown;
+  border-radius: 10px;
+  padding: 0.5rem;
+  transition: 0.3s ease-in-out;
+}
+
+.buttonCadastro:hover {
+  background: brown;
+  color: whitesmoke;
+}
+
+@media (max-width: 1366px) {
+  .divNav[data-v-5c833af0] {
     gap: 2rem;
-    align-items: center;
+  }
+}
+
+@media (max-width: 1114px) {
+  .divNav[data-v-5c833af0] {
+    justify-content: center;
+    gap: 1rem;
   }
 
-  .profileImage {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    cursor: pointer;
+  .buttonCadastro[data-v-5c833af0] {
+    padding: 0.2rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .containerHeader[data-v-5c833af0] {
+    width: 98%;
   }
 
-  .logoutButton {
-    background: none;
+  .divLogo[data-v-5c833af0] {
+    display: none;
+  }
+
+  .divNav[data-v-5c833af0] {
+    gap: 1rem;
+  }
+
+  .buttonCadastro[data-v-5c833af0] {
+    padding: 0rem;
     border: none;
-    color: brown;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s ease-in-out;
+    text-align: center;
   }
 
-  .logoutButton:hover {
-    color: darkred;
+  .navLink[data-v-5c833af0], .buttonCadastro[data-v-5c833af0] {
+    font-size: 0.8rem;
   }
 
-  .navLink, .buttonCadastro {
-    text-decoration: none;
-    color: #212121;
-    font-weight: 700;
-    font-size: 1rem;
-    position: relative;
-    transition: all 0.3s ease-in-out;
+  .login-buttons {
+    align-items: center; /* Centralizar os itens em telas menores */
+    text-align: center;
   }
 
-  .navLinkActive {
-    color: brown;
-    transform: scale(1.1);
+  .login-buttons.d-block[data-v-5c833af0] {
+    flex-direction: column !important;
+      gap: 0.5rem;
+      display: flex !important;
+      position: absolute;
+      top: 75%;
+      align-items: center;
+      background: aliceblue;
+      border-radius: 2px;
+      padding: 0.5rem;
+      left: 71%;
+      gap: 1rem;
   }
-
-  .navLink::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: brown;
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .navLink:hover::after {
-    transform: scaleX(1);
-  }
-
-  .navLink:hover {
-    color: brown;
-    transform: scale(1.1);
-  }
-
-  .navLink:active {
-    transform: scale(1);
-  }
-
-  .buttonCadastro {
-    border: 2px solid brown;
-    border-radius: 10px;
-    padding: 0.5rem;
-    transition: 0.3s ease-in-out;
-  }
-
-  .buttonCadastro:hover {
-    background: brown;
-    color: whitesmoke;
-  }
+}
 </style>

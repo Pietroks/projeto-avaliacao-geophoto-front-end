@@ -1,68 +1,60 @@
-import { API_URL } from "@/config/config.js";
+import { API_URL } from "@/config/config";
 
 export default {
   namespaced: true,
   state: {
-    user: null,
-    isAuthenticated: false,
-    token: localStorage.getItem("auth_token") || null, // Recuperando o token do localStorage
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    token: localStorage.getItem("authToken") || null,
   },
   mutations: {
-    login(state, { user, token }) {
+    SET_USER(state, user) {
       state.user = user;
-      state.isAuthenticated = true;
-      state.token = token; // Armazenando o token no estado
-      localStorage.setItem("auth_token", token); // Persistindo no localStorage
-      console.log("Usuário logado:", user);
+      localStorage.setItem('user', JSON.stringify(user))
     },
-    logout(state) {
+    SET_TOKEN(state, token) {
+      state.token = token;
+      localStorage.setItem("authToken", token);
+    },
+    LOGOUT(state) {
       state.user = null;
-      state.isAuthenticated = false;
       state.token = null;
-      localStorage.removeItem("auth_token"); // Removendo o token do localStorage
-      console.log("Usuário deslogado");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
     },
   },
   actions: {
-    login({ commit }, { user, token }) {
-      commit("login", { user, token });
+    async login({ commit }, { email, password }) {
+      try {
+        const response = await fetch(`${API_URL}/users/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) throw new Error("Credenciais inválidas!");
+
+        const data = await response.json();
+        console.log(data)
+        commit("SET_USER", data.user);
+        commit("SET_TOKEN", data.token);
+
+        return data;
+      } catch (error) {
+        throw new Error(error.message || "Erro ao realizar login.");
+      }
     },
     logout({ commit }) {
-      commit("logout");
-    },
-    async checkLoginStatus({ commit }) {
-      const token = localStorage.getItem("auth_token");
-      console.log("Verificando token:", token);
-      if (token) {
-        try {
-          const response = await fetch(`${API_URL}/validate-token`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Token válido, usuário:", data.user);
-            commit("login", { user: data.user, token });
-          } else {
-            console.warn("Token inválido. Fazendo logout...");
-            commit("logout");
-          }
-        } catch (error) {
-          console.error("Erro ao validar token:", error);
-          commit("logout");
-        }
-      } else {
-        console.log("Nenhum token encontrado. Fazendo logout...");
-        commit("logout");
-      }
+      commit("LOGOUT");
     },
   },
   getters: {
-    isAuthenticated: (state) => state.isAuthenticated,
+    isAuthenticated(state) {
+      return !!state.token;
+    },
     user: (state) => state.user,
     token: (state) => state.token,
+    isAvaliador: (state) => state.user && state.user.user_type === 'A'
   },
 };
