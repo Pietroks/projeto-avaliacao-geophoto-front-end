@@ -17,13 +17,11 @@
                 <p><strong>Nome: {{ usuario.name }}</strong></p>
                 <p>Categoria: {{ usuario.category }}</p>
                 <button 
-                  v-if="token" 
                   @click="redirecionarParaVotacao(usuario.id)" 
                   class="btn btn-primary"
                 >
-                  Votar
+                  Imagens
                 </button>
-                <p v-else>Você precisa estar autenticado para votar.</p>
               </div>
             </div>
           </div>
@@ -85,7 +83,7 @@
 }
 
 .tituloConcurso h2 {
-  color: chartreuse;
+  color: #a52a2a;
   font-size: 2.5rem;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);

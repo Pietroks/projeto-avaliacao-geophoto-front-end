@@ -39,8 +39,6 @@
                   <p>{{ image.description }}</p>
                 </div>
               </div>
-  
-              <!-- Exibição da média das notas da Categoria B -->
               <div v-if="categoriaBMedia !== null" class="mt-4">
                 <p><strong>Nota da Categoria B:</strong> {{ categoriaBMedia }}</p>
               </div>
@@ -105,11 +103,8 @@
           usuario.images = await this.carregarImagensComDetalhes(usuario.id);
           this.usuario = usuario;
   
-          console.log(usuario.images);
           this.imagensA = usuario.images.filter((img) => img.subcategory === "A");
           this.imagensB = usuario.images.filter((img) => img.subcategory === "B");
-          console.log('this.imagensA');
-          console.log(this.imagensA);
           // Carregar as médias das notas para as duas categorias
           await this.carregarMediaCategoria("A", usuarioId);
           await this.carregarMediaCategoria("B", usuarioId);
@@ -156,7 +151,6 @@
         }
       },
       async carregarDetalhesDaImagem(imageId) {
-        console.log(imageId);
         try {
             const response = await fetch(`${API_URL}/images/${imageId}/details`, {
             method: "GET",
@@ -206,7 +200,6 @@
             let body;
 
             if (categoria === "A") {
-            console.log("aqui")
             // Para a categoria A, apenas enviar a nota da imagem específica
             endpoint = `${API_URL}/images/${image.image_id}/rate/`;
             body = {

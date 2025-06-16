@@ -136,7 +136,6 @@ export default {
 
   methods: {
     updatePasswordStrength() {
-      console.log("Password input changed:", this.password);
       if (!this.password) {
         this.passwordStrength = '';
         this.passwordStrengthClass = '';
@@ -241,12 +240,12 @@ export default {
           name: this.name,
           email: this.email,
           password: this.password,
-          cpf: this.cpf,
+          document: this.cpf,
           comprovante: comprovanteBase64,
-          nivelFormacao: this.nivelFormacao, 
+          category: this.nivelFormacao,
         };
 
-        const response = await fetch(`${API_URL}/cadastro`, {
+        const response = await fetch(`${API_URL}/users/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -255,7 +254,6 @@ export default {
         });
 
         if (response.ok) {
-          console.log('Usuário cadastrado com sucesso');
           alert('Usuário cadastrado com sucesso');
           this.showSuccessModal = true; 
         } else {

@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { API_URL } from "@/config/config";
 export default {
   name: 'DashboardPage',
   computed: {
@@ -59,11 +60,13 @@ export default {
 
       try {
         const formData = new FormData();
-        formData.append('photo', this.photoFile);
-        formData.append('userId', this.user.id);
+        formData.append('image', this.photoFile);
+        formData.append('user_id', this.user.id);
+        formData.append('subcategory', 'B')
+        formData.append('description','teste de envio')
 
         // Envia a foto para a API (substitua a URL abaixo pelo endpoint real)
-        await fetch('/api/photos/upload', {
+        await fetch(`${API_URL}/images/upload/`, {
           method: 'POST',
           body: formData,
           headers: {

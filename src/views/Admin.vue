@@ -52,7 +52,7 @@ export default {
     this.successMessage = "";
 
     try {
-      const response = await fetch(`${API_URL}/avaliadores/invite`, {
+      const response = await fetch(`${API_URL}/invite`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

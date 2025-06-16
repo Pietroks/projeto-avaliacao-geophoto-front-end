@@ -36,7 +36,6 @@ export default {
         if (!response.ok) throw new Error("Credenciais inválidas!");
 
         const data = await response.json();
-        console.log(data)
         commit("SET_USER", data.user);
         commit("SET_TOKEN", data.token);
 

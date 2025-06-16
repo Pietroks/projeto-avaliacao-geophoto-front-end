@@ -200,7 +200,6 @@
         });
 
         if (response.ok) {
-          console.log('Usuário cadastrado com sucesso');
           alert('Usuário cadastrado com sucesso');
           this.$router.push('/');
         } else {
