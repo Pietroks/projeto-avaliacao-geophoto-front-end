@@ -55,10 +55,8 @@ router.beforeEach((to, from, next) => {
   const user = store.getters['user/user'];
 
   if (requiresAuth && !isAuthenticated) {
-    // Se a rota exige autenticação e o usuário não está logado, redireciona para o login
     next('/login');
   } else if (requiresAdmin && user?.user_type !== 'admin') {
-    // Se a rota exige admin e o usuário não é admin, redireciona para o dashboard ou home
     next('/dashboard');
   } else {
     // Permite o acesso
