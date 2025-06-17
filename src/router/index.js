@@ -38,6 +38,7 @@ const routes = [
     path: "/votacao/:id",
     name: "votacao",
     component: VotacaoPage,
+    meta: { requiresAuth: true },
   }
 ];
 
@@ -46,16 +47,22 @@ const router = createRouter({
   routes,
 });
 
-// Middleware de Autenticação
-router.beforeEach(async (to, from, next) => {
-  const requiresAuth = to.meta.requiresAuth; // Verifica se a rota requer autenticação
-  const isAuthenticated = store.getters['user/isAuthenticated']; // Obtém o estado de autenticação do módulo 'user'
+// Middleware de Autenticação Global
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+  const isAuthenticated = store.getters['user/isAuthenticated'];
+  const user = store.getters['user/user'];
 
-  // Verifica a necessidade de autenticação
   if (requiresAuth && !isAuthenticated) {
+    // Se a rota exige autenticação e o usuário não está logado, redireciona para o login
     next('/login');
+  } else if (requiresAdmin && user?.user_type !== 'admin') {
+    // Se a rota exige admin e o usuário não é admin, redireciona para o dashboard ou home
+    next('/dashboard');
   } else {
-    next(); 
+    // Permite o acesso
+    next();
   }
 });
 
