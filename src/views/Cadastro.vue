@@ -8,12 +8,14 @@
             <form @submit.prevent="register" class="containerForm">
               <div class="input-group">
                 <UserIcon class="icon" />
-                <input v-model="name" type="text" placeholder="Nome *" />
+                <input v-model.trim="name" type="text" placeholder="Nome *" required />
               </div>
+
               <div class="input-group">
                 <EnvelopeIcon class="icon" />
-                <input v-model="email" type="email" placeholder="Email *" />
+                <input v-model.trim="email" type="email" placeholder="Email *" required />
               </div>
+
               <div class="input-group password-group">
                 <LockClosedIcon class="icon" />
                 <input
@@ -21,6 +23,7 @@
                   @input="updatePasswordStrength"
                   :type="showPassword ? 'text' : 'password'"
                   placeholder="Senha *"
+                  required
                 />
                 <button
                   type="button"
@@ -30,44 +33,51 @@
                 >
                   <EyeIcon class="eye-icon" />
                 </button>
-                <!-- Medidor de força de senha -->
                 <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">
-                  {{ passwordStrength }}
+                  Força: {{ passwordStrength }}
                 </div>
               </div>
+
               <div class="input-group">
                 <LockClosedIcon class="icon" />
                 <input
                   v-model="confirmPassword"
                   :type="showPassword ? 'text' : 'password'"
                   placeholder="Confirme a Senha *"
+                  required
                 />
                 <div v-if="passwordError" class="error-message">
                   As senhas não coincidem.
                 </div>
               </div>
+
               <div class="input-group">
                 <IdentificationIcon class="icon" />
-                <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" />
-                <div v-if="cpfError" class="error-message">
-                  CPF inválido. Verifique e tente novamente.
-                </div>
+                <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" @blur="validateCpf" required />
               </div>
+              <div v-if="cpfError" class="error-message">
+                CPF inválido. Verifique e tente novamente.
+              </div>
+
               <div class="input-group">
                 <select v-model="nivelFormacao" required>
-                  <option value="" disabled selected>Selecione seu nível de formação</option>
+                  <option value="" disabled>Selecione seu nível de formação *</option>
                   <option value="estudanteGraduacao">Estudante de Graduação</option>
                   <option value="estudantePosGraduacao">Estudante de Pós-Graduação</option>
                   <option value="graduado">Graduado</option>
                 </select>
               </div>
+
               <div class="input-group divComprovante">
-                <label><DocumentIcon class="icon" />Apresente um comprovante da sua formação *</label>
-                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" />
+                <label><DocumentIcon class="icon" />Anexe o comprovante de formação (PDF) *</label>
+                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" required />
               </div>
+
               <div class="divButton">
                 <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
-                <button type="submit" :disabled="!isFormValid" class="buttonCadastro">Cadastrar</button>
+                <button type="submit" :disabled="!isFormValid || isLoading" class="buttonCadastro">
+                  {{ isLoading ? 'Cadastrando...' : 'Cadastrar' }}
+                </button>
               </div>
             </form>
           </div>
@@ -79,7 +89,6 @@
         <h2>Cadastro Realizado com Sucesso!</h2>
         <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
         <button @click="goToLogin" class="buttonLoginRedirect">Ir para Login</button>
-        <button @click="closeModal" class="buttonCloseModal">Fechar</button>
       </div>
     </div>
   </div>
@@ -115,20 +124,22 @@ export default {
       passwordStrength: '',
       passwordStrengthClass: '',
       showSuccessModal: false,
+      isLoading: false,
     };
   },
 
   computed: {
     isFormValid() {
+      const passwordsMatch = this.password && this.password === this.confirmPassword;
       return (
         this.name &&
         this.email &&
-        this.password &&
+        passwordsMatch &&
         this.confirmPassword &&
         this.password === this.confirmPassword &&
         this.cpf &&
         !this.cpfError &&
-        this.comprovante !== null && 
+        this.comprovante &&
         this.nivelFormacao
       );
     },
@@ -209,38 +220,26 @@ export default {
     },
 
     async register() {
-      if (this.password !== this.confirmPassword) {
-        this.passwordError = true;
+      if (!this.isFormValid) {
+        alert('Por favor, preencha todos os campos corretamente.');
         return;
       }
-      this.passwordError = false;
+      this.isLoading = true;
 
-      if (!this.validateCpf()) {
-        alert('Por favor, insira um CPF válido.');
-        return;
-      }
-
-      if (!this.comprovante) {
-        alert('Por favor, envie um comprovante da sua formação.');
-        return;
-      }
-
-      const convertFileToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject('Erro ao converter o arquivo.');
-        });
-      };
+      const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
 
       try {
         const comprovanteBase64 = await convertFileToBase64(this.comprovante);
-        const jsonData = {
+        const payload = {
           name: this.name,
           email: this.email,
           password: this.password,
-          document: this.cpf,
+          document: this.cpf.replace(/\D/g, ''),
           comprovante: comprovanteBase64,
           category: this.nivelFormacao,
         };
@@ -250,19 +249,20 @@ export default {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(jsonData),
+          body: JSON.stringify(payload),
         });
 
         if (response.ok) {
-          alert('Usuário cadastrado com sucesso');
           this.showSuccessModal = true; 
         } else {
-          console.error('Erro na requisição:', response.statusText);
-          alert('Erro na requisição: ' + response.statusText);
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Erro ao realizar o cadastro.');
         }
       } catch (error) {
         console.error('Erro no cadastro:', error);
-        alert(`Erro: ${error}`);
+        alert(`Erro: ${error.message}`);
+      } finally {
+        this.isLoading = false;
       }
     },
 
@@ -281,6 +281,7 @@ export default {
         this.comprovante = file;
       } else {
         alert('Por favor, envie um arquivo PDF válido.');
+        event.target.value = '';
         this.comprovante = null;
       }
     },
@@ -517,6 +518,15 @@ h1 {
 
 select {
   border: none;
+}
+
+.input-group input:invalid {
+  border-color: red;
+}
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  width: 100%;
 }
 
 @media (max-width: 1366px) {
