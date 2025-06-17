@@ -9,8 +9,11 @@
       <p>Fotos enviadas: {{ photos.length }}/3</p>
 
       <form @submit.prevent="uploadPhoto" v-if="photos.length < 3">
-        <input type="file" @change="handleFileChange" />
-        <button type="submit">Enviar Foto</button>
+        <input type="file" @change="handleFileChange" accept="image/*" required />
+        <textarea v-model="description" placeholder="Descrição da foto" required></textarea>
+        <button type="submit" :disabled="isLoading">
+          {{ isLoading ? 'Enviando...' : 'Enviar Foto' }}
+        </button>
       </form>
 
       <div v-else>
@@ -32,21 +35,27 @@
 import { API_URL } from "@/config/config";
 export default {
   name: 'DashboardPage',
-  computed: {
-    user() {
-      return this.$store.getters['user/user']; // Obtém o usuário autenticado do Vuex Store
-    },
-  },
   data() {
     return {
-      photoFile: null, // Para armazenar o arquivo selecionado
-      photos: [], // Lista de fotos enviadas
+      photoFile: null,
+      description: '',
+      photos: [], 
+      isLoading: false,
     };
+  },
+  computed: {
+    user() {
+      return this.$store.getters['user/user'];
+    },
+    token() {
+      return this.$store.getters['user/token'];
+    }
   },
   methods: {
     handleFileChange(event) {
       this.photoFile = event.target.files[0];
     },
+    
     async uploadPhoto() {
       if (!this.photoFile) {
         alert('Por favor, selecione uma foto.');
@@ -57,40 +66,55 @@ export default {
         alert('Você já enviou o número máximo de fotos.');
         return;
       }
-
+      
+      this.isLoading = true;
+      
       try {
         const formData = new FormData();
         formData.append('image', this.photoFile);
         formData.append('user_id', this.user.id);
         formData.append('subcategory', 'B')
-        formData.append('description','teste de envio')
+        formData.append('description',this.description)
 
-        // Envia a foto para a API (substitua a URL abaixo pelo endpoint real)
-        await fetch(`${API_URL}/images/upload/`, {
+        // Envia a foto para a API 
+        const response = await fetch(`${API_URL}/images/upload/`, {
           method: 'POST',
           body: formData,
           headers: {
-            Authorization: `Bearer ${this.$store.getters['user/token']}`,
+            'Authorization': `Bearer ${this.token}`,
           },
         });
-
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Falha no upload da imagem.');
+        }
+        
         // Adiciona a foto à lista local após o upload
-        this.photos.push({
-          name: this.photoFile.name,
-          file: this.photoFile,
-        });
-
+        this.photos.push({ name: this.photoFile.name });
         alert('Foto enviada com sucesso!');
-        this.photoFile = null; // Limpa o estado após o envio
+
+        // Limpa o estado após o envio
+        this.photoFile = null; 
+        this.description = '';
+        this.$refs.fileInput.value = '';
       } catch (error) {
-        alert('Erro ao enviar foto. Tente novamente.');
+        alert(`Erro: ${error.message}`);
+      } finally {
+        this.isLoading = false;
       }
     },
     logout() {
       this.$store.dispatch('user/logout'); // Desloga o usuário
       this.$router.push('/login'); // Redireciona para a página de login
     },
+    async fetchUserPhotos() {
+      const userPhotos = await fetch(...);
+      this.photos = userPhotos;
+    }
   },
+  created() {
+    this.fetchUserPhotos();
+  }
 };
 </script>
 
@@ -100,6 +124,20 @@ export default {
 }
 .upload-section {
   margin-top: 2rem;
+  border: 1px solid #ccc;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 .photo-list {
   margin-top: 1rem;
@@ -108,5 +146,8 @@ export default {
 }
 .photo-list li {
   margin-bottom: 0.5rem;
+}
+.btn-danger {
+    margin-top: 2rem;
 }
 </style>
