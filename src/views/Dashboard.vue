@@ -6,9 +6,12 @@
     <div class="upload-section card">
       <div class="card-body">
         <h2 class="card-title">Envie suas fotos para o concurso</h2>
-        <p class="card-text">Você pode enviar no máximo 3 fotos. | Enviadas: {{ photos.length }}/3</p>
+        <div class="d-flex justify-content-around mb-3">
+            <span class="badge bg-secondary">Categoria A: {{ photosA.length }}/1</span>
+            <span class="badge bg-secondary">Categoria B: {{ photosB.length }}/3</span>
+        </div>
 
-        <form @submit.prevent="uploadPhoto" v-if="photos.length < 3">
+        <form @submit.prevent="uploadPhoto" v-if="canUploadA || canUploadB">
           <div class="mb-3">
             <label for="fileInput" class="form-label">Selecione a imagem</label>
             <input id="fileInput" ref="fileInput" type="file" @change="handleFileChange" class="form-control" accept="image/*" required />
@@ -17,8 +20,8 @@
           <div class="mb-3">
             <label for="subcategory" class="form-label">Categoria</label>
             <select id="subcategory" v-model="subcategory" class="form-select" required>
-              <option value="A">Categoria A (Foto Individual)</option>
-              <option value="B">Categoria B (Conjunto de Fotos)</option>
+              <option v-if="canUploadA" value="A">Categoria A (Foto Individual)</option>
+              <option v-if="canUploadB" value="B">Categoria B (Conjunto de Fotos)</option>
             </select>
           </div>
 
@@ -33,7 +36,7 @@
         </form>
 
         <div v-else class="alert alert-info">
-          Você já enviou o número máximo de fotos permitidas.
+          Você já enviou o número máximo de fotos para todas as categorias.
         </div>
       </div>
     </div>
@@ -78,6 +81,18 @@ export default {
     },
     token() {
       return this.$store.getters['user/token'];
+    },
+    photosA() {
+      return this.photos.filter(p => p.subcategory === 'A');
+    },
+    photosB() {
+      return this.photos.filter(p => p.subcategory === 'B');
+    },
+    canUploadA() {
+      return this.photosA.length < 1;
+    },
+    canUploadB() {
+      return this.photosB.length < 3;
     }
   },
   methods: {
@@ -85,6 +100,15 @@ export default {
       this.photoFile = event.target.files[0];
     },
     async uploadPhoto() {
+      if (this.subcategory === 'A' && !this.canUploadA) {
+        alert('Você já atingiu o limite de 1 foto para a Categoria A.');
+        return;
+      }
+      if (this.subcategory === 'B' && !this.canUploadB) {
+        alert('Você já atingiu o limite de 1 foto para a Categoria B.');
+        return;
+      }
+      
       if (!this.photoFile || !this.description || !this.subcategory) {
         alert('Por favor, preencha todos os campos.');
         return;
@@ -95,7 +119,7 @@ export default {
         const formData = new FormData();
         formData.append('image', this.photoFile);
         formData.append('user_id', this.user.id);
-        formData.append('subcategory', this.subcategory);
+        formData.append('category', this.subcategory);
         formData.append('description', this.description);
 
         const response = await fetch(`${API_URL}/images/upload/`, {
@@ -121,7 +145,7 @@ export default {
     resetForm() {
         this.photoFile = null;
         this.description = '';
-        this.subcategory = 'A';
+        this.subcategory = this.canUploadA ? 'A' : 'B';
         this.$refs.fileInput.value = '';
     },
     logout() {
@@ -130,10 +154,10 @@ export default {
     },
     async fetchUserPhotos() {
       if (!this.user) return; 
-
       this.isLoading = true;
+      
       try {
-        const response = await fetch(`${API_URL}/user/images/${this.user.id}`, {
+        const response = await fetch(`${API_URL}/user/images/${this.user.user_id}`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${this.token}` },
         });
@@ -159,6 +183,13 @@ export default {
       this.fetchUserPhotos();
     }
   },
+  watch: {
+    canUploadA(newVal) {
+      if (!newVal && this.subCategory === 'A') {
+        this.subcategory = 'B'
+      }
+    }
+  }
 };
 </script>
 
