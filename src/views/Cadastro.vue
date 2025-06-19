@@ -8,12 +8,22 @@
             <form @submit.prevent="register" class="containerForm">
               <div class="input-group">
                 <UserIcon class="icon" />
-                <input v-model.trim="name" type="text" placeholder="Nome *" required />
+                <input
+                  v-model.trim="name"
+                  type="text"
+                  placeholder="Nome *"
+                  required
+                />
               </div>
 
               <div class="input-group">
                 <EnvelopeIcon class="icon" />
-                <input v-model.trim="email" type="email" placeholder="Email *" required />
+                <input
+                  v-model.trim="email"
+                  type="email"
+                  placeholder="Email *"
+                  required
+                />
               </div>
 
               <div class="input-group password-group">
@@ -28,12 +38,16 @@
                 <button
                   type="button"
                   @click="togglePasswordVisibility"
-                  :class="{ 'active': showPassword }"
+                  :class="{ active: showPassword }"
                   class="show-password-btn"
                 >
                   <EyeIcon class="eye-icon" />
                 </button>
-                <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">
+                <div
+                  v-if="password"
+                  :class="passwordStrengthClass"
+                  class="password-strength-meter"
+                >
                   Força: {{ passwordStrength }}
                 </div>
               </div>
@@ -53,7 +67,14 @@
 
               <div class="input-group">
                 <IdentificationIcon class="icon" />
-                <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" @blur="validateCpf" required />
+                <input
+                  v-model="cpf"
+                  type="text"
+                  placeholder="CPF *"
+                  @input="applyCpfMask"
+                  @blur="validateCpf"
+                  required
+                />
               </div>
               <div v-if="cpfError" class="error-message">
                 CPF inválido. Verifique e tente novamente.
@@ -61,22 +82,43 @@
 
               <div class="input-group">
                 <select v-model="nivelFormacao" required>
-                  <option value="" disabled>Selecione seu nível de formação *</option>
-                  <option value="estudanteGraduacao">Estudante de Graduação</option>
-                  <option value="estudantePosGraduacao">Estudante de Pós-Graduação</option>
+                  <option value="" disabled>
+                    Selecione seu nível de formação *
+                  </option>
+                  <option value="estudanteGraduacao">
+                    Estudante de Graduação
+                  </option>
+                  <option value="estudantePosGraduacao">
+                    Estudante de Pós-Graduação
+                  </option>
                   <option value="graduado">Graduado</option>
                 </select>
               </div>
 
               <div class="input-group divComprovante">
-                <label><DocumentIcon class="icon" />Anexe o comprovante de formação (PDF) *</label>
-                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" required />
+                <label
+                  ><DocumentIcon class="icon" />Anexe o comprovante de formação
+                  (PDF) *</label
+                >
+                <input
+                  type="file"
+                  @change="onFileChange"
+                  accept=".pdf"
+                  class="inputFile"
+                  required
+                />
               </div>
 
               <div class="divButton">
-                <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
-                <button type="submit" :disabled="!isFormValid || isLoading" class="buttonCadastro">
-                  {{ isLoading ? 'Cadastrando...' : 'Cadastrar' }}
+                <button type="button" @click="cancel" class="buttonCancelar">
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  :disabled="!isFormValid || isLoading"
+                  class="buttonCadastro"
+                >
+                  {{ isLoading ? "Cadastrando..." : "Cadastrar" }}
                 </button>
               </div>
             </form>
@@ -87,20 +129,31 @@
     <div v-if="showSuccessModal" class="modal-overlay">
       <div class="modal-content">
         <h2>Cadastro Realizado com Sucesso!</h2>
-        <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
-        <button @click="goToLogin" class="buttonLoginRedirect">Ir para Login</button>
+        <p>
+          Seu cadastro foi concluído. Clique no botão abaixo para ir à página de
+          login.
+        </p>
+        <button @click="goToLogin" class="buttonLoginRedirect">
+          Ir para Login
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { UserIcon, EnvelopeIcon, LockClosedIcon, IdentificationIcon, DocumentIcon } from '@heroicons/vue/24/solid';
-import { EyeIcon } from '@heroicons/vue/24/outline';
-import { API_URL } from '@/config/config.js';
+import {
+  UserIcon,
+  EnvelopeIcon,
+  LockClosedIcon,
+  IdentificationIcon,
+  DocumentIcon,
+} from "@heroicons/vue/24/solid";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import { API_URL } from "@/config/config.js";
 
 export default {
-  name: 'CadastroPage',
+  name: "CadastroPage",
   components: {
     UserIcon,
     EnvelopeIcon,
@@ -111,18 +164,18 @@ export default {
   },
   data() {
     return {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      cpf: '',
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      cpf: "",
       cpfError: false,
-      nivelFormacao: '',
+      nivelFormacao: "",
       comprovante: null,
       showPassword: false,
       passwordError: false,
-      passwordStrength: '',
-      passwordStrengthClass: '',
+      passwordStrength: "",
+      passwordStrengthClass: "",
       showSuccessModal: false,
       isLoading: false,
     };
@@ -130,7 +183,8 @@ export default {
 
   computed: {
     isFormValid() {
-      const passwordsMatch = this.password && this.password === this.confirmPassword;
+      const passwordsMatch =
+        this.password && this.password === this.confirmPassword;
       return (
         this.name &&
         this.email &&
@@ -148,30 +202,31 @@ export default {
   methods: {
     updatePasswordStrength() {
       if (!this.password) {
-        this.passwordStrength = '';
-        this.passwordStrengthClass = '';
+        this.passwordStrength = "";
+        this.passwordStrengthClass = "";
         return;
       }
 
-      const strength = this.password.length >= 10 
-        ? 'Forte' 
-        : this.password.length >= 6 
-        ? 'Média' 
-        : 'Fraca';
+      const strength =
+        this.password.length >= 10
+          ? "Forte"
+          : this.password.length >= 6
+          ? "Média"
+          : "Fraca";
 
       this.passwordStrength = strength;
       this.passwordStrengthClass = `strength-${strength.toLowerCase()}`;
     },
 
-
     validateCpf() {
-      const cpf = this.cpf.replace(/\D/g, '');
+      const cpf = this.cpf.replace(/\D/g, "");
       if (cpf.length !== 11 || /^(\d)\1*$/.test(cpf)) {
         this.cpfError = true;
         return false;
       }
 
-      let sum = 0, remainder;
+      let sum = 0,
+        remainder;
 
       for (let i = 1; i <= 9; i++) {
         sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
@@ -199,39 +254,41 @@ export default {
     },
 
     applyCpfMask() {
-      this.cpf = this.cpf.replace(/\D/g, '') 
-        .replace(/(\d{3})(\d)/, '$1.$2')     
-        .replace(/(\d{3})(\d)/, '$1.$2')     
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); 
+      this.cpf = this.cpf
+        .replace(/\D/g, "")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     },
 
     cancel() {
-      this.name = '';
-      this.email = '';
-      this.password = '';
-      this.confirmPassword = '';
-      this.cpf = '';
+      this.name = "";
+      this.email = "";
+      this.password = "";
+      this.confirmPassword = "";
+      this.cpf = "";
       this.comprovante = null;
-      this.passwordStrength = '';
-      this.passwordStrengthClass = '';
+      this.passwordStrength = "";
+      this.passwordStrengthClass = "";
       this.passwordError = false;
-      this.nivelFormacao = '';
+      this.nivelFormacao = "";
       this.cpfError = false;
     },
 
     async register() {
       if (!this.isFormValid) {
-        alert('Por favor, preencha todos os campos corretamente.');
+        alert("Por favor, preencha todos os campos corretamente.");
         return;
       }
       this.isLoading = true;
 
-      const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-      });
+      const convertFileToBase64 = (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
 
       try {
         const comprovanteBase64 = await convertFileToBase64(this.comprovante);
@@ -239,27 +296,27 @@ export default {
           name: this.name,
           email: this.email,
           password: this.password,
-          document: this.cpf.replace(/\D/g, ''),
+          document: this.cpf.replace(/\D/g, ""),
           comprovante: comprovanteBase64,
           category: this.nivelFormacao,
         };
 
         const response = await fetch(`${API_URL}/users/`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         });
 
         if (response.ok) {
-          this.showSuccessModal = true; 
+          this.showSuccessModal = true;
         } else {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Erro ao realizar o cadastro.');
+          throw new Error(errorData.message || "Erro ao realizar o cadastro.");
         }
       } catch (error) {
-        console.error('Erro no cadastro:', error);
+        console.error("Erro no cadastro:", error);
         alert(`Erro: ${error.message}`);
       } finally {
         this.isLoading = false;
@@ -268,7 +325,7 @@ export default {
 
     goToLogin() {
       this.showSuccessModal = false;
-      this.$router.push('/login');
+      this.$router.push("/login");
     },
 
     togglePasswordVisibility() {
@@ -277,23 +334,21 @@ export default {
 
     onFileChange(event) {
       const file = event.target.files[0];
-      if (file && file.type === 'application/pdf') {
+      if (file && file.type === "application/pdf") {
         this.comprovante = file;
       } else {
-        alert('Por favor, envie um arquivo PDF válido.');
-        event.target.value = '';
+        alert("Por favor, envie um arquivo PDF válido.");
+        event.target.value = "";
         this.comprovante = null;
       }
     },
 
     closeModal() {
       this.showSuccessModal = false;
-    }
+    },
   },
 };
 </script>
-
-
 
 <style scoped>
 /* Estilos gerais */
@@ -504,7 +559,7 @@ h1 {
 .buttonLoginRedirect {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -518,6 +573,11 @@ h1 {
 
 select {
   border: none;
+  outline: none;
+  padding: 0.5rem;
+  flex: 1;
+  font-size: 1rem;
+  background-color: transparent;
 }
 
 .input-group input:invalid {
@@ -563,4 +623,3 @@ select {
   }
 }
 </style>
-

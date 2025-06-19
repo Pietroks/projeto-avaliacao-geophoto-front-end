@@ -1,22 +1,32 @@
 <template>
-  <div>
-    <h1>Painel de Administração</h1>
-    <p>Envie um código de cadastro para avaliadores do concurso.</p>
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="divForm">
-            <h2>Enviar código de cadastro:</h2>
-            <p>Informe o e-mail do avaliador para enviar um código de acesso.</p>
-            <input v-model="email" type="email" placeholder="E-mail do avaliador" />
-            <button :disabled="isSending" @click="sendInvite">
-              {{ isSending ? "Enviando..." : "Enviar" }}
-            </button>
-            <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
-            <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-          </div>
-        </div>
+  <div class="admin-container">
+    <h1 class="mb-2 text-center">Painel de Administração</h1>
+    <p class="text-center mb-4">
+      Envie um código de cadastro para avaliadores do concurso.
+    </p>
+
+    <div class="form-card">
+      <h2>Convidar Avaliador</h2>
+      <p class="mb-3">
+        Informe o e-mail do avaliador para enviar um código de acesso:
+      </p>
+
+      <input
+        v-model="email"
+        type="email"
+        placeholder="E-mail do avaliador"
+        class="form-control"
+        required
+      />
+
+      <button class="btn mt-3" :disabled="isSending" @click="sendInvite">
+        {{ isSending ? "Enviando..." : "Enviar Convite" }}
+      </button>
+
+      <div v-if="successMessage" class="success-message">
+        {{ successMessage }}
       </div>
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
@@ -41,87 +51,97 @@ export default {
   },
   methods: {
     async sendInvite() {
-    if (!this.email) {
-      this.errorMessage = "Por favor, insira um e-mail válido.";
-      this.successMessage = "";
-      return;
-    }
-
-    this.isSending = true;
-    this.errorMessage = "";
-    this.successMessage = "";
-
-    try {
-      const response = await fetch(`${API_URL}/invite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.token}`,
-        },
-        body: JSON.stringify({ email: this.email }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Erro ao enviar convite.");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!this.email || !emailRegex.test(this.email)) {
+        this.errorMessage = "Por favor, insira um e-mail válido.";
+        this.successMessage = "";
+        return;
       }
 
-      this.successMessage = `Convite enviado com sucesso para ${this.email}!`;
-      this.email = "";
-    } catch (error) {
-      this.errorMessage = error.message || "Erro ao enviar convite.";
-    } finally {
-      this.isSending = false;
-    }
-  }
+      this.isSending = true;
+      this.errorMessage = "";
+      this.successMessage = "";
+
+      try {
+        const response = await fetch(`${API_URL}/invite`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+          body: JSON.stringify({ email: this.email }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Erro ao enviar convite.");
+        }
+
+        this.successMessage = `Convite enviado para ${this.email}!`;
+        this.email = "";
+      } catch (error) {
+        this.errorMessage = error.message || "Erro ao enviar convite.";
+      } finally {
+        this.isSending = false;
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-.divForm {
+.admin-container {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 1rem;
+}
+
+.form-card {
   padding: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: #f9f9f9;
-  margin-top: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ddd;
+  text-align: center;
 }
 
-input {
+input.form-control {
   width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  font-size: 1rem;
 }
 
-button {
-  padding: 0.8rem 1.5rem;
-  background: purple;
-  color: white;
+button.btn {
+  background-color: #6f42c1;
+  color: #fff;
   font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  width: 100%;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 6px;
   transition: background 0.3s ease;
 }
 
-button:disabled {
-  background: gray;
+button.btn:hover:enabled {
+  background-color: #5a35a0;
+}
+
+button.btn:disabled {
+  background-color: #999;
   cursor: not-allowed;
 }
 
-button:hover:enabled {
-  background: #5a1a87;
-}
-
 .success-message {
-  color: green;
   margin-top: 1rem;
+  color: #28a745;
+  font-weight: 500;
 }
 
 .error-message {
-  color: red;
   margin-top: 1rem;
+  color: #dc3545;
+  font-weight: 500;
 }
 </style>
