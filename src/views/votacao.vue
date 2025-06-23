@@ -13,7 +13,7 @@
             <button class="btn btn-outline-secondary" @click="cancelarEnvio">
               Cancelar
             </button>
-            <button class="btn btn-primary" @click="executarEnvioNotasA">
+            <button class="btn btn-primary" @click="executarEnvioNotas('A')">
               Confirmar
             </button>
           </div>
@@ -57,6 +57,7 @@
                       {{ criterio.nome }}:
                     </label>
                     <input
+                      :disabled="image.avaliada"
                       :id="`nota-${image.image_id}-${criterio.id}`"
                       v-model.number="image.notas[criterio.id]"
                       type="number"
@@ -68,6 +69,7 @@
                     />
                   </div>
                   <button
+                    :disabled="image.avaliada"
                     class="btn btn-primary w-100 mt-2"
                     @click="confirmarEnvio(image)"
                   >
@@ -80,7 +82,64 @@
         </div>
         <p v-else class="text-center">Não há imagens na Categoria A.</p>
       </div>
+      <div class="categoria-container">
+        <h3 class="text-center mb-3">Categoria B</h3>
+
+        <div v-if="imagensB.length > 0" class="row g-4">
+          <!-- Mostra as imagens da Categoria B -->
+          <div
+            v-for="image in imagensB"
+            :key="image.image_id"
+            class="col-12 col-md-6 col-lg-4"
+          >
+            <div class="card card-votacao h-100">
+              <img
+                :src="image.image_url || defaultImage"
+                class="card-img-top fotosImg"
+                alt="Imagem do usuário"
+              />
+              <div class="card-body">
+                <p class="card-text description-text">
+                  {{ image.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Notas únicas para a Categoria B -->
+          <div v-if="isAvaliador" class="col-12 mt-4">
+            <div class="card p-4">
+              <h5 class="text-center mb-3">Avaliação da Categoria B</h5>
+              <div
+                v-for="criterio in criterios"
+                :key="criterio.id"
+                class="criterio-input-group mb-3"
+              >
+                <label :for="`nota-categoriaB-${criterio.id}`" class="form-label">
+                  {{ criterio.nome }}:
+                </label>
+                <input
+                  :disabled="categoriaBJaAvaliada"
+                  :id="`nota-categoriaB-${criterio.id}`"
+                  v-model.number="notasCategoriaB[criterio.id]"
+                  type="number"
+                  class="form-control"
+                  min="1"
+                  max="10"
+                  step="1"
+                  placeholder="1-10"
+                />
+              </div>
+              <button class="btn btn-primary w-100" @click="executarEnvioNotas('B')"
+                :disabled="categoriaBJaAvaliada">
+                Avaliar Categoria B
+              </button>
+            </div>
+          </div>
+        </div>
+        <p v-else class="text-center">Não há imagens na Categoria B.</p>
+      </div>
     </div>
+    
   </section>
 </template>
 
@@ -106,6 +165,8 @@ export default {
         { id: "impacto", nome: "Impacto Visual" },
         { id: "tema", nome: "Adequação ao Tema" },
       ],
+      notasCategoriaB: {},
+      categoriaBJaAvaliada: false,
     };
   },
   computed: {
@@ -130,6 +191,8 @@ export default {
         const images = await this.carregarImagensComDetalhes(this.usuario.id);
         this.imagensA = images.filter((img) => img.subcategory === "A");
         this.imagensB = images.filter((img) => img.subcategory === "B");
+        await this.carregarNotasCategoria("A");
+        await this.carregarNotasCategoria("B");
       } else {
         alert("Erro ao carregar os dados do usuário.");
       }
@@ -140,22 +203,43 @@ export default {
   methods: {
     async carregarImagensComDetalhes(usuarioId) {
       try {
-        const response = await fetch(`${API_URL}/user/images/${usuarioId}/`, {
+        const response = await fetch(`${API_URL}/user/images/${usuarioId}`, {
           headers: { Authorization: `Bearer ${this.token}` },
         });
         if (!response.ok) return [];
-        const images = await response.json();
-        return images.map((image) => {
-          const notas = {};
-          this.criterios.forEach((c) => (notas[c.id] = null));
-          return {
-            ...image,
-            image_url: `${API_URL}/images/${image.image_id}/`,
-            notas,
-          };
-        });
+
+        const { images } = await response.json();
+
+        const imagensComDetalhes = await Promise.all(
+          images.map(async (image) => {
+            // Inicializa o objeto de notas para cada critério
+            const notas = {};
+            this.criterios.forEach((c) => {
+              notas[c.id] = null;
+            });
+
+            // Faz a requisição para os detalhes da imagem
+            const detalhesResponse = await fetch(`${API_URL}/images/${image.image_id}/details`, {
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+
+            let detalhes = {};
+            if (detalhesResponse.ok) {
+              detalhes = await detalhesResponse.json();
+            }
+
+            return {
+              ...image,
+              ...detalhes,
+              image_url: `${API_URL}/images/${image.image_id}/`,
+              notas,
+            };
+          })
+        );
+
+        return imagensComDetalhes;
       } catch (error) {
-        console.error("Erro ao carregar imagens:", error);
+        console.error("Erro ao carregar imagens com detalhes:", error);
         return [];
       }
     },
@@ -180,18 +264,29 @@ export default {
       this.photoToSubmit = null;
     },
 
-    async executarEnvioNotasA() {
-      if (!this.photoToSubmit) return;
-      const image = this.photoToSubmit;
-      const ratingsPayload = this.criterios.map((criterio) => ({
-        criteria: criterio.id,
-        score: image.notas[criterio.id],
-      }));
+    async executarEnvioNotas(categoria) {
+      let ratingsPayload;
+      if (categoria === "A") {
+        if (!this.photoToSubmit) return;
+
+        ratingsPayload = this.criterios.map((criterio) => ({
+          criteria: criterio.id,
+          score: this.photoToSubmit.notas[criterio.id],
+        }));
+      } else if (categoria === "B") {
+        ratingsPayload = this.criterios.map((criterio) => ({
+          criteria: criterio.id,
+          score: this.notasCategoriaB[criterio.id],
+        }));
+      } else {
+        console.error("Categoria inválida");
+        return;
+      }
       const body = {
         evaluated_user_id: this.usuario.id,
-        evaluator_id: this.user.id,
+        evaluator_id: this.user.user_id,
         ratings: ratingsPayload,
-        category: "A",
+        category: categoria,
       };
       try {
         const response = await fetch(`${API_URL}/users/rate/`, {
@@ -210,40 +305,47 @@ export default {
         this.cancelarEnvio();
       }
     },
-
-    async enviarNotaCategoriaB() {
-      if (
-        !this.notaCategoriaB ||
-        this.notaCategoriaB < 1 ||
-        this.notaCategoriaB > 10
-      ) {
-        alert("Nota inválida. Use valores de 1 a 10.");
-        return;
-      }
-      const ratings = this.criterios.map((c) => ({
-        criteria: c.id,
-        score: this.notaCategoriaB,
-      }));
-      const body = {
-        evaluated_user_id: this.usuario.id,
-        evaluator_id: this.user.id,
-        ratings,
-        category: "B",
-      };
+    async carregarNotasCategoria(categoria) {
       try {
-        const response = await fetch(`${API_URL}/users/rate/`, {
+        const response = await fetch(`${API_URL}/images/rate/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.token}`,
           },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            user_id: this.usuario.id,
+            category: categoria,
+            evaluator_id: this.user.user_id
+          }),
         });
-        if (!response.ok)
-          throw new Error("Erro ao enviar nota da Categoria B.");
-        alert("Nota da Categoria B enviada com sucesso!");
+
+        if (!response.ok) return;
+
+        const { ratings } = await response.json();
+        const ratingsMap = {};
+        ratings.forEach((r) => {
+          ratingsMap[r.criteria] = r.rating;
+        });
+
+        if (categoria === "B") {
+          // Categoria B: notas únicas
+          this.criterios.forEach((c) => {
+            this.notasCategoriaB[c.id] = ratingsMap[c.id] ?? null;
+          });
+          this.categoriaBJaAvaliada = this.criterios.every(c => ratingsMap[c.id] != null);
+          console.log("Categoria B já avaliada?", this.categoriaBJaAvaliada);
+        } else if (categoria === "A") {
+          // Categoria A: aplicar a todas as imagens (ou adaptar se for por imagem individual)
+          this.imagensA.forEach((img) => {
+            this.criterios.forEach((c) => {
+              img.notas[c.id] = ratingsMap[c.id] ?? null;
+            });
+            img.avaliada = this.criterios.every((c) => img.notas[c.id] != null);
+          });
+        }
       } catch (error) {
-        alert(error.message);
+        console.error(`Erro ao carregar notas da categoria ${categoria}:`, error);
       }
     },
   },

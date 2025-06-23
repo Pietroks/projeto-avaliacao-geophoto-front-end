@@ -10,7 +10,7 @@
         </div>
 
         <!-- Menu de navegação -->
-        <div class="col-md-4 divNav">
+        <div class="col-md-5 divNav">
           <router-link
             to="/"
             :class="['navLink', { 'navLinkActive': selectedLink === '/' }]"
@@ -29,11 +29,16 @@
             to="/premiacao"
             :class="['navLink', { 'navLinkActive': selectedLink === '/premiacao' }]"
             @click="selectLink('/premiacao')"
-          >Premiação</router-link>  
+          >Premiação</router-link>
+          <router-link
+            to="/NotasPublicas"
+            :class="['navLink', { 'navLinkActive': selectedLink === '/NotasPublicas' }]"
+            @click="selectLink('/NotasPublicas')"
+          >Avaliações</router-link>
         </div>
 
         <!-- Ícone ou botões de login -->
-        <div class="col-md-4 divLogin">
+        <div class="col-md-3 divLogin">
           <!-- Mobile: Ícone para abrir menu -->
           <div class="d-md-none">
             <button class="btn btn-icon" @click="toggleMenuLogin">
@@ -53,7 +58,7 @@
                 Meu Perfil
               </button>
               <button 
-                @click="logout" 
+                @click="handleLogout" 
                 class="btn btn-danger ms-2"
               >
                 Sair
@@ -113,7 +118,13 @@ export default {
     },
     redirectToDashboard() {
       this.$router.push({ name: "dashboard" });
-    }
+    },
+    async handleLogout() {
+    await this.logout();
+    this.$router.push("/login").then(() => {
+      window.location.reload(); 
+    });
+  },
   },
   mounted() {
     this.$store.dispatch("user/checkLoginStatus");

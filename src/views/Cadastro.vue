@@ -85,13 +85,13 @@
                   <option value="" disabled>
                     Selecione seu nível de formação *
                   </option>
-                  <option value="estudanteGraduacao">
+                  <option value= 1>
                     Estudante de Graduação
                   </option>
-                  <option value="estudantePosGraduacao">
+                  <option value=2>
                     Estudante de Pós-Graduação
                   </option>
-                  <option value="graduado">Graduado</option>
+                  <option value=3>Graduado</option>
                 </select>
               </div>
 
@@ -282,31 +282,19 @@ export default {
       }
       this.isLoading = true;
 
-      const convertFileToBase64 = (file) =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (error) => reject(error);
-        });
-
       try {
-        const comprovanteBase64 = await convertFileToBase64(this.comprovante);
-        const payload = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          document: this.cpf.replace(/\D/g, ""),
-          comprovante: comprovanteBase64,
-          category: this.nivelFormacao,
-        };
+        const formData = new FormData();
+        formData.append("name", this.name);
+        formData.append("email", this.email);
+        formData.append("password", this.password);
+        formData.append("document", this.cpf.replace(/\D/g, ""));
+        formData.append("user_type", "N"); // ou outro valor se tiver um select
+        formData.append("category", this.nivelFormacao);
+        formData.append("file", this.comprovante);
 
         const response = await fetch(`${API_URL}/users/`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          body: formData
         });
 
         if (response.ok) {

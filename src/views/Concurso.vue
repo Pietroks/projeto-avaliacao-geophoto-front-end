@@ -37,12 +37,6 @@
           class="col-12 col-md-6 col-lg-3 text-center"
         >
           <div class="divUsuario">
-            <img
-              :src="usuario.image || defaultImage"
-              @error="onImageError($event)"
-              alt="Imagem do usuário"
-              class="img-fluid rounded shadow-lg mb-3"
-            />
             <p>
               <strong>{{ usuario.name }}</strong>
             </p>
