@@ -188,7 +188,7 @@ export default {
 .logoutButton {
   background: none;
   border: none;
-  color: brown;
+  color: rgb(0, 34, 105);
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
@@ -241,7 +241,7 @@ cursor: pointer;
 
 .navLink, .buttonCadastro {
   text-decoration: none;
-  color: #212121;
+  color: #03b6e5;
   font-weight: 700;
   font-size: 1rem;
   position: relative;
@@ -249,7 +249,7 @@ cursor: pointer;
 }
 
 .navLinkActive {
-  color: brown;
+  color: #03b6e5;
   transform: scale(1.1);
 }
 
@@ -260,7 +260,7 @@ cursor: pointer;
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: brown;
+  background-color: #03b6e5;
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease-in-out;
@@ -271,7 +271,7 @@ cursor: pointer;
 }
 
 .navLink:hover {
-  color: brown;
+  color: #03b6e5;
   transform: scale(1.1);
 }
 
@@ -280,14 +280,14 @@ cursor: pointer;
 }
 
 .buttonCadastro {
-  border: 2px solid brown;
+  border: 2px solid #03b6e5;
   border-radius: 10px;
   padding: 0.5rem;
   transition: 0.3s ease-in-out;
 }
 
 .buttonCadastro:hover {
-  background: brown;
+  background: #03b6e5;
   color: whitesmoke;
 }
 

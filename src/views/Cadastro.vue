@@ -79,6 +79,48 @@
               <div v-if="cpfError" class="error-message">
                 CPF inválido. Verifique e tente novamente.
               </div>
+              <div class="input-group">
+                <MapPinIcon class="icon" />
+                <input
+                  v-model="cep"
+                  type="text"
+                  placeholder="CEP *"
+                  @input="applyCepMask"
+                  @blur="fetchAddressFromCep"
+                  maxlength="9"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <MapIcon class="icon" />
+                <input
+                  v-model="rua"
+                  type="text"
+                  placeholder="Rua/Avenida *"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <BuildingLibraryIcon class="icon" />
+                <input
+                  v-model="bairro"
+                  type="text"
+                  placeholder="Bairro *"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <HomeIcon class="icon" />
+                <input
+                  v-model="numero"
+                  type="text"
+                  placeholder="Número *"
+                  required
+                />
+              </div>
 
               <div class="input-group">
                 <select v-model="nivelFormacao" required>
@@ -148,6 +190,10 @@ import {
   LockClosedIcon,
   IdentificationIcon,
   DocumentIcon,
+  MapPinIcon,
+  MapIcon,
+  BuildingLibraryIcon,
+  HomeIcon
 } from "@heroicons/vue/24/solid";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { API_URL } from "@/config/config.js";
@@ -161,6 +207,10 @@ export default {
     IdentificationIcon,
     DocumentIcon,
     EyeIcon,
+    MapPinIcon,
+    MapIcon,
+    BuildingLibraryIcon,
+    HomeIcon
   },
   data() {
     return {
@@ -178,6 +228,10 @@ export default {
       passwordStrengthClass: "",
       showSuccessModal: false,
       isLoading: false,
+      cep: "",
+      rua: "",
+      bairro: "",
+      numero: ""
     };
   },
 
@@ -194,12 +248,48 @@ export default {
         this.cpf &&
         !this.cpfError &&
         this.comprovante &&
-        this.nivelFormacao
+        this.nivelFormacao &&
+        this.cep &&
+        this.rua &&
+        this.bairro &&
+        this.numero
       );
     },
   },
 
   methods: {
+    pplyCepMask() {
+      this.cep = this.cep
+        .replace(/\D/g, "")
+        .replace(/^(\d{5})(\d)/, "$1-$2")
+        .slice(0, 9);
+    },
+
+    async fetchAddressFromCep() {
+      const cep = this.cep.replace(/\D/g, "");
+      if (cep.length !== 8) {
+        return;
+      }
+      this.isLoading = true;
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+          alert("CEP não encontrado. Por favor, verifique.");
+          this.rua = "";
+          this.bairro = "";
+        } else {
+          this.rua = data.logradouro;
+          this.bairro = data.bairro;
+        }
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+        alert("Não foi possível buscar o endereço. Tente novamente.");
+      } finally {
+        this.isLoading = false;
+      }
+    },
     updatePasswordStrength() {
       if (!this.password) {
         this.passwordStrength = "";
@@ -273,6 +363,10 @@ export default {
       this.passwordError = false;
       this.nivelFormacao = "";
       this.cpfError = false;
+      this.cep = "";
+      this.rua = "";
+      this.bairro = "";
+      this.numero = "";
     },
 
     async register() {
@@ -290,6 +384,9 @@ export default {
         formData.append("document", this.cpf.replace(/\D/g, ""));
         formData.append("user_type", "N"); // ou outro valor se tiver um select
         formData.append("category", this.nivelFormacao);
+        var endereco_completo= this.rua+this.bairro+this.numero
+        formData.append("cep",this.cep.replace(/\D/g, ""))
+        formData.append("complete_adress", endereco_completo)
         formData.append("file", this.comprovante);
 
         const response = await fetch(`${API_URL}/users/`, {
@@ -347,7 +444,7 @@ export default {
 }
 
 .backgroundImg {
-  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
+  background: linear-gradient(to top, #2c313c, #3c4454, #3c4454, #2c313c);
   min-height: 100vh;
   width: 100vw;
   display: flex;
@@ -471,7 +568,7 @@ h1 {
 /* Botões de ação */
 .buttonCadastro,
 .buttonCancelar {
-  background-color: brown;
+  background-color: #1488f0;
   color: whitesmoke;
   border: none;
   padding: 0.7rem 1.5rem;
@@ -484,7 +581,7 @@ h1 {
 }
 
 .buttonCadastro:hover {
-  background-color: darkred;
+  background-color: rgb(26, 0, 173);
 }
 
 .buttonCancelar {

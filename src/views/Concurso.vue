@@ -129,11 +129,16 @@ export default {
           "Não Informado",
       }));
     } catch (error) {
-      console.error("Erro:", error.message);
-      alert("Erro ao carregar usuários.");
+
+      alert("Erro ao carregar usuários faça login novamente");
+        this.logout()
     }
   },
   methods: {
+    logout() {
+      this.$store.dispatch("user/logout");
+      this.$router.push("/login");
+    },
     redirecionarParaVotacao(usuarioId) {
       this.$router.push({ name: "votacao", params: { id: usuarioId } });
     },

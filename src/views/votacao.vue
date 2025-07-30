@@ -194,13 +194,18 @@ export default {
         await this.carregarNotasCategoria("A");
         await this.carregarNotasCategoria("B");
       } else {
-        alert("Erro ao carregar os dados do usuário.");
+        alert("Erro ao carregar os dados do usuário faça login novamente");
+        this.logout()
       }
     } catch (error) {
       alert("Erro na comunicação com o servidor. Verifique sua conexão.");
     }
   },
   methods: {
+    logout() {
+      this.$store.dispatch("user/logout");
+      this.$router.push("/login");
+    },
     async carregarImagensComDetalhes(usuarioId) {
       try {
         const response = await fetch(`${API_URL}/user/images/${usuarioId}`, {

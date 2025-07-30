@@ -118,7 +118,7 @@ export default {
 }
 
 .backgroundImg {
-  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
+  background: linear-gradient(to top, #2c313c, #3c4454, #3c4454, #2c313c);
   min-height: 100vh;
   width: 100vw;
   display: flex;
@@ -128,7 +128,7 @@ export default {
 }
 
 .containerCadastro {
-  background: radial-gradient(black, transparent);
+  background: radial-gradient(#bbbbbb, transparent);
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -176,7 +176,7 @@ input {
 }
 
 .buttonCadastro {
-  background-color: brown;
+  background-color: #1488f0;
   color: whitesmoke;
   border: none;
   padding: 0.7rem 1.5rem;
@@ -188,9 +188,6 @@ input {
   margin-bottom: 2rem;
 }
 
-.buttonCadastro:hover {
-  background-color: darkred;
-}
 
 p {
   font-weight: 500;
@@ -198,7 +195,7 @@ p {
 }
 
 .link {
-  color: brown;
+  color: #1488f0;
   font-weight: 700;
 }
 

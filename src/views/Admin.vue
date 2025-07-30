@@ -8,8 +8,24 @@
     <div class="form-card">
       <h2>Convidar Avaliador</h2>
       <p class="mb-3">
-        Informe o e-mail do avaliador para enviar um código de acesso:
+        Informe o nome e o e-mail do avaliador para enviar um código de acesso:
       </p>
+
+      <input
+        v-model="name"
+        type="text"
+        placeholder="Nome do avaliador"
+        class="form-control mb-3"
+        required
+      />
+
+      <input
+        v-model="document"
+        type="text"
+        placeholder="Documento do avaliador"
+        class="form-control mb-3"
+        required
+      />
 
       <input
         v-model="email"
@@ -38,7 +54,9 @@ export default {
   name: "AdminPage",
   data() {
     return {
+      name: "",
       email: "",
+      document:"",
       isSending: false,
       successMessage: "",
       errorMessage: "",
@@ -51,6 +69,18 @@ export default {
   },
   methods: {
     async sendInvite() {
+      if (!this.name.trim()) {
+        this.errorMessage = "Por favor, insira o nome do avaliador.";
+        this.successMessage = "";
+        return;
+      }
+
+      if (!this.document.trim()) {
+        this.errorMessage = "Por favor, insira o documento do avaliador.";
+        this.successMessage = "";
+        return;
+      }
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!this.email || !emailRegex.test(this.email)) {
         this.errorMessage = "Por favor, insira um e-mail válido.";
@@ -68,16 +98,19 @@ export default {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.token}`,
+
           },
-          body: JSON.stringify({ email: this.email }),
+          
+          body: JSON.stringify({ name: this.name, email: this.email, document: this.document }),
         });
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.message || "Erro ao enviar convite.");
+          throw new Error(error.detail || "Erro ao enviar convite.");
         }
 
-        this.successMessage = `Convite enviado para ${this.email}!`;
+        this.successMessage = `Convite enviado para ${this.name} (${this.email})!`;
+        this.name = ""; 
         this.email = "";
       } catch (error) {
         this.errorMessage = error.message || "Erro ao enviar convite.";

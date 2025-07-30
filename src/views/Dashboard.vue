@@ -2,7 +2,11 @@
   <div class="dashboard">
     <h1 class="mb-1">Bem-vindo, {{ user?.name || "Usuário" }}</h1>
     <p class="mb-4">Email: {{ user?.email || "Não informado" }}</p>
-
+    <div class="account-actions mb-4">
+      <button @click="goToUpdatePassword" class="btn btn-outline-secondary">
+        Alterar Senha
+      </button>
+    </div>
     <div class="upload-section card shadow-sm">
       <div class="card-body">
         <h2 class="card-title mb-3">Envie suas fotos para o concurso</h2>
@@ -255,6 +259,9 @@ export default {
           }
         );
 
+        if (response.status == 401){
+          this.logout()
+        }
         if (!response.ok) throw new Error("Erro ao buscar imagens.");
 
         const { images } = await response.json();
@@ -283,6 +290,14 @@ export default {
         console.error("Erro ao buscar imagens:", error);
       } finally {
         this.isLoading = false;
+      }
+    },
+    goToUpdatePassword() {
+      if (this.user && this.user.user_id) {
+        this.$router.push(`/edit-profile/${this.user.user_id}`);
+      } else {
+        console.error("ID do usuário não encontrado para navegação.");
+        alert("Não foi possível encontrar suas informações para alterar a senha.");
       }
     },
   },

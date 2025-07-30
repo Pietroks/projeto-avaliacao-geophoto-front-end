@@ -5,35 +5,22 @@
                 <div class="col-md-4 col-12">
                     <div class="containerFooter1">
                         <div class="divLogo">
-                            <img class="logo" src="../assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg" alt="">
-                            <h3>Laboratório de Geografia da Faculdade Xing Ling</h3>
-                        </div>
-                        <div class="divPremios">
-                            <img class="premio" src="../assets/tild3964-3837-4466-b437-646561666634__holoniq-2023_1.png" alt="">
-                            <img class="premio" src="../assets/tild6630-3339-4361-a138-363835666536__exame.png" alt="">
+                            <h3>Laboratório de Geoiconografia e Multimídias - UNB</h3>
                         </div>
                         <div class="divPrivacidade">
-                            <a class="politica" href="#">Política de Privacidade e Contrato de Prestação de Serviço</a>
+                            <a class="infoContato" href="#">Política de Privacidade e Contrato de Prestação de Serviço</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 col-12">
                     <div class="containerContato">
                         <div class="divContato">
-                            <h4 class="contato">whatsApp</h4>
-                            <a href="#"  class="infoContato">+55 (55) 99999-9999</a>
-                        </div>
-                        <div class="divContato">
-                            <h4 class="contato">Telefone</h4>
-                            <a href="#"  class="infoContato">+55 (55) 99999-9999</a>
-                        </div>
-                        <div class="divContato">
-                            <h4 class="contato">E-mail</h4>
+                            <h4 class="infoContato">E-mail</h4>
                             <a href="#" class="infoContato">suporte@xingling.com.br</a>
                         </div>
                     </div>
                     <div class="divEndereco">
-                        <p class="politica">Faculdade Xing Ling Ltda.<br>Rua xing ling da silva, 123, centro, CEP 99999-999, Xang Gai</p>
+                        <p class="infoContato">LAGIM.</p>
                     </div>
                 </div>
                 <div class="col-md-4 col-12">
@@ -57,7 +44,7 @@ export default {
 
 <style scoped>
 .background {
-    background: #22053D;
+    background: #03b6e5;
 }
 
 .containerFooter1 {

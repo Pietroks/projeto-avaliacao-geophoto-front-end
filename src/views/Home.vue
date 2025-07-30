@@ -3,13 +3,6 @@
     <div class="container text-center py-5">
       <h1 class="main-title">Geofotografia</h1>
       <h2 class="sub-title">Capturando a beleza natural da Terra</h2>
-      <p class="hero-description">
-        Geophotography is the art of capturing images of the Earth’s surface in
-        order to capture its beauty and share it with others. It can range from
-        simple snapshots taken with a smartphone to complex shots taken with
-        expensive equipment by professionals who have spent years mastering
-        their craft.
-      </p>
       <router-link to="/cadastro" class="cta-btn">
         Inscreva-se
         <font-awesome-icon icon="arrow-right" class="ms-2" />
@@ -102,13 +95,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-import img1 from "@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg";
-import img2 from "@/assets/pascal-scholl-RFrM7_t2F2E-unsplash.jpg";
-import img3 from "@/assets/thumb-1920-526183.jpg";
+import img1 from "@/assets/hex6.png";
 
-import montanhas from "@/assets/17638-3840x2160-desktop-4k-forest-background.jpg";
-import rios from "@/assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg";
-import florestas from "@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg";
+import montanhas from "@/assets/hex3.png";
+import rios from "@/assets/hex4.png";
+import florestas from "@/assets/hex5.png";
 
 library.add(faArrowRight);
 
@@ -118,7 +109,7 @@ export default {
   data() {
     return {
       currentIndex: 0,
-      images: [img1, img2, img3],
+      images: [img1],
       gallery: [
         { title: "Montanhas", image: montanhas },
         { title: "Rios", image: rios },
@@ -143,10 +134,10 @@ body {
 }
 
 .hero {
-  background-image: url("@/assets/tim-stief-YFFGkE3y4F8-unsplash.jpg");
+  background-image: url("@/assets/hex2.png");
   background-size: cover;
   background-position: center;
-  color: white;
+  color: #03b6e5;;
   padding: 6rem 0;
 }
 
@@ -154,12 +145,14 @@ body {
   font-size: 4rem;
   font-weight: 700;
   letter-spacing: 4px;
+  color: #2c313c;
 }
 
 .sub-title {
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 1.5rem;
+  color:#2c313c;
 }
 
 .hero-description {

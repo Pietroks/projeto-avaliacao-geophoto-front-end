@@ -4,7 +4,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="divTexto">
-            <h3 class="titulo1">Faculdade Xing Ling</h3>
+            <h3 class="titulo1">Faculdade</h3>
             <p class="paragrafo">
               A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles moldam o espaço em que vivemos. 
               Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial para entender nosso mundo.
