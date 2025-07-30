@@ -7,21 +7,12 @@
         <!-- Filtros -->
         <div class="row justify-content-center mt-4">
           <div class="col-md-4 mb-2">
-            <input
-              v-model="searchTerm"
-              type="text"
-              class="form-control"
-              placeholder="Buscar por nome..."
-            />
+            <input v-model="searchTerm" type="text" class="form-control" placeholder="Buscar por nome..." />
           </div>
           <div class="col-md-4 mb-2">
             <select v-model="selectedCategory" class="form-select">
               <option value="">Todas as categorias</option>
-              <option
-                v-for="(label, index) in categoryOptions"
-                :key="index"
-                :value="label"
-              >
+              <option v-for="(label, index) in categoryOptions" :key="index" :value="label">
                 {{ label }}
               </option>
             </select>
@@ -31,56 +22,24 @@
 
       <!-- Lista de usuários -->
       <div class="row g-4">
-        <div
-          v-for="usuario in paginatedUsuarios"
-          :key="usuario.id"
-          class="col-12 col-md-6 col-lg-3 text-center"
-        >
+        <div v-for="usuario in paginatedUsuarios" :key="usuario.id" class="col-12 col-md-6 col-lg-3 text-center">
           <div class="divUsuario">
-            <img
-              :src="usuario.image || defaultImage"
-              @error="onImageError($event)"
-              alt="Imagem do usuário"
-              class="img-fluid rounded shadow-lg mb-3"
-            />
             <p>
               <strong>{{ usuario.name }}</strong>
             </p>
             <p class="text-muted">Categoria: {{ usuario.category }}</p>
-            <button
-              @click="redirecionarParaVotacao(usuario.id)"
-              class="btn btn-primary"
-            >
-              Ver Imagens
-            </button>
+            <button @click="redirecionarParaVotacao(usuario.id)" class="btn btn-primary">Ver Imagens</button>
           </div>
         </div>
       </div>
 
       <!-- Paginação -->
       <div class="d-flex justify-content-center mt-5">
-        <button
-          class="btn btn-secondary me-2"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
-          Anterior
-        </button>
-        <button
-          class="btn btn-secondary"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
-          Próxima
-        </button>
+        <button class="btn btn-secondary me-2" :disabled="currentPage === 1" @click="currentPage--">Anterior</button>
+        <button class="btn btn-secondary" :disabled="currentPage === totalPages" @click="currentPage++">Próxima</button>
       </div>
 
-      <p
-        v-if="filteredUsuarios.length === 0"
-        class="text-light text-center mt-5"
-      >
-        Nenhum usuário encontrado.
-      </p>
+      <p v-if="filteredUsuarios.length === 0" class="text-light text-center mt-5">Nenhum usuário encontrado.</p>
     </div>
   </section>
 </template>
@@ -105,11 +64,8 @@ export default {
   computed: {
     filteredUsuarios() {
       return this.usuarios.filter((user) => {
-        const matchNome = user.name
-          .toLowerCase()
-          .includes(this.searchTerm.toLowerCase());
-        const matchCategoria =
-          !this.selectedCategory || user.category === this.selectedCategory;
+        const matchNome = user.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+        const matchCategoria = !this.selectedCategory || user.category === this.selectedCategory;
         return matchNome && matchCategoria;
       });
     },
@@ -130,16 +86,18 @@ export default {
       const data = await response.json();
       this.usuarios = data.map((usuario) => ({
         ...usuario,
-        category:
-          ["Graduado", "Pós-Graduado", "Outros"][usuario.category - 1] ||
-          "Não Informado",
+        category: ["Graduado", "Pós-Graduado", "Outros"][usuario.category - 1] || "Não Informado",
       }));
     } catch (error) {
-      console.error("Erro:", error.message);
-      alert("Erro ao carregar usuários.");
+      alert("Erro ao carregar usuários faça login novamente");
+      this.logout();
     }
   },
   methods: {
+    logout() {
+      this.$store.dispatch("user/logout");
+      this.$router.push("/login");
+    },
     redirecionarParaVotacao(usuarioId) {
       this.$router.push({ name: "votacao", params: { id: usuarioId } });
     },
@@ -152,15 +110,15 @@ export default {
 
 <style scoped>
 .background1 {
-  background-color: #010020;
+  background-color: black;
   padding: 4rem 0;
 }
 
 .tituloConcurso {
-  color: #a52a2a;
+  color: #137abe;
   font-size: 2.5rem;
   font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .divUsuario {

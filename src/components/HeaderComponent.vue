@@ -5,35 +5,33 @@
         <!-- Logo -->
         <div class="col-md-4 divLogo">
           <router-link to="/" class="Logo">
-            <img :src="logoImage" class="img-fluid imgLogo" alt="Logo">
+            <img :src="logoImage" class="img-fluid imgLogo" alt="Logo" />
           </router-link>
         </div>
 
         <!-- Menu de navegação -->
-        <div class="col-md-4 divNav">
-          <router-link
-            to="/"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/' }]"
-            @click="selectLink('/')"
-          >Inicio</router-link>
-          <router-link
-            to="/sobre"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/sobre' }]"
-            @click="selectLink('/sobre')"
-          >Sobre</router-link>
-          <router-link
-            to="/concurso"
-            class="buttonCadastro"
-          >Acesse o Concurso</router-link>
+        <div class="col-md-5 divNav">
+          <router-link to="/" :class="['navLink', { navLinkActive: selectedLink === '/' }]" @click="selectLink('/')">Inicio</router-link>
+          <router-link to="/sobre" :class="['navLink', { navLinkActive: selectedLink === '/sobre' }]" @click="selectLink('/sobre')"
+            >Sobre</router-link
+          >
+          <router-link to="/concurso" class="buttonCadastro">Acesse o Concurso</router-link>
           <router-link
             to="/premiacao"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/premiacao' }]"
+            :class="['navLink', { navLinkActive: selectedLink === '/premiacao' }]"
             @click="selectLink('/premiacao')"
-          >Premiação</router-link>  
+            >Premiação</router-link
+          >
+          <router-link
+            to="/NotasPublicas"
+            :class="['navLink', { navLinkActive: selectedLink === '/NotasPublicas' }]"
+            @click="selectLink('/NotasPublicas')"
+            >Avaliações</router-link
+          >
         </div>
 
         <!-- Ícone ou botões de login -->
-        <div class="col-md-4 divLogin">
+        <div class="col-md-3 divLogin">
           <!-- Mobile: Ícone para abrir menu -->
           <div class="d-md-none">
             <button class="btn btn-icon" @click="toggleMenuLogin">
@@ -41,34 +39,16 @@
             </button>
           </div>
           <!-- Desktop ou menu aberto no mobile -->
-          <div 
-            :class="{'d-none d-md-flex': !menuLoginAberto, 'd-block': menuLoginAberto}"
-            class="login-buttons"
-          >
+          <div :class="{ 'd-none d-md-flex': !menuLoginAberto, 'd-block': menuLoginAberto }" class="login-buttons">
             <template v-if="isLoggedIn">
-              <button 
-                @click="redirectToDashboard" 
-                class="btn btn-outline-primary"
-              >
-                Meu Perfil
-              </button>
-              <button 
-                @click="logout" 
-                class="btn btn-danger ms-2"
-              >
-                Sair
-              </button>
+              <button @click="redirectToDashboard" class="btn btn-outline-primary">Meu Perfil</button>
+              <button @click="handleLogout" class="btn btn-danger ms-2">Sair</button>
             </template>
             <template v-else>
-              <router-link
-                to="/login"
-                :class="['navLink', { 'navLinkActive': selectedLink === '/login' }]"
-                @click="selectLink('/login')"
-              >Entrar</router-link>
-              <router-link
-                to="/cadastro"
-                class="buttonCadastro"
-              >Cadastre-se</router-link>
+              <router-link to="/login" :class="['navLink', { navLinkActive: selectedLink === '/login' }]" @click="selectLink('/login')"
+                >Entrar</router-link
+              >
+              <router-link to="/cadastro" class="buttonCadastro">Cadastre-se</router-link>
             </template>
           </div>
         </div>
@@ -77,30 +57,28 @@
   </section>
 </template>
 
-
-
 <script>
 import { mapState, mapActions } from "vuex";
-import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
+import logo from "@/assets/logo.png";
 import { UserIcon } from "@heroicons/vue/24/solid";
 
 export default {
-  name: 'HeaderComponent',
+  name: "HeaderComponent",
   components: {
     UserIcon,
-  },  
+  },
   data() {
     return {
       logoImage: logo,
-      selectedLink: '/',
+      selectedLink: "/",
       menuLoginAberto: false,
     };
   },
   computed: {
     ...mapState("user", ["user", "token"]),
     isLoggedIn() {
-      return !!this.token; 
-    }
+      return !!this.token;
+    },
   },
   methods: {
     ...mapActions("user", ["logout"]),
@@ -113,7 +91,13 @@ export default {
     },
     redirectToDashboard() {
       this.$router.push({ name: "dashboard" });
-    }
+    },
+    async handleLogout() {
+      await this.logout();
+      this.$router.push("/login").then(() => {
+        window.location.reload();
+      });
+    },
   },
   mounted() {
     this.$store.dispatch("user/checkLoginStatus");
@@ -121,7 +105,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     this.$store.dispatch("user/checkLoginStatus");
     next();
-  }
+  },
 };
 </script>
 
@@ -129,7 +113,6 @@ export default {
 .containerHeader {
   display: flex;
   align-items: center;
-  margin: 3rem auto;
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -177,17 +160,17 @@ export default {
 .logoutButton {
   background: none;
   border: none;
-  color: brown;
+  color: rgb(0, 34, 105);
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
 }
 
 .d-md-none .btn-icon {
-font-size: 1.5rem;
-background: none;
-border: none;
-cursor: pointer;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-icon {
@@ -203,7 +186,7 @@ cursor: pointer;
 }
 
 .btn-icon:hover {
-  color: #137ABE; /* Cor de destaque ao passar o mouse */
+  color: #137abe; /* Cor de destaque ao passar o mouse */
   transform: scale(1.1); /* Efeito de zoom leve */
 }
 
@@ -219,7 +202,7 @@ cursor: pointer;
 }
 
 .heroicon:hover {
-  color: #137ABE; /* Cor de destaque ao passar o mouse */
+  color: #137abe; /* Cor de destaque ao passar o mouse */
   transform: scale(1.1);
 }
 
@@ -227,10 +210,10 @@ cursor: pointer;
   transform: scale(0.95);
 }
 
-
-.navLink, .buttonCadastro {
+.navLink,
+.buttonCadastro {
   text-decoration: none;
-  color: #212121;
+  color: #03b6e5;
   font-weight: 700;
   font-size: 1rem;
   position: relative;
@@ -238,18 +221,18 @@ cursor: pointer;
 }
 
 .navLinkActive {
-  color: brown;
+  color: #03b6e5;
   transform: scale(1.1);
 }
 
 .navLink::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -3px;
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: brown;
+  background-color: #03b6e5;
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease-in-out;
@@ -260,7 +243,7 @@ cursor: pointer;
 }
 
 .navLink:hover {
-  color: brown;
+  color: #03b6e5;
   transform: scale(1.1);
 }
 
@@ -269,14 +252,14 @@ cursor: pointer;
 }
 
 .buttonCadastro {
-  border: 2px solid brown;
+  border: 2px solid #03b6e5;
   border-radius: 10px;
   padding: 0.5rem;
   transition: 0.3s ease-in-out;
 }
 
 .buttonCadastro:hover {
-  background: brown;
+  background: #03b6e5;
   color: whitesmoke;
 }
 
@@ -294,13 +277,14 @@ cursor: pointer;
 
   .buttonCadastro[data-v-5c833af0] {
     padding: 0.2rem;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
   }
 }
 
 @media (max-width: 767px) {
   .containerHeader[data-v-5c833af0] {
     width: 98%;
+    margin: 0rem auto;
   }
 
   .divLogo[data-v-5c833af0] {
@@ -317,8 +301,9 @@ cursor: pointer;
     text-align: center;
   }
 
-  .navLink[data-v-5c833af0], .buttonCadastro[data-v-5c833af0] {
-    font-size: 0.8rem;
+  .navLink[data-v-5c833af0],
+  .buttonCadastro[data-v-5c833af0] {
+    font-size: 0.6rem;
   }
 
   .login-buttons {
@@ -328,16 +313,16 @@ cursor: pointer;
 
   .login-buttons.d-block[data-v-5c833af0] {
     flex-direction: column !important;
-      gap: 0.5rem;
-      display: flex !important;
-      position: absolute;
-      top: 75%;
-      align-items: center;
-      background: aliceblue;
-      border-radius: 2px;
-      padding: 0.5rem;
-      left: 71%;
-      gap: 1rem;
+    gap: 0.5rem;
+    display: flex !important;
+    position: absolute;
+    top: 75%;
+    align-items: center;
+    background: aliceblue;
+    border-radius: 2px;
+    padding: 0.5rem;
+    left: 71%;
+    gap: 1rem;
   }
 }
 </style>

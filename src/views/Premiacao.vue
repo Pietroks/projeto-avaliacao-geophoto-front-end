@@ -6,8 +6,8 @@
           <div class="divTexto">
             <h3 class="titulo1">Prêmio Brasileiro de Fotogeografia 2024/2025</h3>
             <p class="paragrafo">
-              O Prêmio Brasileiro de Fotogeografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da 
-              Universidade de Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens geográficas.
+              O Prêmio Brasileiro de Fotogeografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da Universidade de
+              Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens geográficas.
             </p>
           </div>
         </div>
@@ -21,9 +21,7 @@
         <div class="col-md-6">
           <div class="divTexto">
             <h3 class="titulo2">Categorias</h3>
-            <p class="paragrafo2">
-              O Prêmio Brasileiro de Fotogeografia tem as seguintes categorias:
-            </p>
+            <p class="paragrafo2">O Prêmio Brasileiro de Fotogeografia tem as seguintes categorias:</p>
             <ul>
               <li>Categoria 1: Estudantes de Graduação</li>
               <li>Categoria 2: Estudantes de Pós-Graduação</li>
@@ -34,9 +32,7 @@
         <div class="col-md-6">
           <div class="divTexto">
             <h3 class="titulo2">Premiação</h3>
-            <p class="paragrafo2">
-              A premiação inclui:
-            </p>
+            <p class="paragrafo2">A premiação inclui:</p>
             <ul>
               <li>Medalha LAGIM de Fotogeografia</li>
               <li>Certificado de Participação</li>
@@ -89,43 +85,29 @@
           </table>
         </div>
         <div class="text-center divButton">
-              <a href="#" target="_blank" class="buttonInscrevase">
-              Acesse o Edital
-              </a>
-          </div>
+          <a href="#" target="_blank" class="buttonInscrevase"> Acesse o Edital </a>
+        </div>
       </div>
-    </div>   
+    </div>
   </section>
 
-<Footer />
+  <Footer />
 </template>
-  
+
 <script>
-import Footer from '@/components/Footer.vue';
+import Footer from "@/components/Footer.vue";
 
-    export default {
-      name: "PremiacaoPage",
-      components: {
-        Footer
-      }
-    };
-  </script>
-  
-  <style scoped>
+export default {
+  name: "PremiacaoPage",
+  components: {
+    Footer,
+  },
+};
+</script>
+
+<style scoped>
 .backgroundColor {
-  color: whitesmoke;
-}
-
-.backgroundColor::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
-  opacity: 1;
-  z-index: -1;
+  color: black;
 }
 
 .divTexto {
@@ -137,23 +119,24 @@ import Footer from '@/components/Footer.vue';
 .titulo {
   font-size: 2.5rem;
   text-align: center;
-  color: chartreuse;
+  color: #137abe;
   padding: 0.5rem;
   background: transparent;
   border-radius: 20px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-top: 0rem !important;
 }
 
 .titulo1 {
   font-size: 6rem;
-  color: chartreuse;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #137abe;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .paragrafo {
   font-size: 1.4rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   line-height: 2;
   padding: 0.3rem;
   background: transparent;
@@ -161,14 +144,13 @@ import Footer from '@/components/Footer.vue';
 }
 
 .background2 {
-  background: #010020;
-  margin-top: 1rem;
+  background: black;
 }
 
 .titulo2 {
   font-size: 2rem;
-  color: chartreuse;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #137abe;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .paragrafo2 {
@@ -185,13 +167,13 @@ ul li {
 
 .divButton {
   margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
 .buttonInscrevase {
   color: snow;
   font-size: 2rem;
-  background: #00214B;
+  background: #00214b;
   padding: 0.5rem;
   border-radius: 15px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
@@ -226,7 +208,7 @@ ul li {
 
 .table-custom th {
   background-color: #444;
-  color: chartreuse;
+  color: #137abe;
 }
 
 .table-custom td {
@@ -258,7 +240,7 @@ ul li {
     font-size: 0.8rem;
   }
 }
- 
+
 @media (max-width: 1114px) {
   .titulo1[data-v-218bab85] {
     font-size: 3.5rem;
@@ -290,4 +272,3 @@ ul li {
   }
 }
 </style>
-  

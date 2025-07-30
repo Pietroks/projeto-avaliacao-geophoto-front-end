@@ -3,13 +3,6 @@
     <div class="container text-center py-5">
       <h1 class="main-title">Geofotografia</h1>
       <h2 class="sub-title">Capturando a beleza natural da Terra</h2>
-      <p class="hero-description">
-        Geophotography is the art of capturing images of the Earth’s surface in
-        order to capture its beauty and share it with others. It can range from
-        simple snapshots taken with a smartphone to complex shots taken with
-        expensive equipment by professionals who have spent years mastering
-        their craft.
-      </p>
       <router-link to="/cadastro" class="cta-btn">
         Inscreva-se
         <font-awesome-icon icon="arrow-right" class="ms-2" />
@@ -22,24 +15,15 @@
       <div class="row">
         <div class="col-md-4 mb-4">
           <h3 class="info-title">O que é Geofotografia?</h3>
-          <p>
-            A arte de capturar a superfície terrestre em imagens impactantes,
-            revelando sua beleza, texturas e cores.
-          </p>
+          <p>A arte de capturar a superfície terrestre em imagens impactantes, revelando sua beleza, texturas e cores.</p>
         </div>
         <div class="col-md-4 mb-4">
           <h3 class="info-title">Técnicas</h3>
-          <p>
-            Use luz natural em amanheceres e entardeceres para efeitos
-            dramáticos. Experimente composições com sombras.
-          </p>
+          <p>Use luz natural em amanheceres e entardeceres para efeitos dramáticos. Experimente composições com sombras.</p>
         </div>
         <div class="col-md-4 mb-4">
           <h3 class="info-title">Equipamentos</h3>
-          <p>
-            Desde DSLRs a smartphones: o essencial é ter olhar fotográfico. A
-            lente é sua aliada.
-          </p>
+          <p>Desde DSLRs a smartphones: o essencial é ter olhar fotográfico. A lente é sua aliada.</p>
         </div>
       </div>
     </div>
@@ -51,21 +35,14 @@
         <div class="col-md-6">
           <h2 class="highlight-title">Participe do Concurso Internacional</h2>
           <p>
-            Inspire outros com a sua visão do mundo, ganhe visibilidade para
-            seus projetos e concorra junto com outros apaixonados por
+            Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros apaixonados por
             Geofotografia.
           </p>
-          <router-link to="/sobre" class="cta-link">
-            Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" />
-          </router-link>
+          <router-link to="/sobre" class="cta-link"> Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" /> </router-link>
         </div>
         <div class="col-md-6">
           <div class="carousel-wrapper">
-            <img
-              :src="images[currentIndex]"
-              alt="Imagem do carrossel"
-              class="img-fluid rounded shadow"
-            />
+            <img :src="images[currentIndex]" alt="Imagem do carrossel" class="img-fluid rounded shadow" />
           </div>
         </div>
       </div>
@@ -75,15 +52,8 @@
   <section class="gallery-section bg-gradient py-5 text-light" v-scroll-appear>
     <div class="container">
       <div class="row text-center">
-        <div
-          v-for="(item, index) in gallery"
-          :key="index"
-          class="col-12 col-md-4 mb-4"
-        >
-          <div
-            class="gallery-card"
-            :style="{ backgroundImage: `url(${item.image})` }"
-          >
+        <div v-for="(item, index) in gallery" :key="index" class="col-12 col-md-4 mb-4">
+          <div class="gallery-card" :style="{ backgroundImage: `url(${item.image})` }">
             <div class="overlay">
               <h4>{{ item.title }}</h4>
             </div>
@@ -102,13 +72,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-import img1 from "@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg";
-import img2 from "@/assets/pascal-scholl-RFrM7_t2F2E-unsplash.jpg";
-import img3 from "@/assets/thumb-1920-526183.jpg";
+import img1 from "@/assets/hex6.png";
 
-import montanhas from "@/assets/17638-3840x2160-desktop-4k-forest-background.jpg";
-import rios from "@/assets/forest-mist-scenery-2k-wallpaper-uhdpaper.com-844@3@a.jpg";
-import florestas from "@/assets/indy-bruhin-LolOOsux0vk-unsplash.jpg";
+import montanhas from "@/assets/hex3.png";
+import rios from "@/assets/hex4.png";
+import florestas from "@/assets/hex5.png";
 
 library.add(faArrowRight);
 
@@ -118,7 +86,7 @@ export default {
   data() {
     return {
       currentIndex: 0,
-      images: [img1, img2, img3],
+      images: [img1],
       gallery: [
         { title: "Montanhas", image: montanhas },
         { title: "Rios", image: rios },
@@ -143,23 +111,26 @@ body {
 }
 
 .hero {
-  background-image: url("@/assets/tim-stief-YFFGkE3y4F8-unsplash.jpg");
+  background-image: url("@/assets/hex2.png");
   background-size: cover;
   background-position: center;
-  color: white;
+  color: #03b6e5;
   padding: 6rem 0;
+  margin-top: -5rem;
 }
 
 .main-title {
   font-size: 4rem;
   font-weight: 700;
   letter-spacing: 4px;
+  color: #2c313c;
 }
 
 .sub-title {
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 1.5rem;
+  color: #2c313c;
 }
 
 .hero-description {
@@ -240,5 +211,20 @@ body {
   color: #fff;
   margin: 0;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 0rem;
+    margin-top: auto;
+  }
+
+  .main-title {
+    font-size: 2.5rem;
+  }
+
+  .sub-title {
+    font-size: 1.5rem;
+  }
 }
 </style>

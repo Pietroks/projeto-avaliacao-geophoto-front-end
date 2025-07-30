@@ -4,16 +4,18 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="divTexto">
-            <h3 class="titulo1">Faculdade Xing Ling</h3>
+            <h3 class="titulo1">LAGIM</h3>
+            <h4>Laboratório Geoconografia e de Multimídia</h4>
             <p class="paragrafo">
-              A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles moldam o espaço em que vivemos. 
-              Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial para entender nosso mundo.
+              A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles
+              moldam o espaço em que vivemos. Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial
+              para entender nosso mundo.
             </p>
           </div>
         </div>
-        <div class="col-md-6 text-end"> 
+        <div class="col-md-6 text-end">
           <div class="divLogo">
-            <img src="../assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg" alt="Logo Faculdade Xing Ling" class="img-fluid mb-3">
+            <img src="../assets/logo.png" alt="Logo Faculdade Xing Ling" class="img-fluid mb-3" />
             <h2 class="titulo">Explorando o mundo e suas dinâmicas</h2>
           </div>
         </div>
@@ -26,7 +28,7 @@
       <div class="row align-items-center">
         <div class="col-md-6 text-start">
           <div class="divLogo">
-            <img src="../assets/size_960_16_9_kenan-flagler-business-school6.webp" alt="Logo Faculdade Xing Ling" class="img-fluid mb-3">
+            <img src="../assets/size_960_16_9_kenan-flagler-business-school6.webp" alt="Logo Faculdade Xing Ling" class="img-fluid mb-3" />
             <h2 class="titulo3">Conectando conhecimento e inovação para moldar o futuro global</h2>
           </div>
         </div>
@@ -34,8 +36,9 @@
           <div class="divTexto">
             <h3 class="titulo2">Conheça nossa História</h3>
             <p class="paragrafo2">
-              A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles moldam o espaço em que vivemos. 
-              Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial para entender nosso mundo.
+              A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles
+              moldam o espaço em que vivemos. Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial
+              para entender nosso mundo.
             </p>
           </div>
         </div>
@@ -43,13 +46,12 @@
     </div>
   </section>
 
-
   <section class="background2">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-6 text-start"> 
+        <div class="col-md-6 text-start">
           <div class="divLogo">
-            <img src="../assets/University-of-California-Berkeley.webp" alt="Logo Faculdade Xing Ling" class="img-fluid mb-3">
+            <img src="../assets/University-of-California-Berkeley.webp" alt="Logo Faculdade Xing Ling" class="img-fluid mb-3" />
             <h2 class="titulo3">Ampliando horizontes, explorando culturas e construindo soluções para o amanhã</h2>
           </div>
         </div>
@@ -57,8 +59,9 @@
           <div class="divTexto">
             <h3 class="titulo2">Venha fazer parte desta História</h3>
             <p class="paragrafo2">
-              A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles moldam o espaço em que vivemos. 
-              Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial para entender nosso mundo.
+              A Geografia é a ciência que estuda a superfície terrestre, as interações entre os elementos naturais e sociais e como eles
+              moldam o espaço em que vivemos. Desde a análise de paisagens naturais até o impacto das ações humanas, a Geografia é essencial
+              para entender nosso mundo.
             </p>
           </div>
         </div>
@@ -66,36 +69,23 @@
     </div>
   </section>
 
-<Footer />
+  <Footer />
 </template>
 
-  
 <script>
-import Footer from '@/components/Footer.vue';
+import Footer from "@/components/Footer.vue";
 
-  export default {
-    name: 'SobrePage',
-    components: {
-      Footer
-    }
-  };
-  </script>
+export default {
+  name: "SobrePage",
+  components: {
+    Footer,
+  },
+};
+</script>
 
 <style scoped>
 .backgroundColor {
-  color: whitesmoke;
-}
-
-.backgroundColor::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
-  opacity: 1;
-  z-index: -1;
+  color: black;
 }
 
 .containerSobre {
@@ -120,31 +110,31 @@ import Footer from '@/components/Footer.vue';
 }
 
 .divLogo img {
-  width: 500px;
-  height: 300px;
+  width: 50%;
+  height: auto;
   border-radius: 20px;
 }
 
 .titulo {
   font-size: 2.5rem;
   text-align: center;
-  color: chartreuse;
+  color: #137abe;
   padding: 0.5rem;
   background: transparent;
   border-radius: 20px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .titulo1 {
   font-size: 6rem;
-  color: chartreuse;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #137abe;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .paragrafo {
   font-size: 1.4rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   line-height: 2;
   padding: 0.3rem;
   background: transparent;
@@ -152,13 +142,13 @@ import Footer from '@/components/Footer.vue';
 }
 
 .background2 {
-  background: #010020;
+  background: black;
 }
 
 .titulo2 {
   font-size: 2rem;
-  color: chartreuse;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #137abe;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .titulo3 {
@@ -188,14 +178,19 @@ import Footer from '@/components/Footer.vue';
   .divLogo img[data-v-013883ef] {
     width: 380px;
     height: auto;
-  } 
+  }
 
   .titulo[data-v-013883ef] {
     font-size: 2rem;
-  } 
+  }
 }
 
 @media (max-width: 1114px) {
+  .divTexto[data-v-013883ef] {
+    margin-top: 1rem;
+    margin-bottom: 0rem;
+  }
+
   .titulo1[data-v-013883ef] {
     font-size: 3.5rem;
   }
@@ -203,6 +198,7 @@ import Footer from '@/components/Footer.vue';
   .divLogo img[data-v-013883ef] {
     width: 375px;
     height: auto;
+    margin-top: 1rem;
   }
 
   .paragrafo[data-v-013883ef] {
@@ -228,13 +224,7 @@ import Footer from '@/components/Footer.vue';
     font-size: 1rem;
     line-height: normal;
     padding: 0;
-  }
-
-  .divLogo[data-v-013883ef] {
-    margin: 1rem 0;
-    background: black;
-    border-radius: 20px;
+    margin-bottom: 0rem;
   }
 }
 </style>
-  

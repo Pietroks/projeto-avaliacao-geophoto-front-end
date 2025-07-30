@@ -8,22 +8,12 @@
             <form @submit.prevent="register" class="containerForm">
               <div class="input-group">
                 <UserIcon class="icon" />
-                <input
-                  v-model.trim="name"
-                  type="text"
-                  placeholder="Nome *"
-                  required
-                />
+                <input v-model.trim="name" type="text" placeholder="Nome *" required />
               </div>
 
               <div class="input-group">
                 <EnvelopeIcon class="icon" />
-                <input
-                  v-model.trim="email"
-                  type="email"
-                  placeholder="Email *"
-                  required
-                />
+                <input v-model.trim="email" type="email" placeholder="Email *" required />
               </div>
 
               <div class="input-group password-group">
@@ -35,89 +25,68 @@
                   placeholder="Senha *"
                   required
                 />
-                <button
-                  type="button"
-                  @click="togglePasswordVisibility"
-                  :class="{ active: showPassword }"
-                  class="show-password-btn"
-                >
+                <button type="button" @click="togglePasswordVisibility" :class="{ active: showPassword }" class="show-password-btn">
                   <EyeIcon class="eye-icon" />
                 </button>
-                <div
-                  v-if="password"
-                  :class="passwordStrengthClass"
-                  class="password-strength-meter"
-                >
-                  Força: {{ passwordStrength }}
-                </div>
+                <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">Força: {{ passwordStrength }}</div>
               </div>
 
               <div class="input-group">
                 <LockClosedIcon class="icon" />
-                <input
-                  v-model="confirmPassword"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="Confirme a Senha *"
-                  required
-                />
-                <div v-if="passwordError" class="error-message">
-                  As senhas não coincidem.
-                </div>
+                <input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'" placeholder="Confirme a Senha *" required />
+                <div v-if="passwordError" class="error-message">As senhas não coincidem.</div>
               </div>
 
               <div class="input-group">
                 <IdentificationIcon class="icon" />
+                <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" @blur="validateCpf" required />
+              </div>
+              <div v-if="cpfError" class="error-message">CPF inválido. Verifique e tente novamente.</div>
+              <div class="input-group">
+                <MapPinIcon class="icon" />
                 <input
-                  v-model="cpf"
+                  v-model="cep"
                   type="text"
-                  placeholder="CPF *"
-                  @input="applyCpfMask"
-                  @blur="validateCpf"
+                  placeholder="CEP *"
+                  @input="applyCepMask"
+                  @blur="fetchAddressFromCep"
+                  maxlength="9"
                   required
                 />
               </div>
-              <div v-if="cpfError" class="error-message">
-                CPF inválido. Verifique e tente novamente.
+
+              <div class="input-group">
+                <MapIcon class="icon" />
+                <input v-model="rua" type="text" placeholder="Rua/Avenida *" required />
+              </div>
+
+              <div class="input-group">
+                <BuildingLibraryIcon class="icon" />
+                <input v-model="bairro" type="text" placeholder="Bairro *" required />
+              </div>
+
+              <div class="input-group">
+                <HomeIcon class="icon" />
+                <input v-model="numero" type="text" placeholder="Número *" required />
               </div>
 
               <div class="input-group">
                 <select v-model="nivelFormacao" required>
-                  <option value="" disabled>
-                    Selecione seu nível de formação *
-                  </option>
-                  <option value="estudanteGraduacao">
-                    Estudante de Graduação
-                  </option>
-                  <option value="estudantePosGraduacao">
-                    Estudante de Pós-Graduação
-                  </option>
-                  <option value="graduado">Graduado</option>
+                  <option value="" disabled>Selecione seu nível de formação *</option>
+                  <option value="1">Estudante de Graduação</option>
+                  <option value="2">Estudante de Pós-Graduação</option>
+                  <option value="3">Graduado</option>
                 </select>
               </div>
 
               <div class="input-group divComprovante">
-                <label
-                  ><DocumentIcon class="icon" />Anexe o comprovante de formação
-                  (PDF) *</label
-                >
-                <input
-                  type="file"
-                  @change="onFileChange"
-                  accept=".pdf"
-                  class="inputFile"
-                  required
-                />
+                <label><DocumentIcon class="icon" />Anexe o comprovante de formação (PDF) *</label>
+                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" required />
               </div>
 
               <div class="divButton">
-                <button type="button" @click="cancel" class="buttonCancelar">
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  :disabled="!isFormValid || isLoading"
-                  class="buttonCadastro"
-                >
+                <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
+                <button type="submit" :disabled="!isFormValid || isLoading" class="buttonCadastro">
                   {{ isLoading ? "Cadastrando..." : "Cadastrar" }}
                 </button>
               </div>
@@ -129,13 +98,8 @@
     <div v-if="showSuccessModal" class="modal-overlay">
       <div class="modal-content">
         <h2>Cadastro Realizado com Sucesso!</h2>
-        <p>
-          Seu cadastro foi concluído. Clique no botão abaixo para ir à página de
-          login.
-        </p>
-        <button @click="goToLogin" class="buttonLoginRedirect">
-          Ir para Login
-        </button>
+        <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
+        <button @click="goToLogin" class="buttonLoginRedirect">Ir para Login</button>
       </div>
     </div>
   </div>
@@ -148,6 +112,10 @@ import {
   LockClosedIcon,
   IdentificationIcon,
   DocumentIcon,
+  MapPinIcon,
+  MapIcon,
+  BuildingLibraryIcon,
+  HomeIcon,
 } from "@heroicons/vue/24/solid";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { API_URL } from "@/config/config.js";
@@ -161,6 +129,10 @@ export default {
     IdentificationIcon,
     DocumentIcon,
     EyeIcon,
+    MapPinIcon,
+    MapIcon,
+    BuildingLibraryIcon,
+    HomeIcon,
   },
   data() {
     return {
@@ -178,13 +150,16 @@ export default {
       passwordStrengthClass: "",
       showSuccessModal: false,
       isLoading: false,
+      cep: "",
+      rua: "",
+      bairro: "",
+      numero: "",
     };
   },
 
   computed: {
     isFormValid() {
-      const passwordsMatch =
-        this.password && this.password === this.confirmPassword;
+      const passwordsMatch = this.password && this.password === this.confirmPassword;
       return (
         this.name &&
         this.email &&
@@ -194,12 +169,48 @@ export default {
         this.cpf &&
         !this.cpfError &&
         this.comprovante &&
-        this.nivelFormacao
+        this.nivelFormacao &&
+        this.cep &&
+        this.rua &&
+        this.bairro &&
+        this.numero
       );
     },
   },
 
   methods: {
+    pplyCepMask() {
+      this.cep = this.cep
+        .replace(/\D/g, "")
+        .replace(/^(\d{5})(\d)/, "$1-$2")
+        .slice(0, 9);
+    },
+
+    async fetchAddressFromCep() {
+      const cep = this.cep.replace(/\D/g, "");
+      if (cep.length !== 8) {
+        return;
+      }
+      this.isLoading = true;
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+          alert("CEP não encontrado. Por favor, verifique.");
+          this.rua = "";
+          this.bairro = "";
+        } else {
+          this.rua = data.logradouro;
+          this.bairro = data.bairro;
+        }
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+        alert("Não foi possível buscar o endereço. Tente novamente.");
+      } finally {
+        this.isLoading = false;
+      }
+    },
     updatePasswordStrength() {
       if (!this.password) {
         this.passwordStrength = "";
@@ -207,12 +218,7 @@ export default {
         return;
       }
 
-      const strength =
-        this.password.length >= 10
-          ? "Forte"
-          : this.password.length >= 6
-          ? "Média"
-          : "Fraca";
+      const strength = this.password.length >= 10 ? "Forte" : this.password.length >= 6 ? "Média" : "Fraca";
 
       this.passwordStrength = strength;
       this.passwordStrengthClass = `strength-${strength.toLowerCase()}`;
@@ -273,6 +279,10 @@ export default {
       this.passwordError = false;
       this.nivelFormacao = "";
       this.cpfError = false;
+      this.cep = "";
+      this.rua = "";
+      this.bairro = "";
+      this.numero = "";
     },
 
     async register() {
@@ -282,31 +292,22 @@ export default {
       }
       this.isLoading = true;
 
-      const convertFileToBase64 = (file) =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (error) => reject(error);
-        });
-
       try {
-        const comprovanteBase64 = await convertFileToBase64(this.comprovante);
-        const payload = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          document: this.cpf.replace(/\D/g, ""),
-          comprovante: comprovanteBase64,
-          category: this.nivelFormacao,
-        };
+        const formData = new FormData();
+        formData.append("name", this.name);
+        formData.append("email", this.email);
+        formData.append("password", this.password);
+        formData.append("document", this.cpf.replace(/\D/g, ""));
+        formData.append("user_type", "N"); // ou outro valor se tiver um select
+        formData.append("category", this.nivelFormacao);
+        var endereco_completo = this.rua + this.bairro + this.numero;
+        formData.append("cep", this.cep.replace(/\D/g, ""));
+        formData.append("complete_adress", endereco_completo);
+        formData.append("file", this.comprovante);
 
         const response = await fetch(`${API_URL}/users/`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          body: formData,
         });
 
         if (response.ok) {
@@ -359,13 +360,8 @@ export default {
 }
 
 .backgroundImg {
-  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
-  min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: -11.4rem;
+  background: linear-gradient(to top, #2c313c, #3c4454, #3c4454, #2c313c);
+  margin-top: -8rem;
 }
 
 .containerCadastro {
@@ -377,7 +373,9 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 50%;
-  margin: 10rem auto 0;
+  justify-self: center;
+  margin-top: 10rem;
+  margin-bottom: 3rem;
 }
 
 h1 {
@@ -388,7 +386,7 @@ h1 {
 .containerForm {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 75%;
   margin-top: 2rem;
 }
@@ -399,7 +397,7 @@ h1 {
   align-items: center;
   position: relative;
   border: 1px solid #ccc;
-  padding: 0.2rem 0.5rem;
+  padding: 0rem 0.5rem;
   border-radius: 5px;
   background-color: #fff;
 }
@@ -483,7 +481,7 @@ h1 {
 /* Botões de ação */
 .buttonCadastro,
 .buttonCancelar {
-  background-color: brown;
+  background-color: #1488f0;
   color: whitesmoke;
   border: none;
   padding: 0.7rem 1.5rem;
@@ -496,7 +494,7 @@ h1 {
 }
 
 .buttonCadastro:hover {
-  background-color: darkred;
+  background-color: rgb(26, 0, 173);
 }
 
 .buttonCancelar {
@@ -512,12 +510,12 @@ h1 {
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
+  width: 90%;
 }
 
 .divComprovante label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   font-size: 0.9rem;
 }
 
@@ -574,7 +572,6 @@ h1 {
 select {
   border: none;
   outline: none;
-  padding: 0.5rem;
   flex: 1;
   font-size: 1rem;
   background-color: transparent;
@@ -590,36 +587,36 @@ select {
 }
 
 @media (max-width: 1366px) {
-  .containerCadastro[data-v-c39bac1a] {
+  .containerCadastro {
     width: 65%;
   }
 }
 
 @media (max-width: 1114px) {
-  .containerCadastro[data-v-c39bac1a] {
+  .containerCadastro {
     width: 90%;
   }
 }
 
 @media (max-width: 767px) {
-  .backgroundImg[data-v-c39bac1a] {
-    background-position: inherit;
-    background-repeat: repeat-y;
-    min-height: 110vh;
-  }
-
-  .containerCadastro[data-v-c39bac1a] {
+  .containerCadastro {
     padding: 0.5rem;
     width: auto;
     margin-bottom: 2rem;
   }
 
-  .containerForm[data-v-c39bac1a] {
-    width: 95%;
+  .containerForm {
+    width: auto;
   }
 
-  .input-group input[data-v-c39bac1a] {
+  .input-group input {
     font-size: 0.7rem;
+  }
+
+  .buttonCadastro,
+  .buttonCancelar {
+    width: auto;
+    margin: 0rem auto;
   }
 }
 </style>

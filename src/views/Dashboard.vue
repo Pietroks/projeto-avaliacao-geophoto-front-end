@@ -2,7 +2,11 @@
   <div class="dashboard">
     <h1 class="mb-1">Bem-vindo, {{ user?.name || "Usuário" }}</h1>
     <p class="mb-4">Email: {{ user?.email || "Não informado" }}</p>
-
+    <div class="account-actions mb-4">
+      <button @click="goToUpdatePassword" class="btn btn-outline-secondary">
+        Alterar Senha
+      </button>
+    </div>
     <div class="upload-section card shadow-sm">
       <div class="card-body">
         <h2 class="card-title mb-3">Envie suas fotos para o concurso</h2>
@@ -26,6 +30,7 @@
               class="form-control"
               @change="handleFileChange"
               accept="image/*"
+              :multiple="subcategory === 'B'" 
               required
             />
           </div>
@@ -114,6 +119,7 @@ export default {
   data() {
     return {
       photoFile: null,
+      photoFiles: [],
       description: "",
       subcategory: "A",
       photos: [],
@@ -143,42 +149,85 @@ export default {
   },
   methods: {
     handleFileChange(event) {
-      this.photoFile = event.target.files[0];
+      const files = Array.from(event.target.files);
+      if (this.subcategory === 'B') {
+        if (files.length != 3) {
+          alert("Você pode selecionar 3 imagens para a Categoria B.");
+          this.$refs.fileInput.value = "";
+          this.photoFiles = [];
+          return;
+        }
+        this.photoFiles = files;
+      } else {
+        this.photoFile = files[0];
+      }
     },
     async uploadPhoto() {
-      if (!this.photoFile || !this.description || !this.subcategory) {
+      if (!this.description || !this.subcategory) {
         alert("Preencha todos os campos.");
         return;
       }
 
-      if (this.subcategory === "A" && !this.canUploadA) {
-        alert("Limite de 1 imagem da Categoria A atingido.");
-        return;
+      if (this.subcategory === "A") {
+        if (!this.photoFile) {
+          alert("Selecione uma imagem para a Categoria A.");
+          return;
+        }
+        if (!this.canUploadA) {
+          alert("Limite de 1 imagem da Categoria A atingido.");
+          return;
+        }
       }
 
-      if (this.subcategory === "B" && !this.canUploadB) {
-        alert("Limite de 3 imagens da Categoria B atingido.");
-        return;
+      if (this.subcategory === "B") {
+        if (!this.photoFiles || this.photoFiles.length !== 3) {
+          alert("Você deve selecionar exatamente 3 imagens para a Categoria B.");
+          return;
+        }
+        if (!this.canUploadB) {
+          alert("Limite de 3 imagens da Categoria B atingido.");
+          return;
+        }
       }
 
       this.isLoading = true;
 
       try {
-        const formData = new FormData();
-        formData.append("image", this.photoFile);
-        formData.append("user_id", this.user.id);
-        formData.append("subcategory", this.subcategory);
-        formData.append("description", this.description);
+        if (this.subcategory === "A") {
+          // Upload único
+          const formData = new FormData();
+          formData.append("image", this.photoFile);
+          formData.append("user_id", this.user.user_id);
+          formData.append("subcategory", this.subcategory);
+          formData.append("description", this.description);
 
-        const response = await fetch(`${API_URL}/images/upload/`, {
-          method: "POST",
-          body: formData,
-          headers: { Authorization: `Bearer ${this.token}` },
-        });
+          const response = await fetch(`${API_URL}/images/upload/`, {
+            method: "POST",
+            body: formData,
+            headers: { Authorization: `Bearer ${this.token}` },
+          });
 
-        if (!response.ok) throw new Error("Erro ao fazer upload da imagem.");
+          if (!response.ok) throw new Error("Erro ao fazer upload da imagem.");
+        } else {
+          // Upload múltiplo (3 vezes)
+          for (const file of this.photoFiles) {
+            const formData = new FormData();
+            formData.append("image", file);
+            formData.append("user_id", this.user.user_id);
+            formData.append("subcategory", this.subcategory);
+            formData.append("description", this.description);
 
-        alert("Foto enviada com sucesso!");
+            const response = await fetch(`${API_URL}/images/upload/`, {
+              method: "POST",
+              body: formData,
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+
+            if (!response.ok) throw new Error("Erro ao fazer upload de uma das imagens.");
+          }
+        }
+
+        alert("Foto(s) enviada(s) com sucesso!");
         this.resetForm();
         await this.fetchUserPhotos();
       } catch (error) {
@@ -189,6 +238,7 @@ export default {
     },
     resetForm() {
       this.photoFile = null;
+      this.photoFiles = [];
       this.description = "";
       this.subcategory = this.canUploadA ? "A" : "B";
       this.$refs.fileInput.value = "";
@@ -203,23 +253,51 @@ export default {
 
       try {
         const response = await fetch(
-          `${API_URL}/user/images/${this.user.id}/`,
+          `${API_URL}/user/images/${this.user.user_id}/`,
           {
             headers: { Authorization: `Bearer ${this.token}` },
           }
         );
 
+        if (response.status == 401){
+          this.logout()
+        }
         if (!response.ok) throw new Error("Erro ao buscar imagens.");
 
-        const data = await response.json();
-        this.photos = data.map((image) => ({
-          ...image,
-          image_url: `${API_URL}/images/${image.image_id}/`,
-        }));
+        const { images } = await response.json();
+
+        const fotosDetalhadas = await Promise.all(
+          images.map(async (image) => {
+            const detalhesResponse = await fetch(`${API_URL}/images/${image.image_id}/details`, {
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+
+            let detalhes = {};
+            if (detalhesResponse.ok) {
+              detalhes = await detalhesResponse.json();
+            }
+
+            return {
+              ...image,
+              ...detalhes,
+              image_url: `${API_URL}/images/${image.image_id}/`,
+            };
+          })
+        );
+
+        this.photos = fotosDetalhadas;
       } catch (error) {
         console.error("Erro ao buscar imagens:", error);
       } finally {
         this.isLoading = false;
+      }
+    },
+    goToUpdatePassword() {
+      if (this.user && this.user.user_id) {
+        this.$router.push(`/edit-profile/${this.user.user_id}`);
+      } else {
+        console.error("ID do usuário não encontrado para navegação.");
+        alert("Não foi possível encontrar suas informações para alterar a senha.");
       }
     },
   },
