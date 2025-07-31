@@ -4,9 +4,9 @@
       <div class="row align-items-center">
         <div class="col-12">
           <div class="divTexto">
-            <h3 class="titulo1">Prêmio Brasileiro de Fotogeografia 2024/2025</h3>
+            <h3 class="titulo1">Prêmio Brasileiro de Geofotografia 2025</h3>
             <p class="paragrafo">
-              O Prêmio Brasileiro de Fotogeografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da Universidade de
+              O Prêmio Brasileiro de Geofotografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da Universidade de
               Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens geográficas.
             </p>
           </div>
@@ -21,7 +21,7 @@
         <div class="col-md-6">
           <div class="divTexto">
             <h3 class="titulo2">Categorias</h3>
-            <p class="paragrafo2">O Prêmio Brasileiro de Fotogeografia tem as seguintes categorias:</p>
+            <p class="paragrafo2">O Prêmio Brasileiro de Geofotografia tem as seguintes categorias:</p>
             <ul>
               <li>Categoria 1: Estudantes de Graduação</li>
               <li>Categoria 2: Estudantes de Pós-Graduação</li>
@@ -34,7 +34,7 @@
             <h3 class="titulo2">Premiação</h3>
             <p class="paragrafo2">A premiação inclui:</p>
             <ul>
-              <li>Medalha LAGIM de Fotogeografia</li>
+              <li>Medalha LAGIM de Geofotografia</li>
               <li>Certificado de Participação</li>
               <li>Inclusão no e-book para os três primeiros de cada subcategoria</li>
               <li><strong>1º Lugar:</strong> Câmera instantânea</li>
