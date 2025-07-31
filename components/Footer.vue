@@ -2,23 +2,16 @@
   <div class="background">
     <div class="container">
       <div class="row">
-        <div class="col-md-5 col-12">
+        <div class="col-md-6 col-12">
           <div class="containerFooter1">
             <div class="divLogo">
               <img class="logo" src="../assets/logo.png" alt="" />
               <h3>Laboratório de Geoiconografia e Multimídias - UNB</h3>
-            </div>
-            <div class="divPrivacidade">
-              <a class="infoContato" href="#">Política de Privacidade e Contrato de Prestação de Serviço</a>
+              <h3>LAGIM.</h3>
             </div>
           </div>
         </div>
-        <div class="col-md-4 col-12">
-          <div class="containerContato">
-            <p class="infoContato">LAGIM.</p>
-          </div>
-        </div>
-        <div class="col-md-3 col-12">
+        <div class="col-md-6 col-12">
           <div class="divSocialMedia">
             <a href="https://www.instagram.com/lagimunb/?igsh=cWVieGNwbXhjbjYx&utm_source=qr" target="_blank"
               ><img class="socialMedia" src="../assets/socialMedia/instagram.svg" alt=""
@@ -75,7 +68,7 @@ export default {
 
 .divLogo h3 {
   color: ghostwhite;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
