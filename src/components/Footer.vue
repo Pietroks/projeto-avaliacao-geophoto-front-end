@@ -2,29 +2,21 @@
   <div class="background">
     <div class="container">
       <div class="row">
-        <div class="col-md-5 col-12">
+        <div class="col-md-6 col-12">
           <div class="containerFooter1">
             <div class="divLogo">
               <img class="logo" src="../assets/logo.png" alt="" />
               <h3>Laboratório de Geoiconografia e Multimídias - UNB</h3>
             </div>
-            <div class="divPrivacidade">
-              <a class="infoContato" href="#">Política de Privacidade e Contrato de Prestação de Serviço</a>
-            </div>
           </div>
         </div>
-        <div class="col-md-4 col-12">
-          <div class="containerContato">
-            <p class="infoContato">LAGIM.</p>
-          </div>
-        </div>
-        <div class="col-md-3 col-12">
+        <div class="col-md-6 col-12">
           <div class="divSocialMedia">
             <a href="https://www.instagram.com/lagimunb/?igsh=cWVieGNwbXhjbjYx&utm_source=qr" target="_blank"
-              ><img class="socialMedia" src="../assets/socialMedia/instagram.svg" alt=""
+              ><img class="socialMedia" src="../assets/socialMedia/instagram.svg" alt="icone do instragram"
             /></a>
             <a href="https://www.youtube.com/user/LAGIM2011" target="_blank"
-              ><img class="socialMedia youtube" src="../assets/socialMedia/youtube.svg" alt=""
+              ><img class="socialMedia youtube" src="../assets/socialMedia/youtube.png" alt="icone do youtube"
             /></a>
           </div>
         </div>
@@ -59,14 +51,7 @@ export default {
   border-radius: 20px;
 }
 
-.premio {
-  width: 60px;
-  height: 60px;
-  border-radius: 15px;
-}
-
-.divLogo,
-.divPremios {
+.divLogo {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,56 +60,15 @@ export default {
 
 .divLogo h3 {
   color: ghostwhite;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.divPremios {
-  margin-right: auto;
-}
-
-.divPrivacidade {
-  width: 90%;
-  margin-right: auto;
-}
-
-.politica {
-  text-decoration: none;
-  color: #817090;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.containerContato {
-  margin: 2rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.contato {
-  color: #817090;
   font-size: 1rem;
-  font-weight: 600;
-}
-
-.infoContato {
-  color: ghostwhite;
   font-weight: 700;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: 0.3s ease-in-out;
-}
-
-.infoContato:hover {
-  color: #01313d;
 }
 
 .divSocialMedia {
   display: flex;
   justify-content: center;
   gap: 3rem;
-  margin: 2rem 0;
+  margin: 3rem 0;
   align-items: center;
 }
 
@@ -132,6 +76,11 @@ export default {
   width: 40px;
   height: 40px;
   transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.youtube {
+  width: 53px;
+  height: auto;
 }
 
 .socialMedia:hover {
@@ -154,8 +103,7 @@ export default {
     margin: 0rem 0rem 1rem 0;
   }
 
-  .containerFooter1,
-  .divPrivacidade {
+  .containerFooter1 {
     width: auto;
     margin: 0rem;
     gap: 0rem;
@@ -166,35 +114,19 @@ export default {
     margin-top: 1rem;
   }
 
-  .contato {
-    font-size: 1rem;
-  }
-
-  .infoContato {
-    font-size: 1rem;
-    margin-bottom: 0rem;
-  }
-
   .socialMedia {
     width: 35px;
   }
 
-  .divLogo,
-  .divPremios {
+  .divLogo {
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
 }
 
 @media (max-width: 767px) {
-  .containerFooter1,
-  .divPrivacidade {
+  .containerFooter1 {
     width: auto;
-  }
-
-  .divPremios {
-    margin-left: auto;
-    gap: 5rem;
   }
 }
 </style>

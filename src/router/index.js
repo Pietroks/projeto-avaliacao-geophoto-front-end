@@ -11,7 +11,6 @@ import Concurso from "@/views/Concurso.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import store from "../store";
 import VotacaoPage from "@/views/votacao.vue";
-import NotasPublicas from "@/views/NotasPublicas.vue";
 import UserUpdate from "@/views/UserUpdate.vue";
 const routes = [
   { path: "/", component: Home },
@@ -33,7 +32,7 @@ const routes = [
   },
   {
     path: "/dashboard",
-    name:'dashboard',
+    name: "dashboard",
     component: Dashboard,
     meta: { requiresAuth: true },
   },
@@ -42,11 +41,6 @@ const routes = [
     name: "votacao",
     component: VotacaoPage,
     meta: { requiresAuth: true },
-  },
-  {
-    path: "/NotasPublicas",
-    name: "NotasPublicas",
-    component: NotasPublicas,
   },
   {
     path: "/edit-profile/:id",

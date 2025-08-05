@@ -1,108 +1,125 @@
 <template>
-  <div class="backgroundImg">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="containerCadastro">
-            <h1>Faça o seu cadastro</h1>
-            <form @submit.prevent="register" class="containerForm">
-              <div class="input-group">
-                <UserIcon class="icon" />
-                <input v-model.trim="name" type="text" placeholder="Nome *" required />
-              </div>
-
-              <div class="input-group">
-                <EnvelopeIcon class="icon" />
-                <input v-model.trim="email" type="email" placeholder="Email *" required />
-              </div>
-
-              <div class="input-group password-group">
-                <LockClosedIcon class="icon" />
-                <input
-                  v-model="password"
-                  @input="updatePasswordStrength"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="Senha *"
-                  required
-                />
-                <button type="button" @click="togglePasswordVisibility" :class="{ active: showPassword }" class="show-password-btn">
-                  <EyeIcon class="eye-icon" />
-                </button>
-                <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">Força: {{ passwordStrength }}</div>
-              </div>
-
-              <div class="input-group">
-                <LockClosedIcon class="icon" />
-                <input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'" placeholder="Confirme a Senha *" required />
-                <div v-if="passwordError" class="error-message">As senhas não coincidem.</div>
-              </div>
-
-              <div class="input-group">
-                <IdentificationIcon class="icon" />
-                <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" @blur="validateCpf" required />
-              </div>
-              <div v-if="cpfError" class="error-message">CPF inválido. Verifique e tente novamente.</div>
-              <div class="input-group">
-                <MapPinIcon class="icon" />
-                <input
-                  v-model="cep"
-                  type="text"
-                  placeholder="CEP *"
-                  @input="applyCepMask"
-                  @blur="fetchAddressFromCep"
-                  maxlength="9"
-                  required
-                />
-              </div>
-
-              <div class="input-group">
-                <MapIcon class="icon" />
-                <input v-model="rua" type="text" placeholder="Rua/Avenida *" required />
-              </div>
-
-              <div class="input-group">
-                <BuildingLibraryIcon class="icon" />
-                <input v-model="bairro" type="text" placeholder="Bairro *" required />
-              </div>
-
-              <div class="input-group">
-                <HomeIcon class="icon" />
-                <input v-model="numero" type="text" placeholder="Número *" required />
-              </div>
-
-              <div class="input-group">
-                <select v-model="nivelFormacao" required>
-                  <option value="" disabled>Selecione seu nível de formação *</option>
-                  <option value="1">Estudante de Graduação</option>
-                  <option value="2">Estudante de Pós-Graduação</option>
-                  <option value="3">Graduado</option>
-                </select>
-              </div>
-
-              <div class="input-group divComprovante">
-                <label><DocumentIcon class="icon" />Anexe o comprovante de formação (PDF) *</label>
-                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" required />
-              </div>
-
-              <div class="divButton">
-                <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
-                <button type="submit" :disabled="!isFormValid || isLoading" class="buttonCadastro">
-                  {{ isLoading ? "Cadastrando..." : "Cadastrar" }}
-                </button>
-              </div>
-            </form>
+  <div class="cadastro-background">
+    <div class="cadastro-container">
+      <h1 class="titulo">Faça o seu cadastro</h1>
+      <form @submit.prevent="register" class="form-container">
+        <fieldset class="form-section">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><UserIcon class="icon" /></span>
+            <input v-model.trim="name" type="text" class="form-control" placeholder="Nome Completo *" required />
           </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><EnvelopeIcon class="icon" /></span>
+            <input v-model.trim="email" type="email" class="form-control" placeholder="Email *" required />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><IdentificationIcon class="icon" /></span>
+            <input v-model="cpf" type="text" class="form-control" placeholder="CPF *" @input="applyCpfMask" @blur="validateCpf" required />
+          </div>
+          <div v-if="cpfError" class="error-message">CPF inválido.</div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><LockClosedIcon class="icon" /></span>
+            <input
+              v-model="password"
+              @input="updatePasswordStrength"
+              :type="showPassword ? 'text' : 'password'"
+              class="form-control"
+              placeholder="Senha *"
+              required
+            />
+            <span :class="passwordStrengthClass" class="password-strength-meter">{{ passwordStrength }}</span>
+            <button type="button" @click="togglePasswordVisibility" class="btn btn-outline-secondary eye-button">
+              <EyeIcon v-if="!showPassword" class="eye-icon" />
+              <EyeSlashIcon v-else class="eye-icon" />
+            </button>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><LockClosedIcon class="icon" /></span>
+            <input
+              v-model="confirmPassword"
+              :type="showPassword ? 'text' : 'password'"
+              class="form-control"
+              placeholder="Confirme a Senha *"
+              required
+            />
+          </div>
+          <div v-if="passwordError" class="error-message">As senhas não coincidem.</div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><MapPinIcon class="icon" /></span>
+            <input
+              v-model="cep"
+              type="text"
+              class="form-control"
+              placeholder="CEP *"
+              @input="applyCepMask"
+              @blur="fetchAddressFromCep"
+              maxlength="9"
+              required
+            />
+          </div>
+          <div class="row">
+            <div class="col-md-9 mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><MapIcon class="icon" /></span>
+                <input v-model="rua" type="text" class="form-control" placeholder="Rua/Avenida *" required />
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><HomeIcon class="icon" /></span>
+                <input v-model="numero" type="text" class="form-control" placeholder="Nº *" required />
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><BuildingLibraryIcon class="icon" /></span>
+            <input v-model="bairro" type="text" class="form-control" placeholder="Bairro *" required />
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <select v-model="nivelFormacao" class="form-select mb-3" required>
+            <option value="" disabled>Selecione seu nível de formação *</option>
+            <option value="1">Estudante de Graduação</option>
+            <option value="2">Estudante de Pós-Graduação</option>
+            <option value="3">Graduado</option>
+          </select>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text"><BuildingOffice2Icon class="icon" /></span>
+            <input v-model.trim="instituicao" type="text" class="form-control" placeholder="Nome da Instituição *" required />
+          </div>
+
+          <label for="comprovante" class="form-label label-comprovante"
+            ><DocumentIcon class="icon" /> Anexe o comprovante de formação (PDF) *</label
+          >
+          <input type="file" id="comprovante" @change="onFileChange" accept=".pdf" class="form-control" required />
+        </fieldset>
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" :disabled="!isFormValid || isLoading" class="button-cadastro">
+            {{ isLoading ? "Cadastrando..." : "Cadastrar" }}
+          </button>
+          <button type="button" @click="cancel" class="button-cancelar">Cancelar</button>
         </div>
-      </div>
+      </form>
     </div>
+
     <div v-if="showSuccessModal" class="modal-overlay">
       <div class="modal-content">
         <h2>Cadastro Realizado com Sucesso!</h2>
         <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
-        <button @click="goToLogin" class="buttonLoginRedirect">Ir para Login</button>
+        <button @click="goToLogin" class="button-login-redirect">Ir para Login</button>
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
@@ -116,9 +133,11 @@ import {
   MapIcon,
   BuildingLibraryIcon,
   HomeIcon,
+  BuildingOffice2Icon, // NOVO ÍCONE IMPORTADO
 } from "@heroicons/vue/24/solid";
-import { EyeIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline"; // Corrigido para outline se for o caso, ou solid
 import { API_URL } from "@/config/config.js";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "CadastroPage",
@@ -129,10 +148,13 @@ export default {
     IdentificationIcon,
     DocumentIcon,
     EyeIcon,
+    EyeSlashIcon,
     MapPinIcon,
     MapIcon,
     BuildingLibraryIcon,
     HomeIcon,
+    BuildingOffice2Icon,
+    Footer,
   },
   data() {
     return {
@@ -143,6 +165,7 @@ export default {
       cpf: "",
       cpfError: false,
       nivelFormacao: "",
+      instituicao: "",
       comprovante: null,
       showPassword: false,
       passwordError: false,
@@ -164,12 +187,11 @@ export default {
         this.name &&
         this.email &&
         passwordsMatch &&
-        this.confirmPassword &&
-        this.password === this.confirmPassword &&
         this.cpf &&
         !this.cpfError &&
-        this.comprovante &&
         this.nivelFormacao &&
+        this.instituicao &&
+        this.comprovante &&
         this.cep &&
         this.rua &&
         this.bairro &&
@@ -278,6 +300,7 @@ export default {
       this.passwordStrengthClass = "";
       this.passwordError = false;
       this.nivelFormacao = "";
+      this.instituicao = "";
       this.cpfError = false;
       this.cep = "";
       this.rua = "";
@@ -298,9 +321,10 @@ export default {
         formData.append("email", this.email);
         formData.append("password", this.password);
         formData.append("document", this.cpf.replace(/\D/g, ""));
-        formData.append("user_type", "N"); // ou outro valor se tiver um select
+        formData.append("user_type", "N");
         formData.append("category", this.nivelFormacao);
-        var endereco_completo = this.rua + this.bairro + this.numero;
+        formData.append("instituicao", this.instituicao);
+        var endereco_completo = `${this.rua}, ${this.numero}, ${this.bairro}`;
         formData.append("cep", this.cep.replace(/\D/g, ""));
         formData.append("complete_adress", endereco_completo);
         formData.append("file", this.comprovante);
@@ -352,271 +376,204 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos gerais */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.cadastro-background {
+  background: url("../assets/hex5.png") no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
 }
 
-.backgroundImg {
-  background: linear-gradient(to top, #2c313c, #3c4454, #3c4454, #2c313c);
-  margin-top: -8rem;
-}
-
-.containerCadastro {
-  background: radial-gradient(black, transparent);
-  padding: 2rem;
+.cadastro-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  padding: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 50%;
-  justify-self: center;
-  margin-top: 10rem;
-  margin-bottom: 3rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  max-width: 600px;
+  width: 100%;
 }
 
-h1 {
-  color: ghostwhite;
-  font-weight: 100;
+.form-container {
+  width: 100%;
+  margin-top: 1.5rem;
 }
 
-.containerForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 75%;
-  margin-top: 2rem;
+.form-section {
+  border: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
 }
 
-/* Grupo de entrada (input) */
-.input-group {
-  display: flex;
-  align-items: center;
-  position: relative;
-  border: 1px solid #ccc;
-  padding: 0rem 0.5rem;
-  border-radius: 5px;
-  background-color: #fff;
+.titulo {
+  color: black;
+  font-weight: 300;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-.input-group i,
+.input-group-text,
+.form-control,
+.form-select {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid gray;
+  color: black;
+  font-size: 1rem;
+}
+
+.form-control::placeholder,
+.form-select {
+  color: gray;
+}
+.form-select option {
+  color: grey;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: #1488f0;
+  box-shadow: 0 0 0 0.25rem rgba(20, 136, 240, 0.25);
+  color: black;
+}
+
 .icon {
-  color: #888;
-  margin-right: 0.5rem;
   width: 24px;
   height: 24px;
+  color: black;
 }
 
-.input-group input {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: 1rem;
-  padding: 0.5rem;
+/* Estilo para o botão de ver senha */
+.eye-button {
+  border-color: rgba(255, 255, 255, 0.3);
 }
-
-/* Botão para mostrar senha */
-.show-password-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  position: absolute;
-  font-size: 1rem;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease;
-}
-
-.show-password-btn.active {
-  color: green;
-  transform: translateY(-50%) scale(1.1);
-}
-
 .eye-icon {
   width: 20px;
   height: 20px;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
+  color: black;
 }
 
-.show-password-btn:hover .eye-icon {
-  opacity: 0.5;
-}
-
-/* Medidor de força de senha */
-.password-group {
-  position: relative;
-}
-
+/* Medidor de força da senha */
 .password-strength-meter {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
   font-size: 0.8em;
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease-in-out;
   font-weight: 500;
+  padding: 0 0.75rem;
+  white-space: nowrap;
 }
-
 .strength-fraca {
-  color: red;
+  color: #dd0606;
 }
-
 .strength-média {
-  color: orange;
+  color: #df8805;
 }
-
 .strength-forte {
-  color: green;
+  color: #05ee05;
 }
 
-/* Botões de ação */
-.buttonCadastro,
-.buttonCancelar {
-  background-color: #1488f0;
-  color: whitesmoke;
-  border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 50%;
-  margin: 0.5rem auto;
-  text-align: center;
-}
-
-.buttonCadastro:hover {
-  background-color: rgb(26, 0, 173);
-}
-
-.buttonCancelar {
-  background-color: gray;
-}
-
-.buttonCancelar:hover {
-  background-color: darkgray;
-}
-
-.divComprovante {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  width: 90%;
-}
-
-.divComprovante label {
+/* Upload de arquivo */
+.label-comprovante {
   display: flex;
   align-items: center;
-  font-size: 0.9rem;
+  gap: 0.5rem;
+  color: grey;
+  margin-bottom: 0.5rem;
 }
 
-.inputFile {
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
+/* Mensagens de erro */
 .error-message {
-  color: red;
-  font-size: 0.75em;
-  font-weight: bold;
-  border-radius: 5px;
-  margin-top: 0.3rem;
+  color: #e60808;
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.divButton {
-  display: flex;
-  gap: 1rem;
+/* Botões */
+.button-cadastro,
+.button-cancelar {
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
+.button-cadastro {
+  background-color: #1488f0;
+}
+.button-cancelar {
+  background-color: #6c757d;
+}
+
+.button-cadastro:hover:not(:disabled) {
+  background-color: #106ac0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(20, 136, 240, 0.3);
+}
+.button-cancelar:hover {
+  background-color: #5a6268;
+}
+
+.button-cadastro:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Modal de Sucesso */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1050;
 }
 .modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
+  background: #222;
+  color: white;
+  padding: 2rem;
+  border-radius: 15px;
   text-align: center;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
 }
-.buttonLoginRedirect {
+.button-login-redirect {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: #1488f0;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.buttonCadastro:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-select {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: 1rem;
-  background-color: transparent;
-}
-
-.input-group input:invalid {
-  border-color: red;
-}
-.error-message {
-  color: red;
-  font-size: 0.8rem;
-  width: 100%;
-}
-
-@media (max-width: 1366px) {
-  .containerCadastro {
-    width: 65%;
-  }
-}
-
-@media (max-width: 1114px) {
-  .containerCadastro {
-    width: 90%;
-  }
-}
-
 @media (max-width: 767px) {
-  .containerCadastro {
-    padding: 0.5rem;
-    width: auto;
-    margin-bottom: 2rem;
+  .cadastro-background {
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+  .titulo {
+    font-size: 1.7rem;
   }
 
-  .containerForm {
-    width: auto;
+  .form-control {
+    font-size: 0.8rem;
   }
 
-  .input-group input {
-    font-size: 0.7rem;
-  }
-
-  .buttonCadastro,
-  .buttonCancelar {
-    width: auto;
-    margin: 0rem auto;
+  #comprovante {
+    font-size: 0.6rem;
   }
 }
 </style>

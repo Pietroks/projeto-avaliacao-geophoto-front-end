@@ -32,32 +32,13 @@
   <section class="highlight-section py-5 bg-light">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-6">
+        <div class="col-12 text-center mb-4">
           <h2 class="highlight-title">Participe do Concurso Internacional</h2>
           <p>
             Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros apaixonados por
             Geofotografia.
           </p>
-          <router-link to="/sobre" class="cta-link"> Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" /> </router-link>
-        </div>
-        <div class="col-md-6">
-          <div class="carousel-wrapper">
-            <img :src="images[currentIndex]" alt="Imagem do carrossel" class="img-fluid rounded shadow" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="gallery-section bg-gradient py-5 text-light" v-scroll-appear>
-    <div class="container">
-      <div class="row text-center">
-        <div v-for="(item, index) in gallery" :key="index" class="col-12 col-md-4 mb-4">
-          <div class="gallery-card" :style="{ backgroundImage: `url(${item.image})` }">
-            <div class="overlay">
-              <h4>{{ item.title }}</h4>
-            </div>
-          </div>
+          <router-link to="/sobre" class="cta-btn"> Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" /> </router-link>
         </div>
       </div>
     </div>
@@ -72,36 +53,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-import img1 from "@/assets/hex6.png";
-
-import montanhas from "@/assets/hex3.png";
-import rios from "@/assets/hex4.png";
-import florestas from "@/assets/hex5.png";
-
 library.add(faArrowRight);
 
 export default {
   name: "HomePage",
   components: { Footer, FontAwesomeIcon },
-  data() {
-    return {
-      currentIndex: 0,
-      images: [img1],
-      gallery: [
-        { title: "Montanhas", image: montanhas },
-        { title: "Rios", image: rios },
-        { title: "Florestas", image: florestas },
-      ],
-    };
-  },
-  mounted() {
-    this.carouselInterval = setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.images.length;
-    }, 4000);
-  },
-  beforeUnmount() {
-    clearInterval(this.carouselInterval);
-  },
 };
 </script>
 
@@ -141,17 +97,21 @@ body {
 }
 
 .cta-btn {
+  display: inline-block;
   background: #137abe;
   color: white;
   padding: 0.8rem 2rem;
   font-weight: bold;
   border-radius: 10px;
   text-decoration: none;
-  transition: 0.3s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .cta-btn:hover {
-  background: #0f5c8f;
+  background: #02273f;
+  filter: blur(0.5px);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .info-title {
@@ -171,48 +131,6 @@ body {
   margin-bottom: 1rem;
 }
 
-.cta-link {
-  text-decoration: none;
-  font-weight: 500;
-  color: #137abe;
-  font-size: 1.2rem;
-}
-
-.carousel-wrapper img {
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.gallery-section {
-  background: linear-gradient(to right, #010020, #1b013d);
-}
-
-.gallery-card {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  height: 200px;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.overlay {
-  background: rgba(0, 0, 0, 0.6);
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  padding: 0.5rem;
-}
-
-.overlay h4 {
-  color: #fff;
-  margin: 0;
-  font-weight: 600;
-}
-
 @media (max-width: 768px) {
   .hero {
     padding: 0rem;
@@ -220,7 +138,7 @@ body {
   }
 
   .main-title {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
   }
 
   .sub-title {

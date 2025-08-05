@@ -1,52 +1,47 @@
 <template>
-  <div class="backgroundImg">
-    <div class="container">
-      <div class="containerCadastro">
-        <h1>Faça o seu login</h1>
-        <form @submit.prevent="handleLogin" class="containerForm">
-          <div class="input-group">
+  <div class="login-background">
+    <div class="login-container">
+      <h1 class="titulo">Faça o seu login</h1>
+      <form @submit.prevent="handleLogin" class="form-container">
+        <div class="input-group mb-3">
+          <span class="input-group-text">
             <EnvelopeIcon class="icon" />
-            <input
-              v-model="email"
-              type="email"
-              placeholder="Email"
-              required
-            />
-          </div>
-          <div class="input-group">
+          </span>
+          <input v-model="email" type="email" class="form-control" placeholder="Email" required />
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text">
             <LockClosedIcon class="icon" />
-            <input
-              v-model="password"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="Senha"
-              required
-            />
-            <button
-              type="button"
-              @click="togglePasswordVisibility"
-              class="show-password-btn"
-            >
-              <EyeIcon class="eye-icon" />
-            </button>
-          </div>
-          <button :disabled="isLoading" type="submit" class="buttonCadastro">
-            {{ isLoading ? "Entrando..." : "Entrar" }}
+          </span>
+          <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Senha" required />
+          <button type="button" @click="togglePasswordVisibility" class="btn btn-outline-secondary eye-button">
+            <EyeIcon v-if="!showPassword" class="eye-icon" />
+            <EyeSlashIcon v-else class="eye-icon" />
           </button>
-        </form>
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <p>
-          Não tem uma conta?
-          <router-link to="/cadastro" class="link">Cadastre-se</router-link>
-        </p>
-      </div>
+        </div>
+
+        <button :disabled="isLoading" type="submit" class="button-login">
+          {{ isLoading ? "Entrando..." : "Entrar" }}
+        </button>
+      </form>
+
+      <p v-if="errorMessage" class="error-message mt-3">{{ errorMessage }}</p>
+
+      <p class="mt-4 link-cadastro">
+        Não tem uma conta?
+        <router-link to="/cadastro" class="link">Cadastre-se</router-link>
+      </p>
     </div>
   </div>
+
+  <Footer />
 </template>
 
 <script>
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/vue/24/solid";
-import { EyeIcon } from "@heroicons/vue/24/outline";
+import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/solid";
 import { mapActions, mapGetters } from "vuex";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "LoginPage",
@@ -54,6 +49,8 @@ export default {
     EnvelopeIcon,
     LockClosedIcon,
     EyeIcon,
+    EyeSlashIcon,
+    Footer, // Importe o ícone do olho cortado
   },
   data() {
     return {
@@ -73,7 +70,6 @@ export default {
     async handleLogin() {
       this.errorMessage = "";
       this.isLoading = true;
-
       try {
         await this.login({ email: this.email, password: this.password });
         this.$router.push("/dashboard");
@@ -97,160 +93,149 @@ export default {
 </script>
 
 <style scoped>
-.input-group {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  border-radius: 5px;
-  background-color: #fff;
-}
-
-.input-group i {
-  color: #888;
-  margin-right: 0.5rem;
-}
-
-.input-group input {
-  border: none;
-  outline: none;
-  flex: 1;
-}
-
-.backgroundImg {
-  background: linear-gradient(to top, #2c313c, #3c4454, #3c4454, #2c313c);
+.login-background {
+  background: url("../assets/hex4.png") no-repeat center center;
+  background-size: cover;
   min-height: 100vh;
-  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -11.4rem;
+  padding: 1rem;
 }
 
-.containerCadastro {
-  background: radial-gradient(#bbbbbb, transparent);
-  padding: 2rem;
+.login-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 50%;
-  margin: 0 auto;
-  margin-top: 8rem;
+  max-width: 450px;
+  width: 100%;
+  margin-top: -5rem;
 }
 
-.containerForm {
-  display: flex;
-  gap: 1.5rem;
-  flex-direction: column;
+.form-container {
+  width: 100%;
   margin-top: 2rem;
-  width: 75%;
 }
 
-h1 {
-  color: ghostwhite;
-  font-weight: 100;
+.titulo {
+  color: black;
+  font-weight: 300;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.input-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.5rem;
+.input-group-text {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: black;
 }
 
 .icon {
   width: 24px;
   height: 24px;
-  color: #333;
+  color: black;
 }
 
-input {
-  border: none;
-  outline: none;
-  width: 100%;
+.form-control {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid gray;
+  color: black;
   font-size: 1rem;
-  padding: 0.5rem;
+  padding: 0.75rem 1rem;
 }
 
-.buttonCadastro {
-  background-color: #1488f0;
-  color: whitesmoke;
-  border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 50%;
-  margin: 0 auto;
-  margin-bottom: 2rem;
+.form-control::placeholder {
+  color: gray;
 }
 
-
-p {
-  font-weight: 500;
-  color: gainsboro;
+.form-control:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: #1488f0;
+  box-shadow: 0 0 0 0.25rem rgba(20, 136, 240, 0.25);
+  color: black;
 }
 
-.link {
-  color: #1488f0;
-  font-weight: 700;
+.eye-button {
+  border-color: rgba(238, 6, 6, 0.3);
 }
-
-.show-password-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-size: 1.5em;
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease-in-out;
+.eye-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
-
-.show-password-btn.active {
-  color: green; 
-  transform: translateY(-50%) scale(1.1); 
-}
-
 .eye-icon {
   width: 20px;
   height: 20px;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
+  color: black;
 }
 
-.show-password-btn:hover .eye-icon {
-  opacity: 0.5; 
+.button-login {
+  background-color: #1488f0;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.button-login:hover:not(:disabled) {
+  background-color: #106ac0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(20, 136, 240, 0.3);
+}
+
+.button-login:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.link-cadastro {
+  font-weight: 400;
+  color: gray;
+}
+
+.link {
+  color: #106ac0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
 }
 
 .error-message {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-@media (max-width: 1114px) {
-  .containerCadastro[data-v-26084dc2] {
-    width: 75%;
-  }
+  color: #ffcccc;
+  background-color: rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem;
+  width: 100%;
+  text-align: center;
 }
 
 @media (max-width: 767px) {
-  .backgroundImg[data-v-26084dc2] {
-    margin-top: -9.2rem;
-    background-position: inherit;
-    min-height: 110vh;
+  .login-container {
+    margin-top: 0rem;
   }
 
-  .containerCadastro[data-v-26084dc2] {
-    padding: 0.5rem;
-    width: auto;
-    margin-top: auto;
+  .login-background {
+    align-items: flex-start;
+    padding-top: 4rem;
+  }
+  .titulo {
+    font-size: 1.7rem;
   }
 }
 </style>
