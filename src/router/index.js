@@ -6,7 +6,6 @@ import Sobre from "../views/Sobre.vue";
 import Upload from "../views/Upload.vue";
 import Admin from "../views/Admin.vue";
 import Premiacao from "@/views/Premiacao.vue";
-import CadastroAvaliador from "@/views/CadastroAvaliador.vue";
 import Concurso from "@/views/Concurso.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import store from "../store";
@@ -18,7 +17,6 @@ const routes = [
   { path: "/cadastro", component: Cadastro },
   { path: "/sobre", component: Sobre },
   { path: "/premiacao", component: Premiacao },
-  { path: "/cadastroAvaliador", component: CadastroAvaliador },
   { path: "/concurso", component: Concurso },
   {
     path: "/upload",

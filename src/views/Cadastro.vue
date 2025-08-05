@@ -377,7 +377,7 @@ export default {
 
 <style scoped>
 .cadastro-background {
-  background: url("../assets/hex5.png") no-repeat center center;
+  background: url("../assets/hex5.webp") no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   display: flex;

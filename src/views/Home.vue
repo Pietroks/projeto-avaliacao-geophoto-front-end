@@ -38,7 +38,7 @@
             Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros apaixonados por
             Geofotografia.
           </p>
-          <router-link to="/sobre" class="cta-btn"> Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" /> </router-link>
+          <router-link to="/premiacao" class="cta-btn"> Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" /> </router-link>
         </div>
       </div>
     </div>
@@ -67,7 +67,7 @@ body {
 }
 
 .hero {
-  background-image: url("@/assets/hex2.png");
+  background-image: url("@/assets/hex2.webp");
   background-size: cover;
   background-position: center;
   color: #03b6e5;

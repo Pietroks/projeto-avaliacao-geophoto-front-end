@@ -1,145 +1,55 @@
 <template>
   <section class="background-votacao py-4">
     <div class="container">
-      <!-- Modal de confirmação -->
-      <div v-if="showConfirmationModal" class="modal-overlay">
-        <div class="modal-content">
-          <h4>Confirmar Envio de Notas?</h4>
-          <p>
-            Você está prestes a enviar as notas para esta imagem. Esta ação não
-            pode ser desfeita.
-          </p>
-          <div class="modal-actions">
-            <button class="btn btn-outline-secondary" @click="cancelarEnvio">
-              Cancelar
-            </button>
-            <button class="btn btn-primary" @click="executarEnvioNotas('A')">
-              Confirmar
-            </button>
-          </div>
-        </div>
-      </div>
+      <div v-if="showConfirmationModal" class="modal-overlay"></div>
 
-      <!-- Cabeçalho -->
       <div class="tituloConcurso text-center mb-4">
         <h2>Imagens de {{ usuario.name }}</h2>
       </div>
 
-      <!-- Categoria A -->
-      <div class="categoria-container">
+      <div class="categoria-container mb-5">
         <h3 class="text-center mb-3">Categoria A</h3>
-        <div v-if="imagensA.length > 0" class="row g-4">
-          <div
-            v-for="image in imagensA"
-            :key="image.image_id"
-            class="col-12 col-md-6 col-lg-4"
-          >
+        <div v-if="imagensA.length > 0" class="row g-4 justify-content-center">
+          <div v-for="image in imagensA" :key="image.image_id" class="col-12 col-md-8 col-lg-6">
             <div class="card card-votacao h-100">
-              <img
-                :src="image.image_url || defaultImage"
-                class="card-img-top fotosImg"
-                alt="Imagem do usuário"
-              />
+              <img :src="image.image_url || defaultImage" class="card-img-top fotosImg" alt="Imagem do usuário" />
               <div class="card-body d-flex flex-column">
-                <p class="card-text description-text">
+                <h5 class="card-title">{{ image.nome || "Foto sem nome" }}</h5>
+                <h6 v-if="image.local" class="card-subtitle mb-2 text-muted">{{ image.local }}</h6>
+                <p v-if="image.equipamento" class="card-text small"><strong>Equipamento:</strong> {{ image.equipamento }}</p>
+                <p class="card-text description-text mt-2">
                   {{ image.description }}
                 </p>
-                <div v-if="isAvaliador" class="mt-auto">
-                  <div
-                    v-for="criterio in criterios"
-                    :key="criterio.id"
-                    class="criterio-input-group mb-2"
-                  >
-                    <label
-                      :for="`nota-${image.image_id}-${criterio.id}`"
-                      class="form-label"
-                    >
-                      {{ criterio.nome }}:
-                    </label>
-                    <input
-                      :disabled="image.avaliada"
-                      :id="`nota-${image.image_id}-${criterio.id}`"
-                      v-model.number="image.notas[criterio.id]"
-                      type="number"
-                      class="form-control"
-                      min="1"
-                      max="10"
-                      step="1"
-                      placeholder="1-10"
-                    />
-                  </div>
-                  <button
-                    :disabled="image.avaliada"
-                    class="btn btn-primary w-100 mt-2"
-                    @click="confirmarEnvio(image)"
-                  >
-                    Avaliar
-                  </button>
-                </div>
+                <div v-if="isAvaliador" class="mt-auto"></div>
               </div>
             </div>
           </div>
         </div>
-        <p v-else class="text-center">Não há imagens na Categoria A.</p>
+        <p v-else class="text-center text-muted">Não há imagens na Categoria A.</p>
       </div>
+
       <div class="categoria-container">
         <h3 class="text-center mb-3">Categoria B</h3>
+        <div v-if="imagensB.length > 0">
+          <div class="card card-body bg-light mb-4 text-dark">
+            <h5><strong>Nome do Conjunto:</strong> {{ imagensB[0].nome || "Não informado" }}</h5>
+            <p class="mb-1"><strong>Local:</strong> {{ imagensB[0].local || "Não informado" }}</p>
+            <p class="mb-0"><strong>Equipamento:</strong> {{ imagensB[0].equipamento || "Não informado" }}</p>
+            <p class="mt-2 mb-0"><strong>Descrição do Conjunto:</strong> {{ imagensB[0].description }}</p>
+          </div>
+          <div class="row g-4">
+            <div v-for="image in imagensB" :key="image.image_id" class="col-12 col-md-6 col-lg-4">
+              <div class="card card-votacao h-100">
+                <img :src="image.image_url || defaultImage" class="card-img-top fotosImg" alt="Imagem do usuário" />
+              </div>
+            </div>
+          </div>
 
-        <div v-if="imagensB.length > 0" class="row g-4">
-          <!-- Mostra as imagens da Categoria B -->
-          <div
-            v-for="image in imagensB"
-            :key="image.image_id"
-            class="col-12 col-md-6 col-lg-4"
-          >
-            <div class="card card-votacao h-100">
-              <img
-                :src="image.image_url || defaultImage"
-                class="card-img-top fotosImg"
-                alt="Imagem do usuário"
-              />
-              <div class="card-body">
-                <p class="card-text description-text">
-                  {{ image.description }}
-                </p>
-              </div>
-            </div>
-          </div>
-          <!-- Notas únicas para a Categoria B -->
-          <div v-if="isAvaliador" class="col-12 mt-4">
-            <div class="card p-4">
-              <h5 class="text-center mb-3">Avaliação da Categoria B</h5>
-              <div
-                v-for="criterio in criterios"
-                :key="criterio.id"
-                class="criterio-input-group mb-3"
-              >
-                <label :for="`nota-categoriaB-${criterio.id}`" class="form-label">
-                  {{ criterio.nome }}:
-                </label>
-                <input
-                  :disabled="categoriaBJaAvaliada"
-                  :id="`nota-categoriaB-${criterio.id}`"
-                  v-model.number="notasCategoriaB[criterio.id]"
-                  type="number"
-                  class="form-control"
-                  min="1"
-                  max="10"
-                  step="1"
-                  placeholder="1-10"
-                />
-              </div>
-              <button class="btn btn-primary w-100" @click="executarEnvioNotas('B')"
-                :disabled="categoriaBJaAvaliada">
-                Avaliar Categoria B
-              </button>
-            </div>
-          </div>
+          <div v-if="isAvaliador" class="col-12 mt-4"></div>
         </div>
-        <p v-else class="text-center">Não há imagens na Categoria B.</p>
+        <p v-else class="text-center text-muted">Não há imagens na Categoria B.</p>
       </div>
     </div>
-    
   </section>
 </template>
 
@@ -195,7 +105,7 @@ export default {
         await this.carregarNotasCategoria("B");
       } else {
         alert("Erro ao carregar os dados do usuário faça login novamente");
-        this.logout()
+        this.logout();
       }
     } catch (error) {
       alert("Erro na comunicação com o servidor. Verifique sua conexão.");
@@ -251,10 +161,7 @@ export default {
 
     confirmarEnvio(image) {
       const todasAsNotas = this.criterios.every(
-        (c) =>
-          typeof image.notas[c.id] === "number" &&
-          image.notas[c.id] >= 1 &&
-          image.notas[c.id] <= 10
+        (c) => typeof image.notas[c.id] === "number" && image.notas[c.id] >= 1 && image.notas[c.id] <= 10
       );
       if (!todasAsNotas) {
         alert("Preencha todas as 5 notas de 1 a 10.");
@@ -321,7 +228,7 @@ export default {
           body: JSON.stringify({
             user_id: this.usuario.id,
             category: categoria,
-            evaluator_id: this.user.user_id
+            evaluator_id: this.user.user_id,
           }),
         });
 
@@ -338,7 +245,7 @@ export default {
           this.criterios.forEach((c) => {
             this.notasCategoriaB[c.id] = ratingsMap[c.id] ?? null;
           });
-          this.categoriaBJaAvaliada = this.criterios.every(c => ratingsMap[c.id] != null);
+          this.categoriaBJaAvaliada = this.criterios.every((c) => ratingsMap[c.id] != null);
           console.log("Categoria B já avaliada?", this.categoriaBJaAvaliada);
         } else if (categoria === "A") {
           // Categoria A: aplicar a todas as imagens (ou adaptar se for por imagem individual)

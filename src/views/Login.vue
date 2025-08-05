@@ -50,7 +50,7 @@ export default {
     LockClosedIcon,
     EyeIcon,
     EyeSlashIcon,
-    Footer, // Importe o ícone do olho cortado
+    Footer,
   },
   data() {
     return {
@@ -94,7 +94,7 @@ export default {
 
 <style scoped>
 .login-background {
-  background: url("../assets/hex4.png") no-repeat center center;
+  background: url("../assets/hex4.webp") no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   display: flex;

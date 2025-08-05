@@ -4,10 +4,11 @@
       <div class="row justify-content-center">
         <div class="col-lg-8 text-center">
           <div class="hero-card">
-            <h1 class="titulo-principal">Prêmio Brasileiro de Geofotografia 2025</h1>
+            <h1 class="titulo-principal">III Prêmio Brasileiro de Geofotografia 2025</h1>
             <p class="paragrafo-principal">
-              O Prêmio Brasileiro de Geofotografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da Universidade de
-              Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens geográficas.
+              O III Prêmio Brasileiro de Geofotografia, uma iniciativa do LAGIM (Laboratório de Geoiconografia e Multimídias) da
+              Universidade de Brasília, é voltado para estudantes e profissionais de Geografia, incentivando a produção de imagens
+              geográficas.
             </p>
           </div>
         </div>
@@ -40,6 +41,22 @@
             <li>Certificado de Participação para os classificados até o 10º lugar</li>
           </ul>
         </div>
+      </div>
+
+      <div class="divInscricao">
+        <h3 class="titulo-secao">Inscrições</h3>
+        <p class="paragrafo-secao">
+          As inscrições estão abertas de 02/09/2025 a 20/09/2025. Para participar, é necessário se cadastrar e enviar suas fotos através do
+          formulário disponível no site.
+        </p>
+        <router-link to="/cadastro" class="cta-btn">
+          Inscreva-se
+          <font-awesome-icon icon="arrow-right" class="ms-2" />
+        </router-link>
+        <p class="paragrafo-secao importanteParagrafo">
+          <strong>Importante:</strong> As fotos devem ser originais. Cada participante pode enviar até 4 fotos. Mais informações estão
+          disponíveis no edital.
+        </p>
       </div>
 
       <div class="row justify-content-center">
@@ -94,20 +111,19 @@
 import Footer from "@/components/Footer.vue";
 
 export default {
-  name: "PremiacaoPage", // Nome do componente para boas práticas
+  name: "PremiacaoPage",
   components: {
     Footer,
   },
   data() {
     return {
-      isDownloading: false, // Variável reativa para controlar o estado do botão
+      isDownloading: false,
     };
   },
   methods: {
     async baixarEditalPDF() {
-      // Quando o backend estiver pronto, substitua esta URL pela URL real da sua API
-      const urlBackend = "/api/baixar-edital"; // URL de exemplo
-      const nomeArquivo = "Edital_Geofotografia_2025.pdf"; // Nome padrão do arquivo
+      const urlBackend = "/api/baixar-edital";
+      const nomeArquivo = "Edital_Geofotografia_2025.pdf";
 
       this.isDownloading = true;
 
@@ -145,7 +161,7 @@ export default {
 
 <style scoped>
 .hero-section {
-  background: url("../assets/hex6.png") no-repeat center center;
+  background: url("../assets/hex6.webp") no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
   color: black;
@@ -160,7 +176,7 @@ export default {
 }
 
 .titulo-principal {
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: #137abe;
   font-weight: 700;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
@@ -196,6 +212,47 @@ ul {
 ul li {
   font-size: 1rem;
   line-height: 1.8;
+}
+
+.divInscricao {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  width: 50%;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+}
+
+.cta-btn {
+  display: inline-block;
+  background: #137abe;
+  color: white;
+  padding: 0.8rem 2rem;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 1rem;
+}
+
+.cta-btn:hover {
+  background: #02273f;
+  filter: blur(0.5px);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.importanteParagrafo {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: gray;
 }
 
 .table-responsive {
@@ -287,6 +344,10 @@ ul li {
   }
   .paragrafo-principal {
     font-size: 1.1rem;
+  }
+
+  .divInscricao {
+    width: auto;
   }
 }
 </style>
