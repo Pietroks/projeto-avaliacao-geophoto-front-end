@@ -2,7 +2,7 @@
   <section class="sobre-section">
     <div class="container py-5">
       <div class="row align-items-center flex-column-reverse flex-md-row">
-        <div class="col-md-6">
+        <div class="col-12">
           <div class="texto-card">
             <h3 class="titulo-lagim">LAGIM</h3>
             <h4 class="subtitulo-lab">Laboratório Geoconografia e de Multimídia</h4>
@@ -12,26 +12,19 @@
               para entender nosso mundo.
             </p>
           </div>
-        </div>
-
-        <div class="col-md-6 logo-col text-center">
-          <img src="../assets/logo.webp" alt="Logo do Laboratório LAGIM" class="img-fluid logo-img" />
-          <h2 class="titulo-dinamicas">Explorando o mundo e suas dinâmicas</h2>
+          <div class="logo-col text-center">
+            <img src="../assets/logo2.png" alt="Logo do Laboratório LAGIM" class="img-fluid logo-img" />
+            <h2 class="titulo-dinamicas">Explorando o mundo e suas dinâmicas</h2>
+          </div>
         </div>
       </div>
     </div>
   </section>
-  <Footer />
 </template>
 
 <script>
-import Footer from "@/components/Footer.vue";
-
 export default {
   name: "SobrePage",
-  components: {
-    Footer,
-  },
 };
 </script>
 
@@ -42,7 +35,6 @@ export default {
   background-size: cover;
   background-attachment: fixed;
   position: relative;
-  margin-bottom: 3rem;
 }
 
 .texto-card {
@@ -54,14 +46,8 @@ export default {
   text-align: center;
 }
 
-@media (min-width: 768px) {
-  .texto-card {
-    text-align: left;
-  }
-}
-
 .titulo-lagim {
-  font-size: 3.5rem;
+  font-size: 5rem;
   color: #0464d1;
   font-weight: 800;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
@@ -81,13 +67,17 @@ export default {
 }
 
 .logo-col {
-  margin-bottom: 2rem;
+  margin-bottom: auto;
+  margin-top: 3rem;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .logo-img {
   max-width: 100%;
   height: auto;
-  border-radius: 20px;
+  border-radius: 5px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -104,7 +94,23 @@ export default {
 
 /* --- AJUSTES DE RESPONSIVIDADE (MEDIA QUERIES) --- */
 
-@media (min-width: 992px) {
+@media (max-width: 1366px) {
+  .titulo-lagim {
+    font-size: 6rem;
+  }
+  .paragrafo {
+    font-size: 1.4rem;
+  }
+  .titulo-dinamicas {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 1114px) {
+  .sobre-section {
+    margin-bottom: 3rem;
+  }
+
   .titulo-lagim {
     font-size: 5rem;
   }
@@ -116,15 +122,17 @@ export default {
   }
 }
 
-@media (min-width: 1200px) {
-  .titulo-lagim {
-    font-size: 6rem;
+@media (max-width: 767px) {
+  .logo-col {
+    width: auto;
   }
-  .paragrafo {
-    font-size: 1.4rem;
+
+  .sobre-section {
+    margin-bottom: auto;
   }
-  .titulo-dinamicas {
-    font-size: 2.5rem;
+
+  .texto-card {
+    text-align: left;
   }
 }
 </style>

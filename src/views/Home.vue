@@ -33,7 +33,7 @@
     <div class="container">
       <div class="row align-items-center">
         <div class="col-12 text-center mb-4">
-          <h2 class="highlight-title">Participe do Concurso Internacional</h2>
+          <h2 class="highlight-title">Participe do Concurso Nacional</h2>
           <p>
             Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros apaixonados por
             Geofotografia.

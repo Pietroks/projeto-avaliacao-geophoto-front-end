@@ -9,7 +9,7 @@
       <button v-if="isAvaliador" @click="gerarRelatorioPDF" class="btn btn-info ms-2">Gerar Relatório PDF</button>
 
       <router-link to="/admin" v-if="isAvaliador" class="cta-btn">
-        Administração <font-awesome-icon icon="arrow-right" class="ms-2" />
+        Administração <font-awesome-icon icon="arrow-right" class="ms-2 btn btn-info" />
       </router-link>
     </div>
 

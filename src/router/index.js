@@ -17,7 +17,11 @@ const routes = [
   { path: "/cadastro", component: Cadastro },
   { path: "/sobre", component: Sobre },
   { path: "/premiacao", component: Premiacao },
-  { path: "/concurso", component: Concurso },
+  {
+    path: "/concurso",
+    component: Concurso,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
   {
     path: "/upload",
     component: Upload,
@@ -57,14 +61,13 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
   const isAuthenticated = store.getters["user/isAuthenticated"];
-  const user = store.getters["user/user"];
+  const isAvaliador = store.getters["user/isAvaliador"];
 
   if (requiresAuth && !isAuthenticated) {
     next("/login");
-  } else if (requiresAdmin && user?.user_type !== "A") {
+  } else if (requiresAdmin && !isAvaliador) {
     next("/dashboard");
   } else {
-    // Permite o acesso
     next();
   }
 });

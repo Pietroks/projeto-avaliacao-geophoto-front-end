@@ -29,13 +29,13 @@
             <li class="nav-item">
               <router-link to="/premiacao" class="nav-link">Premiação</router-link>
             </li>
-            <li class="nav-item d-md-none">
+            <li v-if="isAvaliador" class="nav-item d-md-none">
               <router-link to="/concurso" class="nav-link">Acesse o Concurso</router-link>
             </li>
           </ul>
 
           <div class="navbar-nav ms-auto align-items-center">
-            <router-link to="/concurso" class="buttonCadastro d-none d-md-block">Acesse o Concurso</router-link>
+            <router-link v-if="isAvaliador" to="/concurso" class="buttonCadastro d-none d-md-block">Acesse o Concurso</router-link>
             <template v-if="isLoggedIn">
               <button @click="redirectToDashboard" class="btn btn-outline-primary ms-md-2">Meu Perfil</button>
               <button @click="handleLogout" class="btn btn-danger ms-2">Sair</button>
@@ -52,14 +52,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import logo from "@/assets/logo.webp";
+import { mapState, mapActions, mapGetters } from "vuex";
+import logo from "@/assets/logo.png";
 
 export default {
   name: "HeaderComponent",
-  components: {
-    // UserIcon,
-  },
+  components: {},
   data() {
     return {
       logoImage: logo,
@@ -67,6 +65,7 @@ export default {
   },
   computed: {
     ...mapState("user", ["user", "token"]),
+    ...mapGetters("user", ["isAvaliador"]),
     isLoggedIn() {
       return !!this.token;
     },
@@ -100,9 +99,9 @@ export default {
 }
 
 .imgLogo {
-  width: 100px;
+  width: 25%;
   height: auto;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 
 .nav-link {
@@ -158,8 +157,18 @@ export default {
   transform: scale(1.05);
 }
 
+@media (max-width: 1114px) {
+  .imgLogo {
+    width: 50%;
+  }
+}
+
 /* Ajustes para o menu mobile quando aberto */
 @media (max-width: 767px) {
+  .imgLogo {
+    width: 150px;
+  }
+
   .navbar-collapse {
     text-align: center;
     margin-top: 1rem;

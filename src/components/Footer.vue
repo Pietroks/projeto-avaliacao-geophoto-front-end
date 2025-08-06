@@ -5,7 +5,7 @@
         <div class="col-md-6 col-12">
           <div class="containerFooter1">
             <div class="divLogo">
-              <img class="logo" src="../assets/logo.webp" alt="" />
+              <img class="logo" src="../assets/logo2.png" alt="" />
               <h3>Laboratório de Geoiconografia e Multimídias - UNB</h3>
             </div>
           </div>
@@ -46,9 +46,9 @@ export default {
 }
 
 .logo {
-  width: 100px;
-  height: 100px;
-  border-radius: 20px;
+  width: 85px;
+  height: auto;
+  border-radius: 5px;
 }
 
 .divLogo {
@@ -60,7 +60,7 @@ export default {
 
 .divLogo h3 {
   color: ghostwhite;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
@@ -98,9 +98,9 @@ export default {
   }
 }
 
-@media (max-width: 1024px) {
-  .divSocialMedia {
-    margin: 0rem 0rem 1rem 0;
+@media (max-width: 1114px) {
+  .logo {
+    width: 200px;
   }
 
   .containerFooter1 {
@@ -125,6 +125,10 @@ export default {
 }
 
 @media (max-width: 767px) {
+  .logo {
+    width: 80px;
+  }
+
   .containerFooter1 {
     width: auto;
   }
