@@ -1,97 +1,146 @@
 <template>
-  <div class="backgroundImg">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="containerCadastro">
-            <h1>Faça o seu cadastro</h1>
-            <form @submit.prevent="register" class="containerForm">
-              <div class="input-group">
-                <UserIcon class="icon" />
-                <input v-model="name" type="text" placeholder="Nome *" />
-              </div>
-              <div class="input-group">
-                <EnvelopeIcon class="icon" />
-                <input v-model="email" type="email" placeholder="Email *" />
-              </div>
-              <div class="input-group password-group">
-                <LockClosedIcon class="icon" />
-                <input
-                  v-model="password"
-                  @input="updatePasswordStrength"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="Senha *"
-                />
-                <button
-                  type="button"
-                  @click="togglePasswordVisibility"
-                  :class="{ 'active': showPassword }"
-                  class="show-password-btn"
-                >
-                  <EyeIcon class="eye-icon" />
-                </button>
-                <!-- Medidor de força de senha -->
-                <div v-if="password" :class="passwordStrengthClass" class="password-strength-meter">
-                  {{ passwordStrength }}
-                </div>
-              </div>
-              <div class="input-group">
-                <LockClosedIcon class="icon" />
-                <input
-                  v-model="confirmPassword"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="Confirme a Senha *"
-                />
-                <div v-if="passwordError" class="error-message">
-                  As senhas não coincidem.
-                </div>
-              </div>
-              <div class="input-group">
-                <IdentificationIcon class="icon" />
-                <input v-model="cpf" type="text" placeholder="CPF *" @input="applyCpfMask" />
-                <div v-if="cpfError" class="error-message">
-                  CPF inválido. Verifique e tente novamente.
-                </div>
-              </div>
-              <div class="input-group">
-                <select v-model="nivelFormacao" required>
-                  <option value="" disabled selected>Selecione seu nível de formação</option>
-                  <option value="estudanteGraduacao">Estudante de Graduação</option>
-                  <option value="estudantePosGraduacao">Estudante de Pós-Graduação</option>
-                  <option value="graduado">Graduado</option>
-                </select>
-              </div>
-              <div class="input-group divComprovante">
-                <label><DocumentIcon class="icon" />Apresente um comprovante da sua formação *</label>
-                <input type="file" @change="onFileChange" accept=".pdf" class="inputFile" />
-              </div>
-              <div class="divButton">
-                <button type="button" @click="cancel" class="buttonCancelar">Cancelar</button>
-                <button type="submit" :disabled="!isFormValid" class="buttonCadastro">Cadastrar</button>
-              </div>
-            </form>
+  <div class="cadastro-background">
+    <div class="cadastro-container">
+      <h1 class="titulo">Faça o seu cadastro</h1>
+      <form @submit.prevent="register" class="form-container">
+        <fieldset class="form-section">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><UserIcon class="icon" /></span>
+            <input v-model.trim="name" type="text" class="form-control" placeholder="Nome Completo *" required />
           </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><EnvelopeIcon class="icon" /></span>
+            <input v-model.trim="email" type="email" class="form-control" placeholder="Email *" required />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><IdentificationIcon class="icon" /></span>
+            <input v-model="cpf" type="text" class="form-control" placeholder="CPF *" @input="applyCpfMask" @blur="validateCpf" required />
+          </div>
+          <div v-if="cpfError" class="error-message">CPF inválido.</div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><LockClosedIcon class="icon" /></span>
+            <input
+              v-model="password"
+              @input="updatePasswordStrength"
+              :type="showPassword ? 'text' : 'password'"
+              class="form-control"
+              placeholder="Senha *"
+              required
+            />
+            <span :class="passwordStrengthClass" class="password-strength-meter">{{ passwordStrength }}</span>
+            <button type="button" @click="togglePasswordVisibility" class="btn btn-outline-secondary eye-button">
+              <EyeIcon v-if="!showPassword" class="eye-icon" />
+              <EyeSlashIcon v-else class="eye-icon" />
+            </button>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><LockClosedIcon class="icon" /></span>
+            <input
+              v-model="confirmPassword"
+              :type="showPassword ? 'text' : 'password'"
+              class="form-control"
+              placeholder="Confirme a Senha *"
+              required
+            />
+          </div>
+          <div v-if="passwordError" class="error-message">As senhas não coincidem.</div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><MapPinIcon class="icon" /></span>
+            <input
+              v-model="cep"
+              type="text"
+              class="form-control"
+              placeholder="CEP *"
+              @input="applyCepMask"
+              @blur="fetchAddressFromCep"
+              maxlength="9"
+              required
+            />
+          </div>
+          <div class="row">
+            <div class="col-md-9 mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><MapIcon class="icon" /></span>
+                <input v-model="rua" type="text" class="form-control" placeholder="Rua/Avenida *" required />
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><HomeIcon class="icon" /></span>
+                <input v-model="numero" type="text" class="form-control" placeholder="Nº *" required />
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"><BuildingLibraryIcon class="icon" /></span>
+            <input v-model="bairro" type="text" class="form-control" placeholder="Bairro *" required />
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <select v-model="nivelFormacao" class="form-select mb-3" required>
+            <option value="" disabled>Selecione seu nível de formação *</option>
+            <option value="1">Estudante de Graduação</option>
+            <option value="2">Estudante de Pós-Graduação</option>
+            <option value="3">Graduado</option>
+          </select>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text"><BuildingOffice2Icon class="icon" /></span>
+            <input v-model.trim="instituicao" type="text" class="form-control" placeholder="Nome da Instituição *" required />
+          </div>
+
+          <label for="comprovante" class="form-label label-comprovante"
+            ><DocumentIcon class="icon" /> Anexe o comprovante de formação (PDF) *</label
+          >
+          <input type="file" id="comprovante" @change="onFileChange" accept=".pdf" class="form-control" required />
+        </fieldset>
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" :disabled="!isFormValid || isLoading" class="button-cadastro">
+            {{ isLoading ? "Cadastrando..." : "Cadastrar" }}
+          </button>
+          <button type="button" @click="cancel" class="button-cancelar">Cancelar</button>
         </div>
-      </div>
+      </form>
     </div>
+
     <div v-if="showSuccessModal" class="modal-overlay">
       <div class="modal-content">
         <h2>Cadastro Realizado com Sucesso!</h2>
         <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
-        <button @click="goToLogin" class="buttonLoginRedirect">Ir para Login</button>
-        <button @click="closeModal" class="buttonCloseModal">Fechar</button>
+        <button @click="goToLogin" class="button-login-redirect">Ir para Login</button>
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
-import { UserIcon, EnvelopeIcon, LockClosedIcon, IdentificationIcon, DocumentIcon } from '@heroicons/vue/24/solid';
-import { EyeIcon } from '@heroicons/vue/24/outline';
-import { API_URL } from '@/config/config.js';
+import {
+  UserIcon,
+  EnvelopeIcon,
+  LockClosedIcon,
+  IdentificationIcon,
+  DocumentIcon,
+  MapPinIcon,
+  MapIcon,
+  BuildingLibraryIcon,
+  HomeIcon,
+  BuildingOffice2Icon, // NOVO ÍCONE IMPORTADO
+} from "@heroicons/vue/24/solid";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline"; // Corrigido para outline se for o caso, ou solid
+import { API_URL } from "@/config/config.js";
+import Footer from "@/components/Footer.vue";
 
 export default {
-  name: 'CadastroPage',
+  name: "CadastroPage",
   components: {
     UserIcon,
     EnvelopeIcon,
@@ -99,69 +148,113 @@ export default {
     IdentificationIcon,
     DocumentIcon,
     EyeIcon,
+    EyeSlashIcon,
+    MapPinIcon,
+    MapIcon,
+    BuildingLibraryIcon,
+    HomeIcon,
+    BuildingOffice2Icon,
+    Footer,
   },
   data() {
     return {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      cpf: '',
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      cpf: "",
       cpfError: false,
-      nivelFormacao: '',
+      nivelFormacao: "",
+      instituicao: "",
       comprovante: null,
       showPassword: false,
       passwordError: false,
-      passwordStrength: '',
-      passwordStrengthClass: '',
+      passwordStrength: "",
+      passwordStrengthClass: "",
       showSuccessModal: false,
+      isLoading: false,
+      cep: "",
+      rua: "",
+      bairro: "",
+      numero: "",
     };
   },
 
   computed: {
     isFormValid() {
+      const passwordsMatch = this.password && this.password === this.confirmPassword;
       return (
         this.name &&
         this.email &&
-        this.password &&
-        this.confirmPassword &&
-        this.password === this.confirmPassword &&
+        passwordsMatch &&
         this.cpf &&
         !this.cpfError &&
-        this.comprovante !== null && 
-        this.nivelFormacao
+        this.nivelFormacao &&
+        this.instituicao &&
+        this.comprovante &&
+        this.cep &&
+        this.rua &&
+        this.bairro &&
+        this.numero
       );
     },
   },
 
   methods: {
+    pplyCepMask() {
+      this.cep = this.cep
+        .replace(/\D/g, "")
+        .replace(/^(\d{5})(\d)/, "$1-$2")
+        .slice(0, 9);
+    },
+
+    async fetchAddressFromCep() {
+      const cep = this.cep.replace(/\D/g, "");
+      if (cep.length !== 8) {
+        return;
+      }
+      this.isLoading = true;
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+          alert("CEP não encontrado. Por favor, verifique.");
+          this.rua = "";
+          this.bairro = "";
+        } else {
+          this.rua = data.logradouro;
+          this.bairro = data.bairro;
+        }
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+        alert("Não foi possível buscar o endereço. Tente novamente.");
+      } finally {
+        this.isLoading = false;
+      }
+    },
     updatePasswordStrength() {
-      console.log("Password input changed:", this.password);
       if (!this.password) {
-        this.passwordStrength = '';
-        this.passwordStrengthClass = '';
+        this.passwordStrength = "";
+        this.passwordStrengthClass = "";
         return;
       }
 
-      const strength = this.password.length >= 10 
-        ? 'Forte' 
-        : this.password.length >= 6 
-        ? 'Média' 
-        : 'Fraca';
+      const strength = this.password.length >= 10 ? "Forte" : this.password.length >= 6 ? "Média" : "Fraca";
 
       this.passwordStrength = strength;
       this.passwordStrengthClass = `strength-${strength.toLowerCase()}`;
     },
 
-
     validateCpf() {
-      const cpf = this.cpf.replace(/\D/g, '');
+      const cpf = this.cpf.replace(/\D/g, "");
       if (cpf.length !== 11 || /^(\d)\1*$/.test(cpf)) {
         this.cpfError = true;
         return false;
       }
 
-      let sum = 0, remainder;
+      let sum = 0,
+        remainder;
 
       for (let i = 1; i <= 9; i++) {
         sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
@@ -189,88 +282,75 @@ export default {
     },
 
     applyCpfMask() {
-      this.cpf = this.cpf.replace(/\D/g, '') 
-        .replace(/(\d{3})(\d)/, '$1.$2')     
-        .replace(/(\d{3})(\d)/, '$1.$2')     
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); 
+      this.cpf = this.cpf
+        .replace(/\D/g, "")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     },
 
     cancel() {
-      this.name = '';
-      this.email = '';
-      this.password = '';
-      this.confirmPassword = '';
-      this.cpf = '';
+      this.name = "";
+      this.email = "";
+      this.password = "";
+      this.confirmPassword = "";
+      this.cpf = "";
       this.comprovante = null;
-      this.passwordStrength = '';
-      this.passwordStrengthClass = '';
+      this.passwordStrength = "";
+      this.passwordStrengthClass = "";
       this.passwordError = false;
-      this.nivelFormacao = '';
+      this.nivelFormacao = "";
+      this.instituicao = "";
       this.cpfError = false;
+      this.cep = "";
+      this.rua = "";
+      this.bairro = "";
+      this.numero = "";
     },
 
     async register() {
-      if (this.password !== this.confirmPassword) {
-        this.passwordError = true;
+      if (!this.isFormValid) {
+        alert("Por favor, preencha todos os campos corretamente.");
         return;
       }
-      this.passwordError = false;
-
-      if (!this.validateCpf()) {
-        alert('Por favor, insira um CPF válido.');
-        return;
-      }
-
-      if (!this.comprovante) {
-        alert('Por favor, envie um comprovante da sua formação.');
-        return;
-      }
-
-      const convertFileToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject('Erro ao converter o arquivo.');
-        });
-      };
+      this.isLoading = true;
 
       try {
-        const comprovanteBase64 = await convertFileToBase64(this.comprovante);
-        const jsonData = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          cpf: this.cpf,
-          comprovante: comprovanteBase64,
-          nivelFormacao: this.nivelFormacao, 
-        };
+        const formData = new FormData();
+        formData.append("name", this.name);
+        formData.append("email", this.email);
+        formData.append("password", this.password);
+        formData.append("document", this.cpf.replace(/\D/g, ""));
+        formData.append("user_type", "N");
+        formData.append("category", this.nivelFormacao);
+        formData.append("instituicao", this.instituicao);
+        var endereco_completo = `${this.rua}, ${this.numero}, ${this.bairro}`;
+        formData.append("cep", this.cep.replace(/\D/g, ""));
+        formData.append("complete_adress", endereco_completo);
+        formData.append("file", this.comprovante);
 
-        const response = await fetch(`${API_URL}/cadastro`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(jsonData),
+        const response = await fetch(`${API_URL}/users/`, {
+          method: "POST",
+          body: formData,
         });
 
         if (response.ok) {
-          console.log('Usuário cadastrado com sucesso');
-          alert('Usuário cadastrado com sucesso');
-          this.showSuccessModal = true; 
+          this.showSuccessModal = true;
         } else {
-          console.error('Erro na requisição:', response.statusText);
-          alert('Erro na requisição: ' + response.statusText);
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Erro ao realizar o cadastro.");
         }
       } catch (error) {
-        console.error('Erro no cadastro:', error);
-        alert(`Erro: ${error}`);
+        console.error("Erro no cadastro:", error);
+        alert(`Erro: ${error.message}`);
+      } finally {
+        this.isLoading = false;
       }
     },
 
     goToLogin() {
       this.showSuccessModal = false;
-      this.$router.push('/login');
+      this.$router.push("/login");
     },
 
     togglePasswordVisibility() {
@@ -279,280 +359,221 @@ export default {
 
     onFileChange(event) {
       const file = event.target.files[0];
-      if (file && file.type === 'application/pdf') {
+      if (file && file.type === "application/pdf") {
         this.comprovante = file;
       } else {
-        alert('Por favor, envie um arquivo PDF válido.');
+        alert("Por favor, envie um arquivo PDF válido.");
+        event.target.value = "";
         this.comprovante = null;
       }
     },
 
     closeModal() {
       this.showSuccessModal = false;
-    }
+    },
   },
 };
 </script>
 
-
-
 <style scoped>
-/* Estilos gerais */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-.backgroundImg {
-  background: linear-gradient(to top, #010020, #1b013d, #2e014f, #3d025e);
+.cadastro-background {
+  background: url("../assets/hex5.webp") no-repeat center center;
+  background-size: cover;
   min-height: 100vh;
-  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -11.4rem;
+  padding: 2rem 1rem;
 }
 
-.containerCadastro {
-  background: radial-gradient(black, transparent);
-  padding: 2rem;
+.cadastro-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  padding: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 50%;
-  margin: 10rem auto 0;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  max-width: 600px;
+  width: 100%;
 }
 
-h1 {
-  color: ghostwhite;
-  font-weight: 100;
+.form-container {
+  width: 100%;
+  margin-top: 1.5rem;
 }
 
-.containerForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 75%;
-  margin-top: 2rem;
+.form-section {
+  border: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
 }
 
-/* Grupo de entrada (input) */
-.input-group {
-  display: flex;
-  align-items: center;
-  position: relative;
-  border: 1px solid #ccc;
-  padding: 0.2rem 0.5rem;
-  border-radius: 5px;
-  background-color: #fff;
+.titulo {
+  color: black;
+  font-weight: 300;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-.input-group i,
+.input-group-text,
+.form-control,
+.form-select {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid gray;
+  color: black;
+  font-size: 1rem;
+}
+
+.form-control::placeholder,
+.form-select {
+  color: gray;
+}
+.form-select option {
+  color: grey;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: #1488f0;
+  box-shadow: 0 0 0 0.25rem rgba(20, 136, 240, 0.25);
+  color: black;
+}
+
 .icon {
-  color: #888;
-  margin-right: 0.5rem;
   width: 24px;
   height: 24px;
+  color: black;
 }
 
-.input-group input {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: 1rem;
-  padding: 0.5rem;
+/* Estilo para o botão de ver senha */
+.eye-button {
+  border-color: rgba(255, 255, 255, 0.3);
 }
-
-/* Botão para mostrar senha */
-.show-password-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  position: absolute;
-  font-size: 1rem;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease;
-}
-
-.show-password-btn.active {
-  color: green;
-  transform: translateY(-50%) scale(1.1);
-}
-
 .eye-icon {
   width: 20px;
   height: 20px;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
+  color: black;
 }
 
-.show-password-btn:hover .eye-icon {
-  opacity: 0.5;
-}
-
-/* Medidor de força de senha */
-.password-group {
-  position: relative;
-}
-
+/* Medidor de força da senha */
 .password-strength-meter {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
   font-size: 0.8em;
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease-in-out;
   font-weight: 500;
+  padding: 0 0.75rem;
+  white-space: nowrap;
 }
-
 .strength-fraca {
-  color: red;
+  color: #dd0606;
 }
-
 .strength-média {
-  color: orange;
+  color: #df8805;
 }
-
 .strength-forte {
-  color: green;
+  color: #05ee05;
 }
 
-/* Botões de ação */
-.buttonCadastro,
-.buttonCancelar {
-  background-color: brown;
-  color: whitesmoke;
-  border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 50%;
-  margin: 0.5rem auto;
-  text-align: center;
-}
-
-.buttonCadastro:hover {
-  background-color: darkred;
-}
-
-.buttonCancelar {
-  background-color: gray;
-}
-
-.buttonCancelar:hover {
-  background-color: darkgray;
-}
-
-.divComprovante {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.divComprovante label {
+/* Upload de arquivo */
+.label-comprovante {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
+  color: grey;
+  margin-bottom: 0.5rem;
 }
 
-.inputFile {
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
+/* Mensagens de erro */
 .error-message {
-  color: red;
-  font-size: 0.75em;
-  font-weight: bold;
-  border-radius: 5px;
-  margin-top: 0.3rem;
+  color: #e60808;
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.divButton {
-  display: flex;
-  gap: 1rem;
+/* Botões */
+.button-cadastro,
+.button-cancelar {
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
+.button-cadastro {
+  background-color: #1488f0;
+}
+.button-cancelar {
+  background-color: #6c757d;
+}
+
+.button-cadastro:hover:not(:disabled) {
+  background-color: #106ac0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(20, 136, 240, 0.3);
+}
+.button-cancelar:hover {
+  background-color: #5a6268;
+}
+
+.button-cadastro:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Modal de Sucesso */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1050;
 }
 .modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
+  background: #222;
+  color: white;
+  padding: 2rem;
+  border-radius: 15px;
   text-align: center;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
 }
-.buttonLoginRedirect {
+.button-login-redirect {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #1488f0;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.buttonCadastro:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-select {
-  border: none;
-}
-
-@media (max-width: 1366px) {
-  .containerCadastro[data-v-c39bac1a] {
-    width: 65%;
-  }
-}
-
-@media (max-width: 1114px) {
-  .containerCadastro[data-v-c39bac1a] {
-    width: 90%;
-  }
-}
-
 @media (max-width: 767px) {
-  .backgroundImg[data-v-c39bac1a] {
-    background-position: inherit;
-    background-repeat: repeat-y;
-    min-height: 110vh;
+  .cadastro-background {
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+  .titulo {
+    font-size: 1.7rem;
   }
 
-  .containerCadastro[data-v-c39bac1a] {
-    padding: 0.5rem;
-    width: auto;
-    margin-bottom: 2rem;
+  .form-control {
+    font-size: 0.8rem;
   }
 
-  .containerForm[data-v-c39bac1a] {
-    width: 95%;
-  }
-
-  .input-group input[data-v-c39bac1a] {
-    font-size: 0.7rem;
+  #comprovante {
+    font-size: 0.6rem;
   }
 }
 </style>
-
