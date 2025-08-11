@@ -6,6 +6,8 @@
     <div class="account-actions mb-4">
       <button @click="goToUpdatePassword" class="btn btn-outline-secondary">Alterar Senha</button>
 
+      <button v-if="!isAvaliador" @click="downloadComprovante" class="btn btn-primary ms-2">Baixar Comprovante</button>
+
       <button v-if="isAvaliador" @click="gerarRelatorioPDF" class="btn btn-info ms-2">Gerar Relatório PDF</button>
 
       <router-link to="/admin" v-if="isAvaliador" class="cta-btn">
@@ -296,6 +298,47 @@ export default {
 
     gerarRelatorioPDF() {
       alert("Lógica para gerar o PDF no backend ainda não foi implementada.");
+    },
+
+    async downloadComprovante() {
+      if (!this.user) return;
+      this.isLoading = true;
+
+      try {
+        const response = await fetch(`${API_URL}/users/pdf/${this.user.user_id}/`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            alert("Nenhum comprovante encontrado para download.");
+          } else {
+            throw new Error("Não foi possível baixar o arquivo.");
+          }
+          return;
+        }
+
+        const blob = await response.blob();
+
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", "meu-comprovante.pdf");
+        document.body.appendChild(link);
+        link.click();
+
+        link.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      } catch (error) {
+        console.error("Erro ao baixar o comprovante:", error);
+        alert(`Erro: ${error.message}`);
+      } finally {
+        this.isLoading = false;
+      }
     },
 
     async fetchAvaliacoes() {
