@@ -39,6 +39,10 @@
           Avaliando fotos de: <strong>{{ usuario.name }}</strong>
         </h2>
         <p class="text-muted">Categoria de Formação: {{ usuario.category }}</p>
+        <button v-if="isAvaliador" @click="baixarComprovante" class="btn btn-info mt-2">
+          <ArrowDownTrayIcon class="icon-btn" />
+          Baixar Comprovante de Matrícula
+        </button>
       </div>
 
       <div class="categoria-container mb-5">
@@ -141,9 +145,11 @@
 <script>
 import { API_URL } from "@/config/config.js";
 import defaultImage from "@/assets/default.svg";
+import { ArrowDownTrayIcon } from "@heroicons/vue/24/solid";
 
 export default {
   name: "VotacaoPage",
+  components: { ArrowDownTrayIcon },
   data() {
     return {
       usuario: {},
@@ -275,6 +281,41 @@ export default {
       this.itemParaAvaliar = null;
     },
 
+    async baixarComprovante() {
+      const usuarioId = this.usuario.id;
+      if (!usuarioId) return;
+
+      try {
+        const response = await fetch(`${API_URL}/users/${usuarioId}/file`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Não foi possível baixar o comprovante. O usuário pode não ter enviado um ou ocorreu um erro no servidor.");
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `comprovante_${this.usuario.name.replace(/\s+/g, "_")}.pdf`;
+
+        document.body.appendChild(a);
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (error) {
+        console.error("Error ao baixar o comprovante", error);
+        alert(error.message);
+      }
+    },
+
     async executarEnvioNotas() {
       if (!this.itemParaAvaliar) return;
       const { image, categoria } = this.itemParaAvaliar;
@@ -388,22 +429,33 @@ export default {
   background-color: #f7f9fc;
   min-height: 100vh;
 }
+
 .titulo-pagina {
   font-weight: 700;
   color: #333;
 }
+
 .titulo-categoria {
   color: #555;
   font-weight: 600;
   border-bottom: 2px solid #eee;
   padding-bottom: 0.5rem;
 }
+
+.icon-btn {
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.5rem;
+  vertical-align: text-bottom;
+}
+
 .categoria-container {
   background-color: #fff;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
+
 .fotosImg {
   width: 100%;
   height: 350px;
@@ -411,30 +463,37 @@ export default {
   border-radius: 8px;
   cursor: pointer;
 }
+
 .card-votacao {
   border: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
 .card-votacao:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
 }
+
 .info-conjunto {
   border: 1px solid #e0e0e0;
 }
+
 .criterio-input-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .criterio-input-group .form-label {
   font-weight: 500;
   flex: 1;
 }
+
 .criterio-input-group .form-control {
   width: 80px;
 }
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -445,6 +504,7 @@ export default {
   justify-content: center;
   z-index: 1050;
 }
+
 .modal-content {
   background-color: white;
   padding: 2rem;
@@ -454,6 +514,7 @@ export default {
   text-align: center;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
+
 .modal-actions {
   display: flex;
   justify-content: space-around;
