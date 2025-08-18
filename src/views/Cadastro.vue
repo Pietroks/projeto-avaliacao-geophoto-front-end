@@ -323,10 +323,10 @@ export default {
         formData.append("document", this.cpf.replace(/\D/g, ""));
         formData.append("user_type", "N");
         formData.append("category", this.nivelFormacao);
-        formData.append("instituicao", this.instituicao);
+        formData.append("institution", this.instituicao);
         var endereco_completo = `${this.rua}, ${this.numero}, ${this.bairro}`;
         formData.append("cep", this.cep.replace(/\D/g, ""));
-        formData.append("complete_adress", endereco_completo);
+        formData.append("complete_address", endereco_completo);
         formData.append("file", this.comprovante);
 
         const response = await fetch(`${API_URL}/users/`, {
@@ -548,6 +548,7 @@ export default {
   border-radius: 15px;
   text-align: center;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+  width: auto;
 }
 .button-login-redirect {
   margin-top: 20px;

@@ -10,7 +10,7 @@
     </div>
   </section>
 
-  <section class="info-section bg-dark text-light py-5" v-scroll-appear>
+  <section class="info-section bg-dark text-light py-5">
     <div class="container">
       <div class="row">
         <div class="col-md-4 mb-4">

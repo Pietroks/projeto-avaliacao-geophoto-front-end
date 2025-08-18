@@ -3,15 +3,15 @@
     <h1 class="mb-1">Bem-vindo, {{ user?.name || "Usuário" }}</h1>
     <p class="mb-4">Email: {{ user?.email || "Não informado" }}</p>
 
-    <div class="account-actions mb-4">
+    <div class="account-actions mb-4 d-flex justify-content-between">
       <button @click="goToUpdatePassword" class="btn btn-outline-secondary">Alterar Senha</button>
 
       <button v-if="!isAvaliador" @click="downloadComprovante" class="btn btn-primary ms-2">Baixar Comprovante</button>
 
       <button v-if="isAvaliador" @click="gerarRelatorioPDF" class="btn btn-info ms-2">Gerar Relatório PDF</button>
 
-      <router-link to="/admin" v-if="isAvaliador" class="cta-btn">
-        Administração <font-awesome-icon icon="arrow-right" class="ms-2 btn btn-info" />
+      <router-link to="/admin" v-if="isAvaliador" class="btn btn-info ms-2">
+        Administração <font-awesome-icon icon="arrow-right" />
       </router-link>
     </div>
 
@@ -124,16 +124,20 @@
       </div>
     </div>
 
-    <button @click="logout" class="btn btn-outline-danger mt-5 w-100">Sair</button>
+    <div class="text-center">
+      <button @click="logout" class="btn btn-outline-danger mt-5 w-50">Sair</button>
+    </div>
   </div>
 </template>
 
 <script>
 import { API_URL } from "@/config/config.js";
 import defaultImage from "@/assets/default.svg";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default {
   name: "DashboardPage",
+  components: { FontAwesomeIcon },
   data() {
     return {
       photoFiles: [],
@@ -253,10 +257,15 @@ export default {
           headers: { Authorization: `Bearer ${this.token}` },
         });
 
-        if (response.status == 401) {
-          this.logout();
+        if (response.status === 404) {
+          this.photos = [];
+          return;
         }
-        if (!response.ok) throw new Error("Erro ao buscar imagens.");
+
+        if (!response.ok) {
+          if (response.status === 401) this.logout();
+          throw new Error("Erro ao buscar imagens.");
+        }
 
         const { images } = await response.json();
 
@@ -282,6 +291,7 @@ export default {
         this.photos = fotosDetalhadas;
       } catch (error) {
         console.error("Erro ao buscar imagens:", error);
+        this.photos = [];
       } finally {
         this.isLoading = false;
       }
