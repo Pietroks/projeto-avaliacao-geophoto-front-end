@@ -1,6 +1,8 @@
 <template>
   <section class="background-votacao py-5">
     <div class="container">
+      <ImageModal :visible="isModalVisible" :images="modalImages" :start-index="modalStartIndex" @close="isModalVisible = false" />
+
       <div v-if="showConfirmationModal" class="modal-overlay">
         <div class="modal-content">
           <h4>Confirmar Envio de Notas?</h4>
@@ -12,33 +14,11 @@
         </div>
       </div>
 
-      <div v-if="showImageModal" class="image-modal-overlay" @click.self="closeImageModal">
-        <div class="image-modal-content">
-          <button class="image-modal-close-btn" @click="closeImageModal">&times;</button>
-
-          <div v-if="modalImages.length === 1">
-            <img :src="modalImages[0].image_url" class="carousel-image" alt="Imagem em tamanho real" />
-          </div>
-
-          <div v-if="modalImages.length > 1" class="carousel-container">
-            <img
-              :src="modalImages[currentCarouselIndex].image_url"
-              class="carousel-image"
-              :key="modalImages[currentCarouselIndex].image_id"
-              alt="Imagem do carrossel"
-            />
-            <button class="carousel-nav prev" @click="prevImage">&#10094;</button>
-            <button class="carousel-nav next" @click="nextImage">&#10095;</button>
-            <div class="carousel-counter">{{ currentCarouselIndex + 1 }} / {{ modalImages.length }}</div>
-          </div>
-        </div>
-      </div>
-
       <div v-if="usuario.name" class="text-center mb-5">
         <h2 class="titulo-pagina">
           Avaliando fotos de: <strong>{{ usuario.name }}</strong>
         </h2>
-        <p class="text-muted">Categoria de Formação: {{ usuario.category }}</p>
+        <p class="text-muted">Categoria de Formação: {{ categoriaFormatada }}</p>
         <button v-if="isAvaliador" @click="baixarComprovante" class="btn btn-info mt-2">
           <ArrowDownTrayIcon class="icon-btn" />
           Baixar Comprovante de Matrícula
@@ -48,21 +28,19 @@
       <div class="categoria-container mb-5">
         <h3 class="titulo-categoria">Categoria A</h3>
         <div v-if="imagensA.length > 0" class="row g-4 justify-content-center">
-          <div v-for="image in imagensA" :key="image.image_id" class="col-12 col-md-10 col-lg-8">
+          <div v-for="(image, index) in imagensA" :key="image.image_id" class="col-12 col-md-10 col-lg-8">
             <div class="card card-votacao h-100">
               <img
                 :src="image.image_url || defaultImage"
                 class="card-img-top fotosImg"
                 alt="Imagem do usuário"
-                @click="openImageModal([image])"
+                @click="openModal(imagensA, index)"
               />
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ image.nome || "Foto sem nome" }}</h5>
-                <h6 v-if="image.local" class="card-subtitle mb-2 text-muted">{{ image.local }}</h6>
-                <p v-if="image.equipamento" class="card-text small"><strong>Equipamento:</strong> {{ image.equipamento }}</p>
-                <p class="card-text description-text mt-2">
-                  {{ image.description }}
-                </p>
+                <h5 class="card-title"><strong>Titulo: </strong>{{ image.title || "Foto sem nome" }}</h5>
+                <h6 v-if="image.place" class="card-subtitle mb-2"><strong>Local: </strong>{{ image.place }}</h6>
+                <p v-if="image.equipment" class="card-text"><strong>Equipamento:</strong> {{ image.equipment }}</p>
+                <p class="card-text description-text mb-2"><strong>Descrição: </strong>{{ image.description }}</p>
 
                 <div v-if="isAvaliador" class="mt-auto pt-3">
                   <div v-for="criterio in criterios" :key="criterio.id" class="criterio-input-group mb-2">
@@ -77,6 +55,7 @@
                       max="10"
                       step="1"
                       placeholder="1-10"
+                      @input="validarNota(image.notas, criterio.id)"
                     />
                   </div>
                   <button :disabled="image.avaliada" class="btn btn-primary w-100 mt-2" @click="confirmarEnvio(image, 'A')">
@@ -94,9 +73,9 @@
         <h3 class="titulo-categoria">Categoria B</h3>
         <div v-if="imagensB.length > 0">
           <div class="card card-body bg-light mb-4 text-dark info-conjunto">
-            <h5><strong>Nome do Conjunto:</strong> {{ imagensB[0].nome || "Não informado" }}</h5>
-            <p class="mb-1"><strong>Local:</strong> {{ imagensB[0].local || "Não informado" }}</p>
-            <p class="mb-0"><strong>Equipamento:</strong> {{ imagensB[0].equipamento || "Não informado" }}</p>
+            <h5><strong>Nome do Conjunto:</strong> {{ imagensB[0].title || "Não informado" }}</h5>
+            <p class="mb-1"><strong>Local:</strong> {{ imagensB[0].place || "Não informado" }}</p>
+            <p class="mb-0"><strong>Equipamento:</strong> {{ imagensB[0].equipment || "Não informado" }}</p>
             <p class="mt-2 mb-0"><strong>Descrição do Conjunto:</strong> {{ imagensB[0].description }}</p>
           </div>
 
@@ -107,7 +86,7 @@
                   :src="image.image_url || defaultImage"
                   class="card-img-top fotosImg"
                   alt="Imagem do usuário"
-                  @click="openImageModal(imagensB, index)"
+                  @click="openModal(imagensB, index)"
                 />
               </div>
             </div>
@@ -128,6 +107,7 @@
                   max="10"
                   step="1"
                   placeholder="1-10"
+                  @input="validarNota(notasCategoriaB, criterio.id)"
                 />
               </div>
               <button class="btn btn-primary w-100" @click="confirmarEnvio(null, 'B')" :disabled="categoriaBJaAvaliada">
@@ -146,18 +126,17 @@
 import { API_URL } from "@/config/config.js";
 import defaultImage from "@/assets/default.svg";
 import { ArrowDownTrayIcon } from "@heroicons/vue/24/solid";
+import ImageModal from "@/components/ImageModal.vue";
 
 export default {
   name: "VotacaoPage",
-  components: { ArrowDownTrayIcon },
+  components: { ArrowDownTrayIcon, ImageModal }, // Registra o componente
   data() {
     return {
       usuario: {},
       imagensA: [],
       imagensB: [],
-      notaCategoriaB: null,
       showConfirmationModal: false,
-      photoToSubmit: null,
       itemParaAvaliar: null,
       defaultImage,
       criterios: [
@@ -169,9 +148,10 @@ export default {
       ],
       notasCategoriaB: {},
       categoriaBJaAvaliada: false,
-      showImageModal: false,
+      // Dados para controlar o modal
+      isModalVisible: false,
       modalImages: [],
-      currentCarouselIndex: 0,
+      modalStartIndex: 0,
     };
   },
   computed: {
@@ -183,6 +163,14 @@ export default {
     },
     user() {
       return this.$store.getters["user/user"];
+    },
+    categoriaFormatada() {
+      const mapaCategorias = {
+        1: "Estudante de Graduação",
+        2: "Estudante de Pós-Graduação",
+        3: "Graduado",
+      };
+      return mapaCategorias[this.usuario.category] || "Não informado";
     },
   },
   async created() {
@@ -207,21 +195,16 @@ export default {
     }
   },
   methods: {
-    openImageModal(images, startIndex = 0) {
+    openModal(images, index = 0) {
       this.modalImages = images;
-      this.currentCarouselIndex = startIndex;
-      this.showImageModal = true;
+      this.modalStartIndex = index;
+      this.isModalVisible = true;
     },
-    closeImageModal() {
-      this.showImageModal = false;
-      this.modalImages = [];
-      this.currentCarouselIndex = 0;
-    },
-    nextImage() {
-      this.currentCarouselIndex = (this.currentCarouselIndex + 1) % this.modalImages.length;
-    },
-    prevImage() {
-      this.currentCarouselIndex = (this.currentCarouselIndex - 1 + this.modalImages.length) % this.modalImages.length;
+
+    validarNota(notas, criterioId) {
+      const nota = notas[criterioId];
+      if (nota < 1) notas[criterioId] = 1;
+      if (nota > 10) notas[criterioId] = 10;
     },
 
     logout() {

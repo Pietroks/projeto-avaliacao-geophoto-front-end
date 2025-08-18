@@ -1,14 +1,12 @@
 <template>
   <div class="dashboard">
+    <ImageModal :visible="isModalVisible" :images="modalImages" :start-index="modalStartIndex" @close="isModalVisible = false" />
+
     <h1 class="mb-1">Bem-vindo, {{ user?.name || "Usuário" }}</h1>
     <p class="mb-4">Email: {{ user?.email || "Não informado" }}</p>
 
     <div class="account-actions mb-4 d-flex justify-content-between">
       <button @click="goToUpdatePassword" class="btn btn-outline-secondary">Alterar Senha</button>
-
-      <button v-if="!isAvaliador" @click="downloadComprovante" class="btn btn-primary ms-2">Baixar Comprovante</button>
-
-      <button v-if="isAvaliador" @click="gerarRelatorioPDF" class="btn btn-info ms-2">Gerar Relatório PDF</button>
 
       <router-link to="/admin" v-if="isAvaliador" class="btn btn-info ms-2">
         Administração <font-awesome-icon icon="arrow-right" />
@@ -25,7 +23,7 @@
             <span class="badge bg-primary">Categoria B: {{ photosB.length }}/3</span>
           </div>
 
-          <form @submit.prevent="uploadPhotos" v-if="canUploadA || canUploadB">
+          <form @submit.prevent="uploadPhotos" v-if="canUploadA || canUploadB" :key="`form-${photosA.length}-${photosB.length}`">
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="fileInput" class="form-label">Selecione a(s) imagem(ns)</label>
@@ -35,14 +33,20 @@
                   type="file"
                   class="form-control"
                   @change="handleFileChange"
-                  accept="image/*"
+                  accept="image/jpeg, image/jpg"
                   :multiple="subcategory === 'B'"
                   required
                 />
               </div>
               <div class="col-md-6 mb-3">
                 <label for="subcategory" class="form-label">Categoria</label>
-                <select id="subcategory" v-model="subcategory" class="form-select" required>
+                <select
+                  id="subcategory"
+                  v-model="subcategory"
+                  class="form-select"
+                  required
+                  :key="`sel-${canUploadA}-${canUploadB}-${photosA.length}-${photosB.length}`"
+                >
                   <option v-if="canUploadA" value="A">Categoria A (1 Foto Individual)</option>
                   <option v-if="canUploadB" value="B">Categoria B (Conjunto de 3 Fotos)</option>
                 </select>
@@ -81,20 +85,52 @@
 
       <div class="mt-5">
         <h3 class="mb-4">Suas Fotos Enviadas</h3>
-        <div v-if="photos.length > 0" class="row g-4">
-          <div v-for="photo in photos" :key="photo.image_id" class="col-12 col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100">
-              <img :src="photo.image_url || defaultImage" class="card-img-top" alt="Imagem enviada" />
-              <div class="card-body">
-                <h5 class="card-title">{{ photo.nome || `Categoria: ${photo.subcategory}` }}</h5>
-                <h6 v-if="photo.local" class="card-subtitle mb-2 text-muted">{{ photo.local }}</h6>
-                <p class="card-text"><strong>Equipamento:</strong> {{ photo.equipamento || "N/A" }}</p>
-                <p class="card-text">{{ photo.description }}</p>
+
+        <div v-if="photosA.length > 0">
+          <h4 class="mb-3">Categoria A</h4>
+          <div class="row g-4">
+            <div v-for="photo in photosA" :key="photo.image_id" class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <img
+                  :src="photo.image_url || defaultImage"
+                  class="card-img-top clickable-image"
+                  alt="Imagem enviada"
+                  @click="openModal(photosA, 0)"
+                />
+                <div class="card-body">
+                  <h5 class="card-title mb-4">{{ photo.title }}</h5>
+                  <h6 v-if="photo.place" class="card-subtitle mb-2 text-muted"><strong>Local:</strong> {{ photo.place }}</h6>
+                  <p class="card-text mb-2 text-muted"><strong>Equipamento:</strong> {{ photo.equipment || "N/A" }}</p>
+                  <p class="card-text mb-2 text-muted"><strong>Descrição:</strong> {{ photo.description }}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <p v-else class="text-muted">Você ainda não enviou nenhuma foto.</p>
+
+        <div v-if="photosB.length > 0" class="mt-5">
+          <h4 class="mb-3">Categoria B</h4>
+          <div class="card card-body bg-light mb-4 text-dark">
+            <h5><strong>Nome do Conjunto:</strong> {{ photosB[0].title || "Não informado" }}</h5>
+            <p class="mb-1"><strong>Local:</strong> {{ photosB[0].place || "Não informado" }}</p>
+            <p class="mb-0"><strong>Equipamento:</strong> {{ photosB[0].equipment || "Não informado" }}</p>
+            <p class="mt-2 mb-0"><strong>Descrição do Conjunto:</strong> {{ photosB[0].description }}</p>
+          </div>
+          <div class="row g-4">
+            <div v-for="(photo, index) in photosB" :key="photo.image_id" class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <img
+                  :src="photo.image_url || defaultImage"
+                  class="card-img-top clickable-image"
+                  alt="Imagem enviada"
+                  @click="openModal(photosB, index)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p v-if="photos.length === 0" class="text-muted">Você ainda não enviou nenhuma foto.</p>
       </div>
     </div>
 
@@ -103,24 +139,10 @@
         <div class="card-body">
           <h2 class="card-title mb-3">Painel do Avaliador</h2>
           <p class="text-muted">Aqui você pode acompanhar as avaliações que já realizou.</p>
+          <button @click="gerarRelatorioPDF" class="btn btn-success" :disabled="isLoading">
+            {{ isLoading ? "Gerando..." : "Baixar Relatório de Notas (PDF)" }}
+          </button>
         </div>
-      </div>
-
-      <div class="mt-5">
-        <h3 class="mb-4">Minhas Avaliações</h3>
-        <div v-if="avaliacoes.length > 0" class="row g-4">
-          <div v-for="avaliacao in avaliacoes" :key="avaliacao.id" class="col-12 col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100">
-              <img :src="avaliacao.image_url || defaultImage" class="card-img-top" alt="Imagem avaliada" />
-              <div class="card-body">
-                <h5 class="card-title">{{ avaliacao.nome }}</h5>
-                <p class="card-text"><strong>Concorrente:</strong> {{ avaliacao.autor }}</p>
-                <p class="card-text"><strong>Sua Nota Média:</strong> {{ avaliacao.notaMedia }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p v-else class="text-muted">Você ainda não avaliou nenhuma foto.</p>
       </div>
     </div>
 
@@ -134,10 +156,11 @@
 import { API_URL } from "@/config/config.js";
 import defaultImage from "@/assets/default.svg";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import ImageModal from "@/components/ImageModal.vue";
 
 export default {
   name: "DashboardPage",
-  components: { FontAwesomeIcon },
+  components: { FontAwesomeIcon, ImageModal },
   data() {
     return {
       photoFiles: [],
@@ -150,6 +173,9 @@ export default {
       isLoading: false,
       defaultImage,
       avaliacoes: [],
+      isModalVisible: false,
+      modalImages: [],
+      modalStartIndex: 0,
     };
   },
   computed: {
@@ -163,10 +189,20 @@ export default {
       return this.user && (this.user.user_type === "A" || this.user.user_type === "E");
     },
     photosA() {
-      return this.photos.filter((p) => p.subcategory === "A");
+      return this.photos.filter(
+        (p) =>
+          String(p.subcategory ?? p.category ?? "")
+            .trim()
+            .toUpperCase() === "A"
+      );
     },
     photosB() {
-      return this.photos.filter((p) => p.subcategory === "B");
+      return this.photos.filter(
+        (p) =>
+          String(p.subcategory ?? p.category ?? "")
+            .trim()
+            .toUpperCase() === "B"
+      );
     },
     canUploadA() {
       return this.photosA.length < 1;
@@ -176,8 +212,22 @@ export default {
     },
   },
   methods: {
+    openModal(images, index) {
+      this.modalImages = images;
+      this.modalStartIndex = index;
+      this.isModalVisible = true;
+    },
+
     handleFileChange(event) {
       const files = Array.from(event.target.files);
+
+      const invalidFiles = files.filter((f) => !["image/jpeg", "image/jpg"].includes(f.type));
+      if (invalidFiles.length > 0) {
+        alert("Formato inválido. Só é permitido enviar imagens JPEG/JPG.");
+        this.resetFileInput();
+        return;
+      }
+
       if (this.subcategory === "B" && files.length !== 3) {
         alert("Você deve selecionar exatamente 3 imagens para a Categoria B.");
         this.resetFileInput();
@@ -186,7 +236,7 @@ export default {
       this.photoFiles = files;
     },
     async uploadPhotos() {
-      if (!this.nomeFoto || !this.localFoto || !this.equipamentoFoto || !this.descricaoFoto) {
+      if (!this.nomeFoto?.trim() || !this.localFoto?.trim() || !this.equipamentoFoto?.trim() || !this.descricaoFoto?.trim()) {
         alert("Por favor, preencha todos os detalhes da foto/conjunto.");
         return;
       }
@@ -195,14 +245,20 @@ export default {
 
       try {
         for (const file of this.photoFiles) {
+          console.log("Enviando:", file);
+
           const formData = new FormData();
           formData.append("image", file);
           formData.append("user_id", this.user.user_id);
           formData.append("subcategory", this.subcategory);
-          formData.append("nome", this.nomeFoto);
-          formData.append("local", this.localFoto);
-          formData.append("equipamento", this.equipamentoFoto);
+          formData.append("title", this.nomeFoto);
+          formData.append("place", this.localFoto);
+          formData.append("equipment", this.equipamentoFoto);
           formData.append("description", this.descricaoFoto);
+
+          for (let [k, v] of formData.entries()) {
+            console.log(k, v);
+          }
 
           const response = await fetch(`${API_URL}/images/upload/`, {
             method: "POST",
@@ -211,6 +267,9 @@ export default {
           });
 
           if (!response.ok) {
+            if (file.type !== "image/jpeg" && file.type !== "image/jpg") {
+              throw new Error(`Formato não suportado (${file.type}). Apenas JPEG/JPG são aceitos.`);
+            }
             throw new Error(`Erro ao fazer upload da imagem: ${file.name}`);
           }
         }
@@ -230,7 +289,14 @@ export default {
       this.localFoto = "";
       this.equipamentoFoto = "";
       this.descricaoFoto = "";
-      this.subcategory = this.canUploadA ? "A" : "B";
+
+      if (this.canUploadA) {
+        this.subcategory = "A";
+      } else if (this.canUploadB) {
+        this.subcategory = "B";
+      } else {
+        this.subcategory = "";
+      }
       this.resetFileInput();
     },
 
@@ -306,63 +372,73 @@ export default {
       }
     },
 
-    gerarRelatorioPDF() {
-      alert("Lógica para gerar o PDF no backend ainda não foi implementada.");
-    },
-
-    async downloadComprovante() {
-      if (!this.user) return;
+    async gerarRelatorioPDF() {
       this.isLoading = true;
-
       try {
-        const response = await fetch(`${API_URL}/users/pdf/${this.user.user_id}/`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
+        const response = await fetch(`${API_URL}/avaliacoes/media-por-usuario`, {
+          headers: { Authorization: `Bearer ${this.token}` },
         });
 
         if (!response.ok) {
-          if (response.status === 404) {
-            alert("Nenhum comprovante encontrado para download.");
-          } else {
-            throw new Error("Não foi possível baixar o arquivo.");
-          }
-          return;
+          throw new Error("Não foi possível gerar o relatório. Verifique se há avaliações concluídas.");
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/pdf")) {
+          throw new Error("A resposta do servidor não foi um arquivo PDF. Contate o administrador.");
         }
 
         const blob = await response.blob();
-
         const downloadUrl = window.URL.createObjectURL(blob);
-
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.setAttribute("download", "meu-comprovante.pdf");
+        link.setAttribute("download", "relatorio_avaliacoes.pdf");
         document.body.appendChild(link);
         link.click();
-
         link.remove();
         window.URL.revokeObjectURL(downloadUrl);
       } catch (error) {
-        console.error("Erro ao baixar o comprovante:", error);
-        alert(`Erro: ${error.message}`);
+        console.error("Erro ao baixar o relatório:", error);
+        alert(error.message);
       } finally {
         this.isLoading = false;
       }
     },
 
     async fetchAvaliacoes() {
-      if (!this.user) return;
+      if (!this.user || !this.user.user_id) return;
       this.isLoading = true;
       try {
-        const response = await fetch(`${API_URL}/evaluators/${this.user.user_id}/ratings`, {
+        const response = await fetch(`${API_URL}/avaliacoes/media-por-usuario`, {
           headers: { Authorization: `Bearer ${this.token}` },
         });
-        if (!response.ok) throw new Error("Erro ao buscar avaliações.");
+
+        if (!response.ok) {
+          if (response.status === 404) this.avaliacoes = [];
+          else throw new Error("Erro ao buscar avaliações.");
+          return;
+        }
+
+        // VERIFICAÇÃO ADICIONADA AQUI
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          console.error("Erro: A resposta do servidor não é JSON. É provável que seja um PDF.");
+          this.avaliacoes = []; // Define como vazio para evitar quebrar a página
+          return;
+        }
+
         const data = await response.json();
-        this.avaliacoes = data;
+
+        this.avaliacoes = data.map((item) => ({
+          id: item.user_id,
+          nome: item.image_title,
+          autor: item.user_name,
+          notaMedia: parseFloat(item.average_score).toFixed(2),
+          image_url: `${API_URL}/images/${item.image_id}/`,
+        }));
       } catch (error) {
         console.error("Erro ao buscar avaliações:", error);
+        this.avaliacoes = [];
       } finally {
         this.isLoading = false;
       }
@@ -376,12 +452,14 @@ export default {
     }
   },
   watch: {
-    subcategory() {
-      this.resetForm();
-    },
     canUploadA(newVal) {
       if (!newVal && this.subcategory === "A") {
-        this.subcategory = "B";
+        this.subcategory = this.canUploadB ? "B" : "";
+      }
+    },
+    canUploadB(newVal) {
+      if (!newVal && this.subcategory === "B") {
+        this.subcategory = this.canUploadA ? "A" : "";
       }
     },
   },
@@ -425,5 +503,9 @@ export default {
   background-color: #e9f5ff;
   border: 1px solid #b8d6f0;
   border-radius: 8px;
+}
+
+.clickable-image {
+  cursor: pointer;
 }
 </style>
