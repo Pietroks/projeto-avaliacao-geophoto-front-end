@@ -60,9 +60,30 @@
             <div v-if="photoFiles.length > 0" class="mt-4">
               <h4 class="mb-3">Detalhes da Foto / Conjunto</h4>
               <div class="photo-details-form">
-                <input v-model="nomeFoto" type="text" class="form-control mb-2" placeholder="Nome da Foto / Conjunto *" required />
-                <input v-model="localFoto" type="text" class="form-control mb-2" placeholder="Local da Foto *" required />
-                <input v-model="equipamentoFoto" type="text" class="form-control mb-2" placeholder="Equipamento Utilizado *" required />
+                <input
+                  v-model="nomeFoto"
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Nome da Foto / Conjunto *"
+                  required
+                  :disabled="subcategory === 'B' && dadosConjuntoBPreenchidos"
+                />
+                <input
+                  v-model="localFoto"
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Local da Foto *"
+                  required
+                  :disabled="subcategory === 'B' && dadosConjuntoBPreenchidos"
+                />
+                <input
+                  v-model="equipamentoFoto"
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Equipamento Utilizado *"
+                  required
+                  :disabled="subcategory === 'B' && dadosConjuntoBPreenchidos"
+                />
                 <textarea
                   v-model="descricaoFoto"
                   class="form-control"
@@ -70,6 +91,7 @@
                   maxlength="1500"
                   rows="4"
                   required
+                  :disabled="subcategory === 'B' && dadosConjuntoBPreenchidos"
                 ></textarea>
               </div>
             </div>
@@ -210,6 +232,9 @@ export default {
     canUploadB() {
       return this.photosB.length < 3;
     },
+    dadosConjuntoBPreenchidos() {
+      return this.photosB.length > 0;
+    },
   },
   methods: {
     openModal(images, index) {
@@ -228,8 +253,18 @@ export default {
         return;
       }
 
-      if (this.subcategory === "B" && files.length !== 3) {
-        alert("Você deve selecionar exatamente 3 imagens para a Categoria B.");
+      if (this.subcategory === "B") {
+        const vagasRestantes = 3 - this.photosB.length;
+
+        if (files.length > vagasRestantes) {
+          alert(`Você já enviou ${this.photosB.length} foto(s). Só pode enviar mais ${vagasRestantes} para a Categoria B.`);
+          this.resetFileInput();
+          return;
+        }
+      }
+
+      if (this.subcategory === "A" && files.length > 1) {
+        alert("Você só pode selecionar 1 imagem para a Categoria A.");
         this.resetFileInput();
         return;
       }
@@ -355,6 +390,14 @@ export default {
         );
 
         this.photos = fotosDetalhadas;
+
+        if (this.photosB.length > 0 && this.canUploadB) {
+          const firstPhotoOfSet = this.photosB[0];
+          this.nomeFoto = firstPhotoOfSet.title;
+          this.localFoto = firstPhotoOfSet.place;
+          this.equipamentoFoto = firstPhotoOfSet.equipment;
+          this.descricaoFoto = firstPhotoOfSet.description;
+        }
       } catch (error) {
         console.error("Erro ao buscar imagens:", error);
         this.photos = [];
@@ -419,11 +462,10 @@ export default {
           return;
         }
 
-        // VERIFICAÇÃO ADICIONADA AQUI
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
           console.error("Erro: A resposta do servidor não é JSON. É provável que seja um PDF.");
-          this.avaliacoes = []; // Define como vazio para evitar quebrar a página
+          this.avaliacoes = [];
           return;
         }
 

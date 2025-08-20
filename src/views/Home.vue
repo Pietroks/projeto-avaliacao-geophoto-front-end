@@ -1,7 +1,7 @@
 <template>
   <section class="hero">
     <div class="container text-center py-5">
-      <h1 class="main-title">Geofotografia</h1>
+      <h1 class="main-title">Fotogeografia</h1>
       <h2 class="sub-title">Capturando a beleza natural da Terra</h2>
       <router-link to="/cadastro" class="cta-btn">
         Inscreva-se
@@ -14,7 +14,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-4 mb-4">
-          <h3 class="info-title">O que é Geofotografia?</h3>
+          <h3 class="info-title">O que é Fotogeografia?</h3>
           <p>A arte de capturar a superfície terrestre em imagens impactantes, revelando sua beleza, texturas e cores.</p>
         </div>
         <div class="col-md-4 mb-4">
@@ -36,7 +36,7 @@
           <h2 class="highlight-title">Participe do Concurso Nacional</h2>
           <p>
             Inspire outros com a sua visão do mundo, ganhe visibilidade para seus projetos e concorra junto com outros apaixonados por
-            Geofotografia.
+            Fotogeografia.
           </p>
           <router-link to="/premiacao" class="cta-btn"> Saiba mais <font-awesome-icon icon="arrow-right" class="ms-2" /> </router-link>
         </div>
