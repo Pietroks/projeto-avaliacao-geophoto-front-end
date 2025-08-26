@@ -1,0 +1,86 @@
+# ==============================================================================
+
+# I. REGRAS PARA SINGLE PAGE APPLICATION (SPA) COM VUE ROUTER
+
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  # Ativa o motor de reescrita de URL
+  RewriteEngine On
+
+# Define a base da URL para reescrita
+
+RewriteBase /
+
+# Evita que a regra principal se aplique ao próprio index.html
+
+RewriteRule ^index\.html$ - [L]
+
+# Se a requisição NÃO for para um arquivo (-f) existente
+
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# E se a requisição NÃO for para um diretório (-d) existente
+
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redireciona todas as outras requisições para o index.html
+
+# para que o Vue Router possa assumir o controle.
+
+RewriteRule . /index.html [L]
+</IfModule>
+
+# ==============================================================================
+
+# II. CABEÇALHOS DE SEGURANÇA (SECURITY HEADERS)
+
+# ==============================================================================
+
+<IfModule mod_headers.c>
+  # Previne ataques de Cross-Site Scripting (XSS)
+  Header set X-XSS-Protection "1; mode=block"
+
+# Previne que o site seja incorporado em iframes (Clickjacking)
+
+Header set X-Frame-Options "SAMEORIGIN"
+
+# Impede que o navegador tente "adivinhar" o tipo de conteúdo dos arquivos
+
+Header set X-Content-Type-Options "nosniff"
+
+# Define uma política de segurança de conteúdo (CSP) básica.
+
+# Esta é uma política inicial, ajuste conforme necessário se usar fontes externas.
+
+# Header set Content-Security-Policy "default-src 'self';"
+
+# Controla quais informações de referência são enviadas
+
+Header set Referrer-Policy "no-referrer-when-downgrade"
+</IfModule>
+
+# ==============================================================================
+
+# III. FORÇAR USO DE HTTPS
+
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Verifica se a conexão não está usando HTTPS
+  RewriteCond %{HTTPS} !=on
+  # Redireciona o tráfego HTTP para HTTPS
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R=301,L]
+</IfModule>
+
+# ==============================================================================
+
+# IV. BLOQUEAR ACESSO A ARQUIVOS SENSÍVEIS
+
+# ==============================================================================
+
+<FilesMatch "(\.env|\.git|\.htaccess|package\.json|vue\.config\.js)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>

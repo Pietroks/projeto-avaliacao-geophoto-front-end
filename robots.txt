@@ -1,0 +1,19 @@
+# Regras para todos os robôs de busca
+User-agent: *
+
+# Permite o acesso a todas as páginas públicas importantes
+Allow: /
+Allow: /sobre
+Allow: /premiacao
+
+# Bloqueia o acesso a páginas de autenticação e áreas privadas
+Disallow: /login
+Disallow: /cadastro
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /concurso
+Disallow: /votacao
+Disallow: /edit-profile
+
+# Localização do mapa do site (opcional, mas recomendado)
+# Sitemap: https://fotogeografia.com.br/sitemap.xml
