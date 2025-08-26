@@ -1,65 +1,60 @@
 <template>
-  <div class="admin-container">
-    <h1 class="mb-2 text-center">Painel de Administração</h1>
-    <p class="text-center mb-4">
-      Envie um código de cadastro para avaliadores do concurso.
-    </p>
+  <div class="admin-page">
+    <Modal v-model="modalState.show" :title="modalState.title" :message="modalState.message" :type="modalState.type" />
 
-    <div class="form-card">
-      <h2>Convidar Avaliador</h2>
-      <p class="mb-3">
-        Informe o nome e o e-mail do avaliador para enviar um código de acesso:
-      </p>
-
-      <input
-        v-model="name"
-        type="text"
-        placeholder="Nome do avaliador"
-        class="form-control mb-3"
-        required
-      />
-
-      <input
-        v-model="document"
-        type="text"
-        placeholder="Documento do avaliador"
-        class="form-control mb-3"
-        required
-      />
-
-      <input
-        v-model="email"
-        type="email"
-        placeholder="E-mail do avaliador"
-        class="form-control"
-        required
-      />
-
-      <button class="btn mt-3" :disabled="isSending" @click="sendInvite">
-        {{ isSending ? "Enviando..." : "Enviar Convite" }}
-      </button>
-
-      <div v-if="successMessage" class="success-message">
-        {{ successMessage }}
+    <div class="admin-container">
+      <div class="text-center">
+        <h1 class="title">Painel de Administração</h1>
+        <p class="subtitle">Envie um convite com um código de acesso para os avaliadores do concurso.</p>
       </div>
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <form class="form-card" @submit.prevent="sendInvite">
+        <h2 class="form-title">Convidar Avaliador</h2>
+
+        <div class="form-group">
+          <label for="name">Nome completo</label>
+          <input id="name" v-model="name" type="text" placeholder="Nome do avaliador" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+          <label for="document">Documento (CPF)</label>
+          <input id="document" v-model="document" type="text" placeholder="Documento do avaliador" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input id="email" v-model="email" type="email" placeholder="E-mail do avaliador" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn-submit" :disabled="isSending">
+          {{ isSending ? "Enviando..." : "Enviar Convite" }}
+        </button>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
 import { API_URL } from "@/config/config";
+import Modal from "@/components/Modal.vue";
 
 export default {
   name: "AdminPage",
+  components: {
+    Modal,
+  },
   data() {
     return {
       name: "",
       email: "",
-      document:"",
+      document: "",
       isSending: false,
-      successMessage: "",
-      errorMessage: "",
+      modalState: {
+        show: false,
+        title: "",
+        message: "",
+        type: "info",
+      },
     };
   },
   computed: {
@@ -68,29 +63,34 @@ export default {
     },
   },
   methods: {
-    async sendInvite() {
+    triggerModal(title, message, type = "info") {
+      this.modalState.title = title;
+      this.modalState.message = message;
+      this.modalState.type = type;
+      this.modalState.show = true;
+    },
+    validateForm() {
       if (!this.name.trim()) {
-        this.errorMessage = "Por favor, insira o nome do avaliador.";
-        this.successMessage = "";
-        return;
+        this.triggerModal("Campo Obrigatório", "Por favor, insira o nome do avaliador.", "error");
+        return false;
       }
-
       if (!this.document.trim()) {
-        this.errorMessage = "Por favor, insira o documento do avaliador.";
-        this.successMessage = "";
-        return;
+        this.triggerModal("Campo Obrigatório", "Por favor, insira o documento do avaliador.", "error");
+        return false;
       }
-
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!this.email || !emailRegex.test(this.email)) {
-        this.errorMessage = "Por favor, insira um e-mail válido.";
-        this.successMessage = "";
+        this.triggerModal("E-mail Inválido", "Por favor, insira um endereço de e-mail válido.", "error");
+        return false;
+      }
+      return true;
+    },
+    async sendInvite() {
+      if (!this.validateForm()) {
         return;
       }
 
       this.isSending = true;
-      this.errorMessage = "";
-      this.successMessage = "";
 
       try {
         const response = await fetch(`${API_URL}/invite`, {
@@ -98,22 +98,25 @@ export default {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.token}`,
-
           },
-          
-          body: JSON.stringify({ name: this.name, email: this.email, document: this.document }),
+          body: JSON.stringify({
+            name: this.name,
+            email: this.email,
+            document: this.document,
+          }),
         });
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.detail || "Erro ao enviar convite.");
+          throw new Error(error.detail || "Ocorreu um erro ao enviar o convite.");
         }
 
-        this.successMessage = `Convite enviado para ${this.name} (${this.email})!`;
-        this.name = ""; 
+        this.triggerModal("Sucesso!", `O convite foi enviado para ${this.name} (${this.email}).`, "success");
+        this.name = "";
         this.email = "";
+        this.document = "";
       } catch (error) {
-        this.errorMessage = error.message || "Erro ao enviar convite.";
+        this.triggerModal("Erro no Envio", error.message, "error");
       } finally {
         this.isSending = false;
       }
@@ -123,58 +126,96 @@ export default {
 </script>
 
 <style scoped>
+.admin-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
 .admin-container {
-  max-width: 500px;
-  margin: 4rem auto;
-  padding: 1rem;
+  width: 100%;
+  max-width: 550px;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #4a5568;
+  margin-bottom: 2rem;
 }
 
 .form-card {
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-  border: 1px solid #ddd;
+  padding: 2.5rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
-input.form-control {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-button.btn {
-  background-color: #6f42c1;
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e0;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.btn-submit {
+  background-color: #007bff;
   color: #fff;
-  font-weight: bold;
-  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
   width: 100%;
   border: none;
-  border-radius: 6px;
-  transition: background 0.3s ease;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 1rem;
 }
 
-button.btn:hover:enabled {
-  background-color: #5a35a0;
+.btn-submit:hover:enabled {
+  background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-button.btn:disabled {
-  background-color: #999;
+.btn-submit:disabled {
+  background-color: #a0aec0;
   cursor: not-allowed;
-}
-
-.success-message {
-  margin-top: 1rem;
-  color: #28a745;
-  font-weight: 500;
-}
-
-.error-message {
-  margin-top: 1rem;
-  color: #dc3545;
-  font-weight: 500;
 }
 </style>

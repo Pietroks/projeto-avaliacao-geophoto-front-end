@@ -1,55 +1,80 @@
 <template>
-  <section class="background1">
-    <div class="container">
-      <div class="text-center mb-4">
-        <h2 class="tituloConcurso">Confira os Usuários Cadastrados</h2>
+  <section class="background-votacao">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h2 class="titulo-pagina">Galeria de Concorrentes</h2>
+        <p class="subtitulo-pagina">Navegue pelos participantes e escolha suas fotos favoritas para avaliar.</p>
+      </div>
 
-        <!-- Filtros -->
-        <div class="row justify-content-center mt-4">
-          <div class="col-md-4 mb-2">
-            <input v-model="searchTerm" type="text" class="form-control" placeholder="Buscar por nome..." />
+      <div class="row justify-content-center mb-4 g-3">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input v-model="searchTerm" type="text" class="form-control" placeholder="Buscar por nome do concorrente..." />
           </div>
-          <div class="col-md-4 mb-2">
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
             <select v-model="selectedCategory" class="form-select">
               <option value="">Todas as categorias</option>
-              <option v-for="(label, index) in categoryOptions" :key="index" :value="label">
-                {{ label }}
+              <option v-for="category in categoryOptions" :key="category" :value="category">
+                {{ category }}
               </option>
             </select>
           </div>
         </div>
       </div>
 
-      <!-- Lista de usuários -->
-      <div class="row g-4">
-        <div v-for="usuario in paginatedUsuarios" :key="usuario.id" class="col-12 col-md-6 col-lg-3 text-center">
-          <div class="divUsuario">
-            <p>
-              <strong>{{ usuario.name }}</strong>
-            </p>
-            <p class="text-muted">Categoria: {{ usuario.category }}</p>
-            <button @click="redirecionarParaVotacao(usuario.id)" class="btn btn-primary">Ver Imagens</button>
+      <div v-if="paginatedUsuarios.length > 0" class="row g-4">
+        <div v-for="usuario in paginatedUsuarios" :key="usuario.id" class="col-12 col-sm-6 col-lg-3">
+          <div class="user-card">
+            <UserCircleIcon class="avatar-icon" />
+            <h5 class="user-name mt-3">{{ usuario.name }}</h5>
+            <span class="user-category">{{ usuario.category }}</span>
+            <button @click="redirecionarParaVotacao(usuario.id)" class="btn btn-votacao mt-4">Avaliar Fotos</button>
           </div>
         </div>
       </div>
 
-      <!-- Paginação -->
-      <div class="d-flex justify-content-center mt-5">
-        <button class="btn btn-secondary me-2" :disabled="currentPage === 1" @click="currentPage--">Anterior</button>
-        <button class="btn btn-secondary" :disabled="currentPage === totalPages" @click="currentPage++">Próxima</button>
+      <p v-else class="text-light text-center mt-5">Nenhum concorrente encontrado com os filtros aplicados.</p>
+
+      <div v-if="totalPages > 1" class="d-flex justify-content-center align-items-center mt-5">
+        <button class="btn btn-pagination" :disabled="currentPage === 1" @click="currentPage--">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <span class="pagina-info mx-3">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button class="btn btn-pagination" :disabled="currentPage === totalPages" @click="currentPage++">
+          <i class="fas fa-arrow-right"></i>
+        </button>
       </div>
 
-      <p v-if="filteredUsuarios.length === 0" class="text-light text-center mt-5">Nenhum usuário encontrado.</p>
+      <Modal
+        v-model="isModalVisible"
+        :title="modal.title"
+        :message="modal.message"
+        :buttonText="modal.buttonText"
+        :type="modal.type"
+        @confirm="handleModalConfirm"
+      />
     </div>
   </section>
 </template>
 
 <script>
 import { API_URL } from "@/config/config.js";
-import defaultImage from "@/assets/default.svg";
+import { UserCircleIcon } from "@heroicons/vue/24/solid";
+import Modal from "@/components/Modal.vue";
+
+const categoryMap = {
+  1: "Estudante de Graduação",
+  2: "Estudante de Pós-Graduação",
+  3: "Graduado",
+};
 
 export default {
   name: "ConcursoPage",
+  components: { Modal, UserCircleIcon },
   data() {
     return {
       usuarios: [],
@@ -57,8 +82,15 @@ export default {
       selectedCategory: "",
       currentPage: 1,
       itemsPerPage: 8,
-      defaultImage,
-      categoryOptions: ["Graduado", "Pós-Graduado", "Outros"],
+      categoryOptions: Object.values(categoryMap),
+      isModalVisible: false,
+      modal: {
+        title: "",
+        message: "",
+        buttonText: "OK",
+        type: "info",
+        action: null,
+      },
     };
   },
   computed: {
@@ -80,20 +112,58 @@ export default {
   async created() {
     try {
       const response = await fetch(`${API_URL}/users/`, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.$store.getters["user/token"]}`,
+        },
       });
       if (!response.ok) throw new Error("Erro ao carregar usuários");
+
       const data = await response.json();
-      this.usuarios = data.map((usuario) => ({
-        ...usuario,
-        category: ["Graduado", "Pós-Graduado", "Outros"][usuario.category - 1] || "Não Informado",
-      }));
+
+      this.usuarios = data
+        .filter((user) => user.user_type !== "A" && user.user_type !== "E")
+        .map((usuario) => ({
+          ...usuario,
+          category: categoryMap[usuario.category] || "Não Informado",
+        }));
     } catch (error) {
-      alert("Erro ao carregar usuários faça login novamente");
-      this.logout();
+      console.error("Erro ao carregar usuários:", error);
+      this.showAlert(
+        "Sessão Expirada",
+        "Não foi possível carregar os concorrentes. Por favor, faça login novamente.",
+        "error",
+        "Ir para Login",
+        () => this.logout()
+      );
     }
   },
+
+  watch: {
+    searchTerm() {
+      this.currentPage = 1;
+    },
+    selectedCategory() {
+      this.currentPage = 1;
+    },
+  },
+
   methods: {
+    showAlert(title, message, type = "info", buttonText = "OK", action = null) {
+      this.modal.title = title;
+      this.modal.message = message;
+      this.modal.type = type;
+      this.modal.buttonText = buttonText;
+      this.modal.action = action;
+      this.isModalVisible = true;
+    },
+
+    handleModalConfirm() {
+      if (typeof this.modal.action === "function") {
+        this.modal.action();
+      }
+    },
+
     logout() {
       this.$store.dispatch("user/logout");
       this.$router.push("/login");
@@ -109,56 +179,120 @@ export default {
 </script>
 
 <style scoped>
-.background1 {
-  background-color: black;
-  padding: 4rem 0;
+/* Adicione isso ao seu CSS principal ou no <head> do index.html para os ícones de filtro */
+/* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> */
+
+.background-votacao {
+  background: linear-gradient(135deg, #1d2b4a, #0f172a);
+  color: #e2e8f0;
+  min-height: 100vh;
 }
 
-.tituloConcurso {
-  color: #137abe;
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+.titulo-pagina {
+  color: #fff;
+  font-weight: 700;
+  font-size: 2.8rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.divUsuario {
-  background: #222;
-  border-radius: 15px;
-  padding: 1.5rem;
-  transition: transform 0.3s ease-in-out;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  color: #eee;
+.subtitulo-pagina {
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-control,
+.form-select {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+.form-control::placeholder {
+  color: #94a3b8;
+}
+.form-control:focus,
+.form-select:focus {
+  background-color: #1e293b;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+  color: #e2e8f0;
+}
+.input-group-text {
+  background-color: #334155;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+.user-card {
+  background: #1e293b;
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  transition: all 0.3s ease;
+  border: 1px solid #334155;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.divUsuario:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+.user-card:hover {
+  transform: translateY(-8px);
+  border-color: #38bdf8;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-.divUsuario img {
-  max-width: 100%;
-  height: auto;
+.avatar-icon {
+  width: 80px;
+  height: 80px;
+  color: #38bdf8;
+  background-color: #334155;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.user-name {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.user-category {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  background-color: #334155;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+}
+
+.btn-votacao {
+  background-color: #38bdf8;
+  color: #0f172a;
+  border: none;
+  font-weight: 600;
   border-radius: 8px;
-  object-fit: cover;
-  max-height: 220px;
+  padding: 0.6rem 1.5rem;
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
-.btn-primary {
-  background-color: #137abe;
-  border-color: #137abe;
-  margin-top: 1rem;
-  font-size: 1rem;
-  border-radius: 12px;
-  padding: 0.5rem 1.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: 0.3s ease-in-out;
+.btn-votacao:hover {
+  background-color: #7dd3fc;
+  transform: scale(1.03);
 }
 
-.btn-primary:hover {
-  background-color: #1e5f8e;
-  border-color: #1e5f8e;
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+/* Estilo da Paginação */
+.btn-pagination {
+  background-color: #334155;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+}
+.btn-pagination:disabled {
+  background-color: #1e293b;
+  color: #475569;
+}
+.pagina-info {
+  color: #94a3b8;
+  font-weight: 500;
 }
 </style>

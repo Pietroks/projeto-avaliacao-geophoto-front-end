@@ -1,6 +1,4 @@
 <template>
-  <Notification :visible="notification.visible" :message="notification.message" :type="notification.type" @close="hideNotification" />
-
   <section class="hero-section">
     <div class="container py-5">
       <div class="row justify-content-center">
@@ -199,23 +197,35 @@
   </section>
 
   <Footer />
+
+  <Modal
+    v-model="isModalVisible"
+    :title="modal.title"
+    :message="modal.message"
+    :buttonText="modal.buttonText"
+    :type="modal.type"
+    @confirm="handleModalConfirm"
+  />
 </template>
 
 <script>
 import Footer from "@/components/Footer.vue";
-import Notification from "@/components/Notification.vue";
+import Modal from "@/components/Modal.vue";
 
 export default {
   name: "PremiacaoPage",
-  components: { Footer, Notification },
+  components: { Footer, Modal },
   data() {
     return {
       gavetaAberta: false,
       isDownloading: false,
-      notification: {
-        visible: false,
+      isModalVisible: false,
+      modal: {
+        title: "",
         message: "",
+        buttonText: "OK",
         type: "info",
+        action: null,
       },
       subcategorias: [
         {
@@ -288,17 +298,19 @@ export default {
     };
   },
   methods: {
-    showNotification(message, type = "info", duration = 5000) {
-      this.notification.message = message;
-      this.notification.type = type;
-      this.notification.visible = true;
-
-      setTimeout(() => {
-        this.hideNotification();
-      }, duration);
+    showAlert(title, message, type = "info", buttonText = "OK", action = null) {
+      this.modal.title = title;
+      this.modal.message = message;
+      this.modal.type = type;
+      this.modal.buttonText = buttonText;
+      this.modal.action = action;
+      this.isModalVisible = true;
     },
-    hideNotification() {
-      this.notification.visible = false;
+
+    handleModalConfirm() {
+      if (typeof this.modal.action === "function") {
+        this.modal.action();
+      }
     },
 
     baixarEditalPDF() {
@@ -317,7 +329,7 @@ export default {
         a.remove();
       } catch (e) {
         console.error(e);
-        this.showNotification("Ocorreu um erro ao tentar baixar o edital.");
+        this.showAlert("Erro no Download", "Ocorreu um erro ao tentar baixar o edital. Por favor, tente novamente.", "error");
       } finally {
         setTimeout(() => {
           this.isDownloading = false;

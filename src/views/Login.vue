@@ -26,13 +26,20 @@
         </button>
       </form>
 
-      <p v-if="errorMessage" class="error-message mt-3">{{ errorMessage }}</p>
-
       <p class="mt-4 link-cadastro">
         Não tem uma conta?
         <router-link to="/cadastro" class="link">Cadastre-se</router-link>
       </p>
     </div>
+
+    <Modal
+      v-model="isModalVisible"
+      :title="modal.title"
+      :message="modal.message"
+      :buttonText="modal.buttonText"
+      :type="modal.type"
+      @confirm="handleModalConfirm"
+    />
   </div>
 
   <Footer />
@@ -42,6 +49,7 @@
 import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/solid";
 import { mapActions, mapGetters } from "vuex";
 import Footer from "@/components/Footer.vue";
+import Modal from "@/components/Modal.vue";
 
 export default {
   name: "LoginPage",
@@ -51,6 +59,7 @@ export default {
     EyeIcon,
     EyeSlashIcon,
     Footer,
+    Modal,
   },
   data() {
     return {
@@ -58,7 +67,14 @@ export default {
       password: "",
       showPassword: false,
       isLoading: false,
-      errorMessage: "",
+      isModalVisible: false,
+      modal: {
+        title: "",
+        message: "",
+        buttonText: "OK",
+        type: "info",
+        action: null,
+      },
     };
   },
   computed: {
@@ -67,14 +83,28 @@ export default {
   methods: {
     ...mapActions("user", ["login"]),
 
+    showAlert(title, message, type = "info", buttonText = "OK", action = null) {
+      this.modal.title = title;
+      this.modal.message = message;
+      this.modal.type = type;
+      this.modal.buttonText = buttonText;
+      this.modal.action = action;
+      this.isModalVisible = true;
+    },
+
+    handleModalConfirm() {
+      if (typeof this.modal.action === "function") {
+        this.modal.action();
+      }
+    },
+
     async handleLogin() {
-      this.errorMessage = "";
       this.isLoading = true;
       try {
         await this.login({ email: this.email, password: this.password });
         this.$router.push("/dashboard");
       } catch (error) {
-        this.errorMessage = error.message || "Erro ao realizar login.";
+        this.showAlert("Erro no Login", error.message || "Email ou senha inválidos. Por favor, tente novamente.", "error");
       } finally {
         this.isLoading = false;
       }

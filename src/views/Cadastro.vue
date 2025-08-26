@@ -111,13 +111,14 @@
       </form>
     </div>
 
-    <div v-if="showSuccessModal" class="modal-overlay">
-      <div class="modal-content">
-        <h2>Cadastro Realizado com Sucesso!</h2>
-        <p>Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.</p>
-        <button @click="goToLogin" class="button-login-redirect">Ir para Login</button>
-      </div>
-    </div>
+    <Modal
+      v-model="isModalVisible"
+      :title="modal.title"
+      :message="modal.message"
+      :buttonText="modal.buttonText"
+      :type="modal.type"
+      @confirm="handleModalConfirm"
+    />
   </div>
   <Footer />
 </template>
@@ -133,11 +134,12 @@ import {
   MapIcon,
   BuildingLibraryIcon,
   HomeIcon,
-  BuildingOffice2Icon, // NOVO ÍCONE IMPORTADO
+  BuildingOffice2Icon,
 } from "@heroicons/vue/24/solid";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline"; // Corrigido para outline se for o caso, ou solid
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline";
 import { API_URL } from "@/config/config.js";
 import Footer from "@/components/Footer.vue";
+import Modal from "@/components/Modal.vue";
 
 export default {
   name: "CadastroPage",
@@ -155,6 +157,7 @@ export default {
     HomeIcon,
     BuildingOffice2Icon,
     Footer,
+    Modal,
   },
   data() {
     return {
@@ -171,12 +174,19 @@ export default {
       passwordError: false,
       passwordStrength: "",
       passwordStrengthClass: "",
-      showSuccessModal: false,
       isLoading: false,
       cep: "",
       rua: "",
       bairro: "",
       numero: "",
+      isModalVisible: false,
+      modal: {
+        title: "",
+        message: "",
+        buttonText: "",
+        type: "info",
+        action: null,
+      },
     };
   },
 
@@ -200,8 +210,34 @@ export default {
     },
   },
 
+  watch: {
+    // Sempre que a senha principal mudar, chame a validação
+    password() {
+      this.validatePasswordMatch();
+    },
+    // Sempre que a confirmação de senha mudar, chame a validação também
+    confirmPassword() {
+      this.validatePasswordMatch();
+    },
+  },
+
   methods: {
-    pplyCepMask() {
+    showAlert(title, message, type = "info", buttonText = "OK", action = null) {
+      this.modal.title = title;
+      this.modal.message = message;
+      this.modal.type = type;
+      this.modal.buttonText = buttonText;
+      this.modal.action = action;
+      this.isModalVisible = true;
+    },
+
+    handleModalConfirm() {
+      if (typeof this.modal.action === "function") {
+        this.modal.action();
+      }
+    },
+
+    applyCepMask() {
       this.cep = this.cep
         .replace(/\D/g, "")
         .replace(/^(\d{5})(\d)/, "$1-$2")
@@ -219,7 +255,7 @@ export default {
         const data = await response.json();
 
         if (data.erro) {
-          alert("CEP não encontrado. Por favor, verifique.");
+          this.showAlert("Erro no CEP", "O CEP informado não foi encontrado. Por favor, verifique.", "error");
           this.rua = "";
           this.bairro = "";
         } else {
@@ -228,7 +264,7 @@ export default {
         }
       } catch (error) {
         console.error("Erro ao buscar CEP:", error);
-        alert("Não foi possível buscar o endereço. Tente novamente.");
+        this.showAlert("Erro de Rede", "Não foi possível buscar o endereço. Tente novamente.", "error");
       } finally {
         this.isLoading = false;
       }
@@ -244,6 +280,14 @@ export default {
 
       this.passwordStrength = strength;
       this.passwordStrengthClass = `strength-${strength.toLowerCase()}`;
+    },
+
+    validatePasswordMatch() {
+      if (this.confirmPassword && this.password !== this.confirmPassword) {
+        this.passwordError = true;
+      } else {
+        this.passwordError = false;
+      }
     },
 
     validateCpf() {
@@ -310,7 +354,7 @@ export default {
 
     async register() {
       if (!this.isFormValid) {
-        alert("Por favor, preencha todos os campos corretamente.");
+        this.showAlert("Formulário Incompleto", "Por favor, preencha todos os campos obrigatórios.", "error");
         return;
       }
       this.isLoading = true;
@@ -335,22 +379,23 @@ export default {
         });
 
         if (response.ok) {
-          this.showSuccessModal = true;
+          this.showAlert(
+            "Cadastro Realizado!",
+            "Seu cadastro foi concluído. Clique no botão abaixo para ir à página de login.",
+            "success",
+            "Ir para Login",
+            () => this.$router.push("/login")
+          );
         } else {
           const errorData = await response.json();
           throw new Error(errorData.message || "Erro ao realizar o cadastro.");
         }
       } catch (error) {
         console.error("Erro no cadastro:", error);
-        alert(`Erro: ${error.message}`);
+        this.showAlert("Erro no Cadastro", error.message, "error");
       } finally {
         this.isLoading = false;
       }
-    },
-
-    goToLogin() {
-      this.showSuccessModal = false;
-      this.$router.push("/login");
     },
 
     togglePasswordVisibility() {
@@ -362,14 +407,10 @@ export default {
       if (file && file.type === "application/pdf") {
         this.comprovante = file;
       } else {
-        alert("Por favor, envie um arquivo PDF válido.");
+        this.showAlert("Arquivo Inválido", "Por favor, envie um arquivo no formato PDF.", "error");
         event.target.value = "";
         this.comprovante = null;
       }
-    },
-
-    closeModal() {
-      this.showSuccessModal = false;
     },
   },
 };
@@ -526,38 +567,6 @@ export default {
 .button-cadastro:disabled {
   background-color: #555;
   cursor: not-allowed;
-}
-
-/* Modal de Sucesso */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1050;
-}
-.modal-content {
-  background: #222;
-  color: white;
-  padding: 2rem;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
-  width: auto;
-}
-.button-login-redirect {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #1488f0;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 @media (max-width: 767px) {

@@ -3,7 +3,6 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Cadastro from "../views/Cadastro.vue";
 import Sobre from "../views/Sobre.vue";
-import Upload from "../views/Upload.vue";
 import Admin from "../views/Admin.vue";
 import Premiacao from "@/views/Premiacao.vue";
 import Concurso from "@/views/Concurso.vue";
@@ -21,11 +20,6 @@ const routes = [
     path: "/concurso",
     component: Concurso,
     meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: "/upload",
-    component: Upload,
-    meta: { requiresAuth: true },
   },
   {
     path: "/admin",
@@ -56,7 +50,6 @@ const router = createRouter({
   routes,
 });
 
-// Middleware de Autenticação Global
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);

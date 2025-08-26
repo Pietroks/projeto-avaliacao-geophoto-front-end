@@ -6,34 +6,16 @@
         <form @submit.prevent="handleUpdatePassword" class="containerForm">
           <div class="input-group">
             <LockClosedIcon class="icon" />
-            <input
-              v-model="password"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="Nova Senha"
-              required
-            />
-            <button
-              type="button"
-              @click="togglePasswordVisibility"
-              class="show-password-btn"
-            >
+            <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Nova Senha" required />
+            <button type="button" @click="togglePasswordVisibility" class="show-password-btn">
               <EyeIcon class="eye-icon" />
             </button>
           </div>
 
           <div class="input-group">
             <LockClosedIcon class="icon" />
-            <input
-              v-model="confirmPassword"
-              :type="showConfirmPassword ? 'text' : 'password'"
-              placeholder="Confirme a Senha"
-              required
-            />
-            <button
-              type="button"
-              @click="toggleConfirmPasswordVisibility"
-              class="show-password-btn"
-            >
+            <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirme a Senha" required />
+            <button type="button" @click="toggleConfirmPasswordVisibility" class="show-password-btn">
               <EyeIcon class="eye-icon" />
             </button>
           </div>
@@ -50,6 +32,15 @@
           <router-link to="/login" class="link">Voltar para o Login</router-link>
         </p>
       </div>
+
+      <Modal
+        v-model="isModalVisible"
+        :title="modal.title"
+        :message="modal.message"
+        :buttonText="modal.buttonText"
+        :type="modal.type"
+        @confirm="handleModalConfirm"
+      />
     </div>
   </div>
 </template>
@@ -58,12 +49,15 @@
 import { LockClosedIcon } from "@heroicons/vue/24/solid";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { API_URL } from "@/config/config";
+import { mapActions } from "vuex";
+import Modal from "@/components/Modal.vue";
 
 export default {
   name: "UpdatePasswordPage",
   components: {
     LockClosedIcon,
     EyeIcon,
+    Modal,
   },
   data() {
     return {
@@ -72,27 +66,46 @@ export default {
       showPassword: false,
       showConfirmPassword: false,
       isLoading: false,
-      message: "",
-      messageType: "", // 'success-message' ou 'error-message'
+      isModalVisible: false,
+      modal: {
+        title: "",
+        message: "",
+        buttonText: "OK",
+        type: "info",
+        action: null,
+      },
     };
   },
   computed: {
     token() {
-      // Pega o token do Vuex (ou de onde estiver armazenado)
       return this.$store.getters["user/token"];
     },
   },
   methods: {
+    ...mapActions("user", ["logout"]),
+
+    showAlert(title, message, type = "info", buttonText = "OK", action = null) {
+      this.modal.title = title;
+      this.modal.message = message;
+      this.modal.type = type;
+      this.modal.buttonText = buttonText;
+      this.modal.action = action;
+      this.isModalVisible = true;
+    },
+
+    handleModalConfirm() {
+      if (typeof this.modal.action === "function") {
+        this.modal.action();
+      }
+    },
+
     async handleUpdatePassword() {
       if (this.password.trim() !== this.confirmPassword.trim()) {
-        this.message = "As senhas não coincidem.";
-        this.messageType = "error-message";
+        this.showAlert("Erro de Validação", "As senhas não coincidem.", "error");
         return;
       }
 
       this.isLoading = true;
-      this.message = "";
-      this.messageType = "";
       const usuarioId = this.$route.params.id;
 
       try {
@@ -102,9 +115,9 @@ export default {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.token}`,
           },
-          body: JSON.stringify({ 
-            password: this.password
-           }),
+          body: JSON.stringify({
+            password: this.password,
+          }),
         });
 
         if (!response.ok) {
@@ -112,13 +125,18 @@ export default {
           throw new Error(error.detail || "Erro ao atualizar a senha.");
         }
 
-        this.message = "Senha atualizada com sucesso!";
-        this.messageType = "success-message";
-        this.password = "";
-        this.confirmPassword = "";
+        this.showAlert(
+          "Sucesso!",
+          "Sua senha foi atualizada. Você será desconectado por segurança e pode fazer login com a nova senha.",
+          "success",
+          "Ir para Login",
+          () => {
+            this.logout();
+            this.$router.push("/login");
+          }
+        );
       } catch (error) {
-        this.message = error.message;
-        this.messageType = "error-message";
+        this.showAlert("Erro", error.message, "error");
       } finally {
         this.isLoading = false;
       }
@@ -148,7 +166,7 @@ export default {
   border: none;
   outline: none;
   flex: 1;
-  padding-right: 40px; /* Espaço para o ícone do olho */
+  padding-right: 40px;
 }
 
 .backgroundImg {

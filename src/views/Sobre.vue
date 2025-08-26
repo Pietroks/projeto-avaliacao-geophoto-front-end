@@ -84,7 +84,7 @@ export default {
 .titulo-dinamicas {
   font-size: 1.5rem;
   text-align: center;
-  color: #137abe;
+  color: #212121;
   padding: 0.8rem 1rem;
   margin-top: 1.5rem;
   background-color: rgba(255, 255, 255, 0.3);
