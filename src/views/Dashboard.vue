@@ -366,7 +366,6 @@ export default {
       this.photoFiles = [];
       this.resetFileInput();
 
-      // Não reseta os dados se o usuário ainda pode enviar para o conjunto B
       if (!this.isDadosConjuntoBDisabled) {
         this.nomeFoto = "";
         this.localFoto = "";
@@ -407,7 +406,7 @@ export default {
       this.isLoading = true;
 
       try {
-        const response = await fetch(`${API_URL}/user/images/${this.user.user_id}/`, {
+        const response = await fetch(`${API_URL}/user/images/${this.user.user_id}`, {
           headers: { Authorization: `Bearer ${this.token}` },
         });
 
@@ -436,7 +435,6 @@ export default {
               image_url: `${API_URL}/images/${image.image_id}/`,
             };
           } catch {
-            // Retorna a imagem base caso a busca de detalhes falhe
             return {
               ...image,
               image_url: `${API_URL}/images/${image.image_id}/`,
@@ -446,7 +444,6 @@ export default {
 
         this.photos = await Promise.all(detailedPhotosPromises);
 
-        // Preenche dados do formulário se o usuário for continuar um conjunto da Categoria B
         if (this.photosB.length > 0 && this.canUploadB) {
           const firstPhotoOfSet = this.photosB[0];
           this.nomeFoto = firstPhotoOfSet.title;
@@ -505,7 +502,6 @@ export default {
   },
 
   async created() {
-    // Executa a ação apenas se NÃO for avaliador E se o usuário existir.
     if (!this.isAvaliador && this.user) {
       await this.fetchUserPhotos();
       this.setDefaultSubcategory();
@@ -532,7 +528,7 @@ export default {
   margin: 2rem auto;
   padding: 2rem;
   background-color: #f8f9fa;
-  background-image: url("/src/assets/hex5.webp");
+  background-image: url("/src/assets/tinyWebp/hex5.webp");
   border-radius: 8px;
 }
 

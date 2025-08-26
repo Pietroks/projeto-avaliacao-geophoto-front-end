@@ -179,9 +179,6 @@ export default {
 </script>
 
 <style scoped>
-/* Adicione isso ao seu CSS principal ou no <head> do index.html para os ícones de filtro */
-/* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> */
-
 .background-votacao {
   background: linear-gradient(135deg, #1d2b4a, #0f172a);
   color: #e2e8f0;

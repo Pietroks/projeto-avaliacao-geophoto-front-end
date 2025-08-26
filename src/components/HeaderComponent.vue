@@ -53,7 +53,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import logo from "@/assets/logo.webp";
+import logo from "@/assets/tinyWebp/logo.webp";
 
 export default {
   name: "HeaderComponent",

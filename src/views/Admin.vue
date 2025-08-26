@@ -17,8 +17,8 @@
         </div>
 
         <div class="form-group">
-          <label for="document">Documento (CPF)</label>
-          <input id="document" v-model="document" type="text" placeholder="Documento do avaliador" class="form-control" required />
+          <label for="document">CPF</label>
+          <input id="document" v-model="document" type="text" placeholder="000.000.000-00" class="form-control" required maxlength="14" />
         </div>
 
         <div class="form-group">
@@ -62,6 +62,18 @@ export default {
       return this.$store.getters["user/token"];
     },
   },
+  watch: {
+    document(value) {
+      const numericValue = value.replace(/\D/g, "");
+      let formattedValue = numericValue
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+      if (value != formattedValue) {
+        this.document = formattedValue;
+      }
+    },
+  },
   methods: {
     triggerModal(title, message, type = "info") {
       this.modalState.title = title;
@@ -69,13 +81,50 @@ export default {
       this.modalState.type = type;
       this.modalState.show = true;
     },
+
+    validateCPF(cpf) {
+      const cpfClean = String(cpf).replace(/\D/g, "");
+
+      if (cpfClean.length !== 11 || /^(\d)\1{10}$/.test(cpfClean)) {
+        return false;
+      }
+
+      let sum = 0;
+      let remainder;
+
+      for (let i = 1; i <= 9; i++) {
+        sum += parseInt(cpfClean.substring(i - 1, i)) * (11 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if (remainder === 10 || remainder === 11) {
+        remainder = 0;
+      }
+      if (remainder !== parseInt(cpfClean.substring(9, 10))) {
+        return false;
+      }
+
+      sum = 0;
+      for (let i = 1; i <= 10; i++) {
+        sum += parseInt(cpfClean.substring(i - 1, i)) * (12 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if (remainder === 10 || remainder === 11) {
+        remainder = 0;
+      }
+      if (remainder !== parseInt(cpfClean.substring(10, 11))) {
+        return false;
+      }
+
+      return true;
+    },
+
     validateForm() {
       if (!this.name.trim()) {
         this.triggerModal("Campo Obrigatório", "Por favor, insira o nome do avaliador.", "error");
         return false;
       }
-      if (!this.document.trim()) {
-        this.triggerModal("Campo Obrigatório", "Por favor, insira o documento do avaliador.", "error");
+      if (!this.validateCPF(this.document)) {
+        this.triggerModal("CPF Inválido", "O CPF inserido não é válido. Por favor, verifique os dígitos.", "error");
         return false;
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

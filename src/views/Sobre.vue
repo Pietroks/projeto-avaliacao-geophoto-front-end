@@ -13,7 +13,7 @@
             </p>
           </div>
           <div class="logo-col text-center">
-            <img src="../assets/logo2.webp" alt="Logo do Laboratório LAGIM" class="img-fluid logo-img" />
+            <img src="../assets/tinyWebp/logo2.webp" alt="Logo do Laboratório LAGIM" class="img-fluid logo-img" />
             <h2 class="titulo-dinamicas">Explorando o mundo e suas dinâmicas</h2>
           </div>
         </div>
@@ -31,7 +31,7 @@ export default {
 <style scoped>
 .sobre-section {
   color: black;
-  background: url("../assets/hex3.webp") no-repeat center center;
+  background: url("../assets/tinyWebp/hex3.webp") no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
   position: relative;

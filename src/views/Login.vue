@@ -124,7 +124,7 @@ export default {
 
 <style scoped>
 .login-background {
-  background: url("../assets/hex4.webp") no-repeat center center;
+  background: url("../assets/tinyWebp/hex4.webp") no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   display: flex;

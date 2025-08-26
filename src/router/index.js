@@ -1,47 +1,38 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
-import Cadastro from "../views/Cadastro.vue";
-import Sobre from "../views/Sobre.vue";
-import Admin from "../views/Admin.vue";
-import Premiacao from "@/views/Premiacao.vue";
-import Concurso from "@/views/Concurso.vue";
-import Dashboard from "@/views/Dashboard.vue";
-import store from "../store";
-import VotacaoPage from "@/views/votacao.vue";
-import UserUpdate from "@/views/UserUpdate.vue";
+import store from "@/store";
+
 const routes = [
-  { path: "/", component: Home },
-  { path: "/login", component: Login },
-  { path: "/cadastro", component: Cadastro },
-  { path: "/sobre", component: Sobre },
-  { path: "/premiacao", component: Premiacao },
+  { path: "/", component: () => import("@/views/Home.vue") },
+  { path: "/login", component: () => import("@/views/Login.vue") },
+  { path: "/cadastro", component: () => import("@/views/Cadastro.vue") },
+  { path: "/sobre", component: () => import("@/views/Sobre.vue") },
+  { path: "/premiacao", component: () => import("@/views/Premiacao.vue") },
   {
     path: "/concurso",
-    component: Concurso,
+    component: () => import("@/views/Concurso.vue"),
     meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: "/admin",
-    component: Admin,
+    component: () => import("@/views/Admin.vue"),
     meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: "/dashboard",
     name: "dashboard",
-    component: Dashboard,
+    component: () => import("@/views/Dashboard.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/votacao/:id",
     name: "votacao",
-    component: VotacaoPage,
+    component: () => import("@/views/votacao.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/edit-profile/:id",
     name: "AtualizarUsuario",
-    component: UserUpdate,
+    component: () => import("@/views/UserUpdate.vue"),
   },
 ];
 

@@ -211,11 +211,9 @@ export default {
   },
 
   watch: {
-    // Sempre que a senha principal mudar, chame a validação
     password() {
       this.validatePasswordMatch();
     },
-    // Sempre que a confirmação de senha mudar, chame a validação também
     confirmPassword() {
       this.validatePasswordMatch();
     },
@@ -418,7 +416,7 @@ export default {
 
 <style scoped>
 .cadastro-background {
-  background: url("../assets/hex5.webp") no-repeat center center;
+  background: url("../assets/tinyWebp/hex5.webp") no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   display: flex;

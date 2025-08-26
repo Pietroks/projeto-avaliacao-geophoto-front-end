@@ -5,7 +5,7 @@
         <div class="col-md-6 col-12">
           <div class="containerFooter1">
             <div class="divLogo">
-              <img class="logo" src="../assets/logo2.webp" alt="" />
+              <img class="logo" src="../assets/tinyWebp/logo2.webp" alt="" />
               <h3>Laboratório de Geoiconografia e Multimídias - UNB</h3>
             </div>
           </div>

@@ -314,7 +314,7 @@ export default {
     },
 
     baixarEditalPDF() {
-      const urlPDF = "/Edital III Premio Fotogeografia.pdf";
+      const urlPDF = "/pdf/Edital III Premio Fotogeografia.pdf";
       const nomeArquivo = "Edital III Premio Fotogeografia.pdf";
 
       this.isDownloading = true;
@@ -350,7 +350,7 @@ export default {
 
 <style scoped>
 .hero-section {
-  background: url("../assets/hex6.webp") no-repeat center center / cover fixed;
+  background: url("../assets/tinyWebp/hex6.webp") no-repeat center center / cover fixed;
   color: #0c2a3d;
 }
 .hero-card {

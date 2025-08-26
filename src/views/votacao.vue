@@ -190,7 +190,7 @@ export default {
   async created() {
     const usuarioId = this.$route.params.id;
     try {
-      const response = await fetch(`${API_URL}/users/${usuarioId}/`, {
+      const response = await fetch(`${API_URL}/users/${usuarioId}`, {
         headers: { Authorization: `Bearer ${this.token}` },
       });
       if (response.ok) {
@@ -436,30 +436,26 @@ export default {
 </script>
 
 <style scoped>
-/* --- Configurações Globais e Fundo --- */
-/* Adicionado um gradiente sutil para dar profundidade e uma aparência menos "chapada". */
 .background-votacao {
   background: linear-gradient(180deg, #fdfdff 0%, #f7f9fc 100%);
   min-height: 100vh;
 }
 
 /* --- Tipografia e Títulos --- */
-/* Aumentado o tamanho e o contraste para maior impacto e clareza. */
 .titulo-pagina {
-  font-size: 2.5rem; /* Mais destaque */
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #1a202c; /* Um preto mais suave que o #000 */
+  color: #1a202c;
 }
 
-/* A borda agora é mais curta e colorida, agindo como um acento visual. */
 .titulo-categoria {
   font-size: 1.75rem;
   color: #2d3748;
   font-weight: 600;
-  border-bottom: 3px solid #007bff; /* Usando uma cor primária */
+  border-bottom: 3px solid #007bff;
   padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem; /* Mais espaço abaixo do título */
-  display: inline-block; /* Faz a borda ter o tamanho do texto */
+  margin-bottom: 1.5rem;
+  display: inline-block;
 }
 
 /* --- Botões e Ícones --- */
@@ -467,41 +463,36 @@ export default {
   width: 1.2em;
   height: 1.2em;
   margin-right: 0.5rem;
-  vertical-align: -0.25em; /* Melhor alinhamento vertical */
+  vertical-align: -0.25em;
 }
 
 /* --- Estrutura e Cards --- */
-/* Sombra mais suave e um arredondamento maior para um look moderno. */
 .categoria-container {
   background-color: #fff;
-  border-radius: 16px; /* Mais arredondado */
-  padding: 2rem 2.5rem; /* Mais espaçamento interno */
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
   box-shadow: 0 8px 24px rgba(26, 32, 44, 0.08);
   transition: all 0.3s ease;
 }
 
-/* Efeito de "levantar" o container no hover. */
 .categoria-container:hover {
   box-shadow: 0 12px 32px rgba(26, 32, 44, 0.12);
   transform: translateY(-2px);
 }
 
-/* Sombra mais sutil e transição mais elaborada (cubic-bezier) para um movimento natural. */
 .card-votacao {
   border: none;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: hidden; /* Garante que a imagem não saia dos cantos arredondados */
+  overflow: hidden;
 }
 
-/* Efeito de hover mais pronunciado, combinando elevação e uma sombra mais forte. */
 .card-votacao:hover {
   transform: translateY(-8px);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* Efeito de zoom na imagem para indicar interatividade. */
 .card-votacao:hover .fotosImg {
   transform: scale(1.05);
 }
@@ -511,13 +502,12 @@ export default {
   width: 100%;
   height: 350px;
   object-fit: cover;
-  border-radius: 8px 8px 0 0; /* Arredondado apenas nos cantos superiores */
+  border-radius: 8px 8px 0 0;
   cursor: pointer;
-  transition: transform 0.4s ease; /* Transição suave para o efeito de hover */
+  transition: transform 0.4s ease;
 }
 
 /* --- Elementos de Informação e Formulário --- */
-/* Um estilo mais limpo para a caixa de informações do conjunto. */
 .info-conjunto {
   background-color: #f7fafc;
   border: 1px solid #e2e8f0;
@@ -525,12 +515,11 @@ export default {
   padding: 1.5rem;
 }
 
-/* Melhor alinhamento e espaçamento para os campos de nota. */
 .criterio-input-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem; /* Espaço entre o label e o input */
+  gap: 1rem;
 }
 
 .criterio-input-group .form-label {
@@ -539,7 +528,6 @@ export default {
   flex: 1;
 }
 
-/* Inputs com aparência moderna e feedback visual claro no estado :focus. */
 .criterio-input-group .form-control {
   width: 85px;
   text-align: center;
@@ -558,7 +546,6 @@ export default {
 }
 
 /* --- Estilos do Modal --- */
-/* Efeito de fade-in para o overlay do modal. */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -567,10 +554,9 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 1050;
-  backdrop-filter: blur(4px); /* Efeito de vidro fosco no fundo */
+  backdrop-filter: blur(4px);
 }
 
-/* Animação de entrada para o conteúdo do modal (aparece de baixo para cima). */
 .modal-content {
   background-color: white;
   padding: 2rem 2.5rem;
@@ -593,16 +579,15 @@ export default {
 
 .modal-actions {
   display: flex;
-  justify-content: center; /* Centraliza os botões */
-  gap: 1rem; /* Espaço entre os botões */
+  justify-content: center;
+  gap: 1rem;
   margin-top: 1.5rem;
 }
 
-/* --- Estilos do Modal de Imagem (Carrossel) --- */
 .image-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.85); /* Mais escuro para focar na imagem */
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -616,10 +601,9 @@ export default {
   max-height: 90vh;
 }
 
-/* Botão de fechar mais elegante. */
 .image-modal-close-btn {
   position: absolute;
-  top: 15px; /* Dentro da área visível */
+  top: 15px;
   right: 15px;
   background: rgba(255, 255, 255, 0.2);
   border: none;
@@ -657,7 +641,6 @@ export default {
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
-/* Botões de navegação mais modernos e posicionados de forma diferente. */
 .carousel-nav {
   position: absolute;
   top: 50%;

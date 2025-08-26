@@ -67,7 +67,7 @@ body {
 }
 
 .hero {
-  background-image: url("@/assets/hex2.webp");
+  background-image: url("@/assets/tinyWebp/hex2.webp");
   background-size: cover;
   background-position: center;
   color: #03b6e5;

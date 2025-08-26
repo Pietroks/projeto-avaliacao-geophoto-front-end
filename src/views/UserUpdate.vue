@@ -268,12 +268,12 @@ p {
 }
 
 .error-message {
-  color: #ff4d4d; /* Vermelho mais forte */
+  color: #ff4d4d;
   font-weight: bold;
 }
 
 .success-message {
-  color: #4dff4d; /* Verde mais forte */
+  color: #4dff4d;
   font-weight: bold;
 }
 
