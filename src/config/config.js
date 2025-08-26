@@ -1,1 +1,2 @@
-export const API_URL = "http://72.60.54.116/api";
+export const API_URL = "http://fotogeografia.com.br/api";
+
