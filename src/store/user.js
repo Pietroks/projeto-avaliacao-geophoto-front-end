@@ -9,11 +9,19 @@ export default {
   mutations: {
     SET_USER(state, user) {
       state.user = user;
-      localStorage.setItem('user', JSON.stringify(user))
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        localStorage.removeItem('user');
+      }
     },
     SET_TOKEN(state, token) {
       state.token = token;
-      localStorage.setItem("authToken", token);
+      if (token) {
+        localStorage.setItem("authToken", token);
+      } else {
+        localStorage.removeItem("authToken");
+      }
     },
     LOGOUT(state) {
       state.user = null;
@@ -33,7 +41,10 @@ export default {
           body: JSON.stringify({ email, password }),
         });
 
-        if (!response.ok) throw new Error("Credenciais inválidas!");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Credenciais inválidas!");
+        }
 
         const data = await response.json();
         commit("SET_USER", data.user);
@@ -47,13 +58,25 @@ export default {
     logout({ commit }) {
       commit("LOGOUT");
     },
-  },
-  getters: {
-    isAuthenticated(state) {
-      return !!state.token;
+
+// verifica o estado do login a partir do localstorage
+    checkLoginStatus({ commit, state }) {
+      if (state.token) {
+        const user = localStorage.getItem('user');
+        if (user) {
+          commit('SET_USER', JSON.parse(user));
+        } else {
+          commit('LOGOUT');
+        }
+      }
     },
+  },
+  
+  getters: {
+    isAuthenticated: (state) => !!state.token,
     user: (state) => state.user,
     token: (state) => state.token,
-    isAvaliador: (state) => state.user && state.user.user_type === 'A'
+    isAvaliador: (state) => state.user && state.user.user_type === 'A',
+    isAdmin: (state) => state.user && state.user.user_type === 'admin',  
   },
 };

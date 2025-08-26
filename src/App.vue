@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import HeaderComponent from './components/HeaderComponent.vue';
+import HeaderComponent from "./components/HeaderComponent.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     HeaderComponent,
   },
@@ -17,12 +17,19 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(180deg, #ffffff 0%, #55a5db 100%);
 }
 </style>

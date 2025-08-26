@@ -1,343 +1,180 @@
 <template>
-  <section class="container">
-    <div class="row">
-      <div class="col-12 containerHeader">
-        <!-- Logo -->
-        <div class="col-md-4 divLogo">
-          <router-link to="/" class="Logo">
-            <img :src="logoImage" class="img-fluid imgLogo" alt="Logo">
-          </router-link>
-        </div>
+  <section class="header-section py-2">
+    <div class="container">
+      <nav class="navbar navbar-expand-md navbar-light">
+        <router-link to="/" class="navbar-brand">
+          <img :src="logoImage" class="img-fluid imgLogo" alt="Logo" />
+        </router-link>
 
-        <!-- Menu de navegação -->
-        <div class="col-md-4 divNav">
-          <router-link
-            to="/"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/' }]"
-            @click="selectLink('/')"
-          >Inicio</router-link>
-          <router-link
-            to="/sobre"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/sobre' }]"
-            @click="selectLink('/sobre')"
-          >Sobre</router-link>
-          <router-link
-            to="/concurso"
-            class="buttonCadastro"
-          >Acesse o Concurso</router-link>
-          <router-link
-            to="/premiacao"
-            :class="['navLink', { 'navLinkActive': selectedLink === '/premiacao' }]"
-            @click="selectLink('/premiacao')"
-          >Premiação</router-link>  
-        </div>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <!-- Ícone ou botões de login -->
-        <div class="col-md-4 divLogin">
-          <!-- Mobile: Ícone para abrir menu -->
-          <div class="d-md-none">
-            <button class="btn btn-icon" @click="toggleMenuLogin">
-              <UserIcon class="heroicon" />
-            </button>
-          </div>
-          <!-- Desktop ou menu aberto no mobile -->
-          <div 
-            :class="{'d-none d-md-flex': !menuLoginAberto, 'd-block': menuLoginAberto}"
-            class="login-buttons"
-          >
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <router-link to="/" class="nav-link">Início</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/sobre" class="nav-link">Sobre</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/premiacao" class="nav-link">Premiação</router-link>
+            </li>
+            <li v-if="isAvaliador" class="nav-item d-md-none">
+              <router-link to="/concurso" class="nav-link">Acesse o Concurso</router-link>
+            </li>
+          </ul>
+
+          <div class="navbar-nav ms-auto align-items-center">
+            <router-link v-if="isAvaliador" to="/concurso" class="buttonCadastro d-none d-md-block">Acesse o Concurso</router-link>
             <template v-if="isLoggedIn">
-              <button 
-                @click="redirectToDashboard" 
-                class="btn btn-outline-primary"
-              >
-                Meu Perfil
-              </button>
-              <button 
-                @click="logout" 
-                class="btn btn-danger ms-2"
-              >
-                Sair
-              </button>
+              <button @click="redirectToDashboard" class="btn btn-outline-primary ms-md-2">Meu Perfil</button>
+              <button @click="handleLogout" class="btn btn-danger ms-2">Sair</button>
             </template>
             <template v-else>
-              <router-link
-                to="/login"
-                :class="['navLink', { 'navLinkActive': selectedLink === '/login' }]"
-                @click="selectLink('/login')"
-              >Entrar</router-link>
-              <router-link
-                to="/cadastro"
-                class="buttonCadastro"
-              >Cadastre-se</router-link>
+              <router-link to="/login" class="nav-link ms-md-2">Entrar</router-link>
+              <router-link to="/cadastro" class="buttonCadastro ms-2">Cadastre-se</router-link>
             </template>
           </div>
         </div>
-      </div>
+      </nav>
     </div>
   </section>
 </template>
 
-
-
 <script>
-import { mapState, mapActions } from "vuex";
-import logo from '@/assets/Diamond-jewelry-logo-design-premium-Graphics-14779073-1-1-580x387.jpg';
-import { UserIcon } from "@heroicons/vue/24/solid";
+import { mapState, mapActions, mapGetters } from "vuex";
+import logo from "@/assets/logo.webp";
 
 export default {
-  name: 'HeaderComponent',
-  components: {
-    UserIcon,
-  },  
+  name: "HeaderComponent",
+  components: {},
   data() {
     return {
       logoImage: logo,
-      selectedLink: '/',
-      menuLoginAberto: false,
     };
   },
   computed: {
     ...mapState("user", ["user", "token"]),
+    ...mapGetters("user", ["isAvaliador"]),
     isLoggedIn() {
-      return !!this.token; 
-    }
+      return !!this.token;
+    },
   },
   methods: {
-    ...mapActions("user", ["logout"]),
-    selectLink(link) {
-      this.selectedLink = link;
-      this.menuLoginAberto = false;
-    },
-    toggleMenuLogin() {
-      this.menuLoginAberto = !this.menuLoginAberto;
-    },
+    ...mapActions("user", ["logout", "checkLoginStatus"]),
     redirectToDashboard() {
       this.$router.push({ name: "dashboard" });
-    }
+    },
+    async handleLogout() {
+      await this.logout();
+      if (this.$route.name !== "login") {
+        this.$router.push("/login");
+      }
+    },
   },
   mounted() {
-    this.$store.dispatch("user/checkLoginStatus");
+    this.checkLoginStatus();
   },
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch("user/checkLoginStatus");
-    next();
-  }
 };
 </script>
 
 <style scoped>
-.containerHeader {
-  display: flex;
-  align-items: center;
-  margin: 3rem auto;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  border-radius: 30px;
-  position: relative;
-}
-
-.divLogo {
-  display: flex;
-  justify-content: flex-start;
+.header-section {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1px);
+  border-radius: 50px;
+  margin: auto;
+  width: 98%;
 }
 
 .imgLogo {
-  width: 105px;
+  width: 25%;
   height: auto;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 
-.divNav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.divLogin {
-  display: flex;
-  justify-content: flex-end;
-  gap: 2rem;
-  align-items: center;
-}
-
-.login-buttons {
-  display: flex;
-  flex-direction: row; /* Padrão */
-  gap: 1rem;
-  transition: all 0.3s ease-in-out;
-  align-items: center;
-}
-
-.login-buttons.d-block {
-  flex-direction: column; /* Alinhar em coluna quando o menu estiver aberto */
-  gap: 0.5rem; /* Ajustar espaçamento entre os itens */
-}
-
-.logoutButton {
-  background: none;
-  border: none;
-  color: brown;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease-in-out;
-}
-
-.d-md-none .btn-icon {
-font-size: 1.5rem;
-background: none;
-border: none;
-cursor: pointer;
-}
-
-.btn-icon {
-  font-size: 2rem;
-  background: none;
-  border: none;
-  color: #212121; /* Cor padrão */
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: color 0.3s ease, transform 0.2s ease;
-}
-
-.btn-icon:hover {
-  color: #137ABE; /* Cor de destaque ao passar o mouse */
-  transform: scale(1.1); /* Efeito de zoom leve */
-}
-
-.btn-icon:active {
-  transform: scale(0.95); /* Efeito ao clicar */
-}
-
-.heroicon {
-  width: 24px;
-  height: 24px;
-  color: #212121; /* Cor padrão */
-  transition: color 0.3s ease, transform 0.2s ease;
-}
-
-.heroicon:hover {
-  color: #137ABE; /* Cor de destaque ao passar o mouse */
-  transform: scale(1.1);
-}
-
-.heroicon:active {
-  transform: scale(0.95);
-}
-
-
-.navLink, .buttonCadastro {
+.nav-link {
   text-decoration: none;
-  color: #212121;
-  font-weight: 700;
+  color: #0d6efd;
+  font-weight: 600;
   font-size: 1rem;
   position: relative;
   transition: all 0.3s ease-in-out;
+  padding: 0.5rem 1rem;
 }
 
-.navLinkActive {
-  color: brown;
-  transform: scale(1.1);
+.nav-link.router-link-exact-active {
+  color: #03b6e5;
+  transform: scale(1.05);
 }
 
-.navLink::after {
-  content: '';
+.nav-link::after {
+  content: "";
   position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
   height: 2px;
-  background-color: brown;
-  transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease-in-out;
+  background-color: #03b6e5;
+  transition: width 0.3s ease-in-out;
 }
 
-.navLink:hover::after {
-  transform: scaleX(1);
+.nav-link:hover::after,
+.nav-link.router-link-exact-active::after {
+  width: 50%;
 }
 
-.navLink:hover {
-  color: brown;
-  transform: scale(1.1);
-}
-
-.navLink:active {
-  transform: scale(1);
+.nav-link:hover {
+  color: #03b6e5;
 }
 
 .buttonCadastro {
-  border: 2px solid brown;
+  border: 2px solid #03b6e5;
   border-radius: 10px;
-  padding: 0.5rem;
-  transition: 0.3s ease-in-out;
+  padding: 0.5rem 1rem;
+  color: #03b6e5;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
 }
 
 .buttonCadastro:hover {
-  background: brown;
-  color: whitesmoke;
-}
-
-@media (max-width: 1366px) {
-  .divNav[data-v-5c833af0] {
-    gap: 2rem;
-  }
+  background: #03b6e5;
+  color: white;
+  transform: scale(1.05);
 }
 
 @media (max-width: 1114px) {
-  .divNav[data-v-5c833af0] {
-    justify-content: center;
-    gap: 1rem;
-  }
-
-  .buttonCadastro[data-v-5c833af0] {
-    padding: 0.2rem;
-    font-size: 0.8rem;
+  .imgLogo {
+    width: 50%;
   }
 }
 
+/* Ajustes para o menu mobile quando aberto */
 @media (max-width: 767px) {
-  .containerHeader[data-v-5c833af0] {
-    width: 98%;
+  .imgLogo {
+    width: 150px;
   }
 
-  .divLogo[data-v-5c833af0] {
-    display: none;
-  }
-
-  .divNav[data-v-5c833af0] {
-    gap: 1rem;
-  }
-
-  .buttonCadastro[data-v-5c833af0] {
-    padding: 0rem;
-    border: none;
+  .navbar-collapse {
     text-align: center;
+    margin-top: 1rem;
   }
-
-  .navLink[data-v-5c833af0], .buttonCadastro[data-v-5c833af0] {
-    font-size: 0.8rem;
-  }
-
-  .login-buttons {
-    align-items: center; /* Centralizar os itens em telas menores */
-    text-align: center;
-  }
-
-  .login-buttons.d-block[data-v-5c833af0] {
-    flex-direction: column !important;
-      gap: 0.5rem;
-      display: flex !important;
-      position: absolute;
-      top: 75%;
-      align-items: center;
-      background: aliceblue;
-      border-radius: 2px;
-      padding: 0.5rem;
-      left: 71%;
-      gap: 1rem;
+  .navbar-nav .nav-item {
+    margin-bottom: 0.5rem;
   }
 }
 </style>
